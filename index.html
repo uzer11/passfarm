@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PassFarm</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      user-select: none;
+    }
+    .container {
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    .username {
+      font-size: 20px;
+      color: #00d2ff;
+      margin-bottom: 5px;
+    }
+    .score-title {
+      font-size: 14px;
+      color: #8b949e;
+    }
+    .score {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .click-btn {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d900ff, #00d2ff);
+      border: 4px solid #00ffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      margin: 20px auto;
+      box-shadow: 0 0 25px rgba(0, 210, 255, 0.4);
+      transition: transform 0.1s;
+    }
+    .click-btn:active {
+      transform: scale(0.92);
+    }
+    .guard-box {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .guard-btn {
+      margin-top: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: #0088cc;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div id="username" class="username">Игрок</div>
+    <div class="score-title">БАЛАНС PASSFARM</div>
+    <div id="score" class="score">0</div>
+
+    <!-- Блок Ночного Караула -->
+    <div class="guard-box">
+      <div>🛡️ Караул: <b id="guardTimer">05:00:00</b></div>
+      <button id="renewGuardBtn" class="guard-btn">Сменить караул / Налог</button>
+    </div>
+
+    <div id="farmBtn" class="click-btn">⚡</div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    // Имя из Telegram
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
+    }
+
+    // Счетчик
+    let score = parseInt(localStorage.getItem('pass_farm_score')) || 0;
+    const scoreEl = document.getElementById('score');
+    scoreEl.innerText = score;
+
+    document.getElementById('farmBtn').addEventListener('click', () => {
+      score += 1;
+      scoreEl.innerText = score;
+      localStorage.setItem('pass_farm_score', score);
+
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+    });
+
+    // Логика Караула
+    let guardTimeLeft = parseInt(localStorage.getItem('pass_guard_time'));
+    if (isNaN(guardTimeLeft)) guardTimeLeft = 18000; // 5 часов
+
+    function updateGuardTimer() {
+      if (guardTimeLeft > 0) {
+        guardTimeLeft--;
+        localStorage.setItem('pass_guard_time', guardTimeLeft);
+        
+        let hours = Math.floor(guardTimeLeft / 3600);
+        let minutes = Math.floor((guardTimeLeft % 3600) / 60);
+        let seconds = guardTimeLeft % 60;
+        
+        document.getElementById('guardTimer').innerText = 
+          `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      } else {
+        document.getElementById('guardTimer').innerText = "❌ БЕЗЗАЩИТНО!";
+      }
+    }
+
+    setInterval(updateGuardTimer, 1000);
+
+    document.getElementById('renewGuardBtn').addEventListener('click', () => {
+      let choice = confirm("Смена караула (Налог):\n\n[OK] — Посмотреть рекламу (Бесплатно)\n[Отмена] — VIP без рекламы (⭐️ Stars)");
+      
+      if (choice) {
+        alert("🎬 Реклама просмотрена! Караул продлен на 5 часов.");
+      } else {
+        alert("💎 VIP-уплата произведена! Караул продлен на 5 часов.");
+      }
+      guardTimeLeft = 18000;
+      localStorage.setItem('pass_guard_time', guardTimeLeft);
+    });
+  </script>
+</body>
+</html>
