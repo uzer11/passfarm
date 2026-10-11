@@ -3,149 +3,250 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PassFarm</title>
+  <title>PassFarm: Дикий Запад</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
-      background-color: #0d1117;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
+      background-color: #1a1412;
+      color: #f3e5ab;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
       user-select: none;
     }
     .container {
-      text-align: center;
-      width: 90%;
+      width: 100%;
       max-width: 400px;
+      text-align: center;
+    }
+    header {
+      background: #2c221e;
+      border: 2px solid #8c6239;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
     }
     .username {
-      font-size: 20px;
-      color: #00d2ff;
-      margin-bottom: 5px;
-    }
-    .score-title {
-      font-size: 14px;
-      color: #8b949e;
-    }
-    .score {
-      font-size: 48px;
+      font-size: 18px;
+      color: #ffcc00;
       font-weight: bold;
-      margin: 10px 0;
     }
-    .click-btn {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #d900ff, #00d2ff);
-      border: 4px solid #00ffff;
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+    .guard-panel {
+      background: #3d2c22;
+      border: 2px solid #b8860b;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .guard-btn {
+      margin-top: 5px;
+      padding: 6px 12px;
+      background: #8b4513;
+      color: #fff;
+      border: 1px solid #d2b48c;
+      border-radius: 4px;
+      font-weight: bold;
       cursor: pointer;
+    }
+    .farm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    .plot {
+      background: #2b1f18;
+      border: 2px dashed #8c6239;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .plot-title {
+      font-size: 12px;
+      color: #d2b48c;
+    }
+    .plot-level {
+      font-size: 14px;
+      font-weight: bold;
+      color: #ffa500;
+    }
+    .upgrade-btn {
+      background: #cd853f;
+      color: #1a1412;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .action-section {
+      background: #2c221e;
+      border: 2px solid #8c6239;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .main-btn {
+      background: linear-gradient(135deg, #d2691e, #8b4513);
+      color: #fff;
+      border: 2px solid #ffcc00;
+      border-radius: 50%;
+      width: 110px;
+      height: 110px;
+      font-size: 40px;
+      cursor: pointer;
+      margin: 10px auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 60px;
-      margin: 20px auto;
-      box-shadow: 0 0 25px rgba(0, 210, 255, 0.4);
-      transition: transform 0.1s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
-    .click-btn:active {
-      transform: scale(0.92);
-    }
-    .guard-box {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .guard-btn {
-      margin-top: 8px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: none;
-      background: #0088cc;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+    .main-btn:active {
+      transform: scale(0.95);
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div id="username" class="username">Игрок</div>
-    <div class="score-title">БАЛАНС PASSFARM</div>
-    <div id="score" class="score">0</div>
+    <header>
+      <div id="username" class="username">Шериф</div>
+      <div class="stats">
+        <span>🌾 Ресурсы: <b id="score">0</b></span>
+        <span>⭐ Звезды: <b id="stars">10</b></span>
+      </div>
+    </header>
 
-    <!-- Блок Ночного Караула -->
-    <div class="guard-box">
-      <div>🛡️ Караул: <b id="guardTimer">05:00:00</b></div>
-      <button id="renewGuardBtn" class="guard-btn">Сменить караул / Налог</button>
+    <!-- Караул и Налог -->
+    <div class="guard-panel">
+      <div>🛡️ Караул заставы: <b id="guardTimer">05:00:00</b></div>
+      <button id="renewGuardBtn" class="guard-btn">🔄 Сменить караул (Налог)</button>
     </div>
 
-    <div id="farmBtn" class="click-btn">⚡</div>
+    <!-- Участки фермы -->
+    <div class="farm-grid">
+      <div class="plot" id="plot0">
+        <div class="plot-title">🌽 Плантация</div>
+        <div class="plot-level" id="level0">Ур. 1</div>
+        <button class="upgrade-btn" onclick="upgradePlot(0)">Улучшить (5 🌾)</button>
+      </div>
+      <div class="plot" id="plot1">
+        <div class="plot-title">🐂 Загон скота</div>
+        <div class="plot-level" id="level1">Ур. 1</div>
+        <button class="upgrade-btn" onclick="upgradePlot(1)">Улучшить (10 🌾)</button>
+      </div>
+      <div class="plot" id="plot2">
+        <div class="plot-title">🛖 Хижина фермера</div>
+        <div class="plot-level" id="level2">Ур. 1</div>
+        <button class="upgrade-btn" onclick="upgradePlot(2)">Улучшить (15 🌾)</button>
+      </div>
+      <div class="plot" id="plot3">
+        <div class="plot-title">🔭 Вышка дозора</div>
+        <div class="plot-level" id="level3">Ур. 1</div>
+        <button class="upgrade-btn" onclick="upgradePlot(3)">Улучшить (20 🌾)</button>
+      </div>
+    </div>
+
+    <!-- Кнопка сбора -->
+    <div class="action-section">
+      <div style="font-size: 13px;">Собрать урожай / Доход</div>
+      <div id="farmBtn" class="main-btn">🌾</div>
+    </div>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // Имя из Telegram
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
       document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
     }
 
-    // Счетчик
     let score = parseInt(localStorage.getItem('pass_farm_score')) || 0;
+    let stars = parseInt(localStorage.getItem('pass_farm_stars')) || 10;
+    let levels = JSON.parse(localStorage.getItem('pass_farm_levels')) || [1, 1, 1, 1];
+
     const scoreEl = document.getElementById('score');
-    scoreEl.innerText = score;
+    const starsEl = document.getElementById('stars');
+
+    function updateDisplay() {
+      scoreEl.innerText = score;
+      starsEl.innerText = stars;
+      for (let i = 0; i < 4; i++) {
+        document.getElementById(`level${i}`).innerText = `Ур. ${levels[i]}`;
+      }
+      localStorage.setItem('pass_farm_score', score);
+      localStorage.setItem('pass_farm_stars', stars);
+      localStorage.setItem('pass_farm_levels', JSON.stringify(levels));
+    }
+    updateDisplay();
 
     document.getElementById('farmBtn').addEventListener('click', () => {
-      score += 1;
-      scoreEl.innerText = score;
-      localStorage.setItem('pass_farm_score', score);
-
-      if (tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('light');
-      }
+      let income = levels.reduce((a, b) => a + b, 0);
+      score += income;
+      updateDisplay();
+      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
     });
 
-    // Логика Караула
+    window.upgradePlot = function(index) {
+      let cost = levels[index] * 5;
+      if (score >= cost) {
+        score -= cost;
+        levels[index]++;
+        updateDisplay();
+        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      } else {
+        alert("Не хватает ресурсов (🌾) для улучшения!");
+      }
+    };
+
     let guardTimeLeft = parseInt(localStorage.getItem('pass_guard_time'));
-    if (isNaN(guardTimeLeft)) guardTimeLeft = 18000; // 5 часов
+    if (isNaN(guardTimeLeft)) guardTimeLeft = 18000;
 
     function updateGuardTimer() {
       if (guardTimeLeft > 0) {
         guardTimeLeft--;
         localStorage.setItem('pass_guard_time', guardTimeLeft);
-        
-        let hours = Math.floor(guardTimeLeft / 3600);
-        let minutes = Math.floor((guardTimeLeft % 3600) / 60);
-        let seconds = guardTimeLeft % 60;
-        
+        let h = Math.floor(guardTimeLeft / 3600);
+        let m = Math.floor((guardTimeLeft % 3600) / 60);
+        let s = guardTimeLeft % 60;
         document.getElementById('guardTimer').innerText = 
-          `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+          `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
       } else {
         document.getElementById('guardTimer').innerText = "❌ БЕЗЗАЩИТНО!";
       }
     }
-
     setInterval(updateGuardTimer, 1000);
 
     document.getElementById('renewGuardBtn').addEventListener('click', () => {
-      let choice = confirm("Смена караула (Налог):\n\n[OK] — Посмотреть рекламу (Бесплатно)\n[Отмена] — VIP без рекламы (⭐️ Stars)");
-      
+      let choice = confirm("Смена караула (Налог):\n\n[OK] — Реклама (Бесплатно)\n[Отмена] — VIP (⭐️ Stars)");
       if (choice) {
         alert("🎬 Реклама просмотрена! Караул продлен на 5 часов.");
       } else {
-        alert("💎 VIP-уплата произведена! Караул продлен на 5 часов.");
+        if (stars >= 2) {
+          stars -= 2;
+          alert("💎 VIP-оплата списана (2 Stars)! Караул продлен.");
+        } else {
+          alert("Не хватает Telegram Stars!");
+          return;
+        }
       }
       guardTimeLeft = 18000;
-      localStorage.setItem('pass_guard_time', guardTimeLeft);
+      updateDisplay();
     });
   </script>
 </body>
