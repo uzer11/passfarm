@@ -3,305 +3,285 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Wild World: Evolution</title>
+  <title>Оракул Чисел: Нумерология</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
-    body, html {
+    body {
+      background: #0d0a14;
+      color: #f3e9d2;
+      font-family: 'Georgia', serif;
       margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #0b110e;
-      color: #e0f2e9;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      overflow: hidden;
-      user-select: none;
-    }
-    .game-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-    }
-    /* Стильный полупрозрачный HUD поверх игры */
-    .hud {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      background: rgba(11, 25, 17, 0.85);
-      border: 1px solid rgba(74, 158, 103, 0.4);
-      padding: 8px 12px;
-      border-radius: 12px;
-      backdrop-filter: blur(5px);
-      z-index: 10;
+      min-height: 100vh;
+      user-select: none;
     }
-    .hud-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .bar-container {
-      width: 70px;
-      height: 8px;
-      background: #1a2e22;
-      border-radius: 4px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .bar-fill {
-      height: 100%;
-      transition: width 0.3s ease;
-    }
-    #hpBar { background: #e74c3c; }
-    #expBar { background: #f1c40f; }
-
-    /* Полноэкранный холст игры */
-    canvas {
-      display: block;
+    .container {
       width: 100%;
-      height: 100%;
-      background: #13271c;
-      touch-action: none;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
-
-    /* Всплывающие уведомления в стиле игр */
-    .floating-popup {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 30, 20, 0.9);
-      border: 1px solid #4a9e67;
-      padding: 10px 16px;
-      border-radius: 20px;
-      font-size: 13px;
+    header {
       text-align: center;
-      pointer-events: none;
-      z-index: 10;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      transition: opacity 0.3s;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      margin-bottom: 5px;
     }
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      color: #d4af37;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .subtitle {
+      font-size: 11px;
+      color: #9c8b74;
+      margin-top: 4px;
+      font-style: italic;
+    }
+    .card {
+      background: #171224;
+      border: 1px solid #4a3b6e;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    }
+    label {
+      font-size: 12px;
+      color: #c5b294;
+      display: block;
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      background: #100b1a;
+      border: 1px solid #5a4985;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #f3e9d2;
+      font-size: 14px;
+      font-family: inherit;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    input:focus {
+      border-color: #d4af37;
+    }
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, #d4af37, #997a21);
+      color: #0d0a14;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: bold;
+      font-family: inherit;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+      transition: transform 0.1s;
+    }
+    .btn:active { transform: scale(0.97); }
+
+    .result-box {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .number-circle {
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle, #2d2347, #171224);
+      border: 2px solid #d4af37;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #d4af37;
+      font-weight: bold;
+      margin: 0 auto 12px auto;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+    }
+    .forecast-title {
+      font-size: 15px;
+      color: #d4af37;
+      text-align: center;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    .forecast-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #dcd0bc;
+      margin-bottom: 10px;
+      background: #110d1c;
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 3px solid #d4af37;
+    }
+    .categories {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .cat-item {
+      background: #110d1c;
+      border: 1px solid #362a54;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 11px;
+      text-align: center;
+    }
+    .cat-item b { display: block; color: #d4af37; margin-bottom: 2px; }
   </style>
 </head>
 <body>
-  <div class="game-container">
-    <!-- Игровой HUD -->
-    <div class="hud">
-      <div class="hud-group">
-        <span id="playerIcon">🐁</span>
-        <div>
-          <div id="playerName" style="font-size:12px; color:#a3e4c1;">Мышь (Эр. 1)</div>
-          <div style="display:flex; align-items:center; gap:4px; margin-top:2px;">
-            <span style="font-size:9px; color:#e74c3c;">HP</span>
-            <div class="bar-container"><div id="hpBar" class="bar-fill" style="width:100%"></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="hud-group">
-        <div>
-          <div style="font-size:11px; text-align:right;">🍖 <span id="scoreVal">25</span></div>
-          <div style="display:flex; align-items:center; gap:4px; margin-top:2px;">
-            <span style="font-size:9px; color:#f1c40f;">EXP</span>
-            <div class="bar-container"><div id="expBar" class="bar-fill" style="width:30%"></div></div>
-          </div>
-        </div>
-      </div>
+  <div class="container">
+    <header>
+      <h1>Оракул Чисел</h1>
+      <div class="subtitle">Тайный нумерологический код вашей судьбы</div>
+    </header>
+
+    <!-- Форма ввода данных -->
+    <div class="card" id="inputCard">
+      <label for="userName">Ваше имя:</label>
+      <input type="text" id="userName" placeholder="Например: Александр">
+
+      <label for="birthDate">Дата вашего рождения:</label>
+      <input type="date" id="birthDate">
+
+      <button class="btn" onclick="calculateDestiny()">Открыть прогноз</button>
     </div>
 
-    <!-- Холст мира -->
-    <canvas id="worldCanvas"></canvas>
+    <!-- Карточка с результатом предсказания -->
+    <div class="card result-box" id="resultCard">
+      <div class="number-circle" id="destinyNumber">7</div>
+      <div class="forecast-title" id="userNameOutput">Прогноз для вас</div>
+      
+      <div class="forecast-text" id="mainForecast">
+        Ваши числа указывают на период скрытых возможностей. Судьба готовит неожиданный поворот в сфере личных решений.
+      </div>
 
-    <!-- Подсказка -->
-    <div id="popup" class="floating-popup">🌿 Исследуйте мир, собирайте еду и прячьтесь в норках!</div>
+      <div class="categories">
+        <div class="cat-item">
+          <b>💰 Финансы</b>
+          <span id="moneyText">Благоприятный день для инвестиций и планирования бюджета.</span>
+        </div>
+        <div class="cat-item">
+          <b>❤️ Любовь</b>
+          <span id="loveText">Энергия чисел притягивает искренние разговоры и гармонию.</span>
+        </div>
+      </div>
+
+      <button class="btn" style="margin-top: 14px; background: #2d2347; color: #d4af37; border: 1px solid #d4af37;" onclick="resetForm()">Сменить данные</button>
+    </div>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    const canvas = document.getElementById('worldCanvas');
-    const ctx = canvas.getContext('2d');
+    function calculateDestiny() {
+      const name = document.getElementById('userName').value.trim();
+      const dateStr = document.getElementById('birthDate').value;
 
-    // Автоматическое масштабирование под экран телефона
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // Данные игрока
-    let player = {
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      targetX: canvas.width / 2,
-      targetY: canvas.height / 2,
-      speed: 3.5,
-      radius: 18,
-      tier: 1,
-      name: 'Мышь',
-      icon: '🐁',
-      hp: 100,
-      maxHp: 100,
-      score: 30,
-      exp: 0,
-      maxExp: 100
-    };
-
-    // Обитатели и объекты дикого мира
-    let entities = [
-      { x: 100, y: 150, type: 'food', emoji: '🍓', val: 10, radius: 12 },
-      { x: 300, y: 200, type: 'food', emoji: '🐛', val: 15, radius: 12 },
-      { x: canvas.width - 120, y: 180, type: 'burrow', emoji: '🕳️', name: 'Норка', radius: 24 },
-      { x: 200, y: canvas.height - 180, type: 'cave', emoji: '⛰️', name: 'Пещера хищника', radius: 28 },
-      { x: canvas.width - 150, y: canvas.height - 150, type: 'predator', emoji: '🦊', speed: 1.2, radius: 22, hp: 50 }
-    ];
-
-    function showPopup(text) {
-      const p = document.getElementById('popup');
-      p.innerText = text;
-      p.style.opacity = '1';
-      setTimeout(() => { p.style.opacity = '0.7'; }, 2500);
-    }
-
-    function updateHUD() {
-      document.getElementById('playerIcon').innerText = player.icon;
-      document.getElementById('playerName').innerText = `${player.name} (Эр. ${player.tier})`;
-      document.getElementById('scoreVal').innerText = player.score;
-      document.getElementById('hpBar').style.width = `${(player.hp / player.maxHp) * 100}%`;
-      document.getElementById('expBar').style.width = `${(player.exp / player.maxExp) * 100}%`;
-    }
-
-    // Управление касаниями (плавное движение к точке тапа)
-    canvas.addEventListener('pointerdown', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      player.targetX = e.clientX - rect.left;
-      player.targetY = e.clientY - rect.top;
-    });
-
-    // Игровой цикл физики и рендеринга
-    function gameLoop() {
-      // Движение игрока
-      let dx = player.targetX - player.x;
-      let dy = player.targetY - player.y;
-      let dist = Math.hypot(dx, dy);
-      if (dist > 2) {
-        player.x += (dx / dist) * player.speed;
-        player.y += (dy / dist) * player.speed;
+      if (!name || !dateStr) {
+        alert("Пожалуйста, введите имя и дату рождения.");
+        return;
       }
 
-      // ИИ хищника (преследует игрока, если близко)
-      entities.forEach(ent => {
-        if (ent.type === 'predator') {
-          let pdx = player.x - ent.x;
-          let pdy = player.y - ent.y;
-          let pdist = Math.hypot(pdx, pdy);
-          if (pdist < 220) {
-            ent.x += (pdx / pdist) * ent.speed;
-            ent.y += (pdy / pdist) * ent.speed;
-          }
-          // Столкновение с хищником
-          if (pdist < player.radius + ent.radius) {
-            player.hp -= 0.8;
-            if (player.hp <= 0) {
-              player.hp = player.maxHp;
-              player.score = Math.max(0, player.score - 20);
-              showPopup("💀 Вы были пойманы хищником! Возрождение в норке.");
-              player.x = canvas.width / 2;
-              player.y = canvas.height / 2;
-              player.targetX = player.x;
-              player.targetY = player.y;
-            }
-          }
+      if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+
+      // Вычисление нумерологического числа по дате рождения
+      let digits = dateStr.replace(/-/g, '').split('').map(Number);
+      let sum = digits.reduce((a, b) => a + b, 0);
+      while (sum > 9 && sum !== 11 && sum !== 22) {
+        sum = sum.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+      }
+
+      // Добавим влияние длины имени для уникальности
+      let finalNum = ((sum + name.length) % 9) + 1;
+
+      // Базы предсказаний по числам
+      const forecasts = {
+        1: {
+          main: "Число 1 символизирует лидерство и новые начинания. Сегодня Вселенная открывает перед вами двери, требующие смелых решений.",
+          money: "Отличный момент заявить о себе в делах и проектах.",
+          love: "Проявите инициативу — партнер оценит вашу уверенность."
+        },
+        2: {
+          main: "Число 2 несет энергию дипломатии и интуиции. Прислушайтесь к внутреннему голосу, он убережет от лишних споров.",
+          money: "Избегайте импульсивных трат, положитесь на расчет.",
+          love: "Время глубоких откровенных разговоров и укрепления союза."
+        },
+        3: {
+          main: "Число 3 — код творчества и радости. Ваша харизма сегодня на высоте, люди сами тянутся к вашим идеям.",
+          money: "Возможен небольшой приятный финансовый бонус из неожиданного источника.",
+          love: "Легкость и романтика наполнят ваши отношения теплом."
+        },
+        4: {
+          main: "Число 4 означает стабильность, порядок и фундамент. Наведите порядок в делах, и результаты не заставят себя ждать.",
+          money: "Удачный день для крупных приобретений и накоплений.",
+          love: "Надежность и забота станут лучшим выражением ваших чувств."
+        },
+        5: {
+          main: "Число 5 — символ перемен и свободы. Возможны поездки, новые знакомства или неожиданные счастливые стечения обстоятельств.",
+          money: "Финансовый поток нестабилен, но сулит интересные перспективы.",
+          love: "Яркие эмоции и страсть захлестнут привычный уклад."
+        },
+        6: {
+          main: "Число 6 покровительствует гармонии, семье и дому. Уделите время близким — это принесет душевное спокойствие.",
+          money: "Хороший день для вложений в уют и комфорт своего пространства.",
+          love: "Пик взаимопонимания и заботы со стороны второй половинки."
+        },
+        7: {
+          main: "Число 7 — мистическое число мудрости и озарений. Сегодня вам откроется то, что раньше было скрыто от глаз.",
+          money: "Воздержитесь от рискованных финансовых операций, доверяйте анализу.",
+          love: "Побудьте наедине с мыслями или проведите тихий вечер вдвоем."
+        },
+        8: {
+          main: "Число 8 — мощный код материального успеха и кармы. Ваши прошлые усилия начинают приносить реальные плоды.",
+          money: "Высокая вероятность заключения выгодной сделки или роста доходов.",
+          love: "Уверенность в завтрашнем дне укрепит ваш союз."
+        },
+        9: {
+          main: "Число 9 завершает старые циклы. Отпустите то, что изжило себя, чтобы освободить место для нового этапа.",
+          money: "Закройте старые долги или обязательства перед началом нового пути.",
+          love: "Прощение старых обид подарит вам обоим новую свободу."
         }
-      });
+      };
 
-      // Проверка столкновений с объектами
-      entities.forEach((ent, index) => {
-        let edist = Math.hypot(player.x - ent.x, player.y - ent.y);
-        if (edist < player.radius + ent.radius) {
-          if (ent.type === 'food') {
-            player.score += ent.val;
-            player.exp += 25;
-            showPopup(`🍓 Вы нашли еду (+${ent.val})`);
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+      let currentForecast = forecasts[finalNum] || forecasts[7];
 
-            // Проверка эволюции
-            if (player.exp >= player.maxExp) {
-              player.tier++;
-              player.exp = 0;
-              player.maxExp += 75;
-              if (player.tier === 2) { player.name = 'Кролик'; player.icon = '🐇'; player.speed = 4.0; }
-              else if (player.tier >= 3) { player.name = 'Лисица'; player.icon = '🦊'; player.speed = 4.5; }
-              showPopup(`🎉 ЭВОЛЮЦИЯ! Вы стали существом: ${player.name}!`);
-              if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            }
+      // Вывод результатов в интерфейс
+      document.getElementById('destinyNumber').innerText = finalNum;
+      document.getElementById('userNameOutput').innerText = `Прогноз для: ${name}`;
+      document.getElementById('mainForecast').innerText = currentForecast.main;
+      document.getElementById('moneyText').innerText = currentForecast.money;
+      document.getElementById('loveText').innerText = currentForecast.love;
 
-            // Перенос еды в другое место
-            ent.x = Math.random() * (canvas.width - 80) + 40;
-            ent.y = Math.random() * (canvas.height - 120) + 60;
-          } else if (ent.type === 'burrow') {
-            if (player.hp < player.maxHp) {
-              player.hp = Math.min(player.maxHp, player.hp + 0.5);
-            }
-          } else if (ent.type === 'cave') {
-            // Исследование пещеры
-            if (Math.random() < 0.02) {
-              let loot = 40 * player.tier;
-              player.score += loot;
-              showPopup(`⚔️ Удачный рейд в пещеру! Добыто +${loot} очков.`);
-              if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            }
-          }
-        }
-      });
-
-      updateHUD();
-
-      // Рендеринг сцены
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Рисуем траву / текстуру мира
-      ctx.fillStyle = '#13271c';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Декоративные тропинки / пятна на земле
-      ctx.fillStyle = '#102118';
-      ctx.beginPath();
-      ctx.arc(canvas.width / 2, canvas.height / 2, 140, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Отрисовка сущностей мира
-      entities.forEach(ent => {
-        ctx.font = '28px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(ent.emoji, ent.x, ent.y);
-
-        if (ent.name) {
-          ctx.font = '10px sans-serif';
-          ctx.fillStyle = '#8ecfb2';
-          ctx.fillText(ent.name, ent.x, ent.y + 22);
-        }
-      });
-
-      // Отрисовка игрока
-      ctx.font = '32px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(player.icon, player.x, player.y);
-
-      requestAnimationFrame(gameLoop);
+      document.getElementById('inputCard').style.display = 'none';
+      document.getElementById('resultCard').style.display = 'block';
     }
-    requestAnimationFrame(gameLoop);
+
+    function resetForm() {
+      document.getElementById('inputCard').style.display = 'block';
+      document.getElementById('resultCard').style.display = 'none';
+      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
   </script>
 </body>
 </html>
