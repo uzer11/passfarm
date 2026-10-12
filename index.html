@@ -250,42 +250,42 @@
         </div>
       </div>
 
-      <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
+      <button class="btn" id="calcBtn" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
 
     <!-- СТРАНИЦА 2: Бесплатный обзор -->
     <div class="card screen" id="homeScreen">
-      <button class="btn btn-premium" onclick="openPremiumScreen()">
+      <button class="btn btn-premium" id="openPremBtn">
         ⭐ Открыть Полный Развёрнутый Отчёт (Все 5 сфер + Имя)
       </button>
 
       <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовый обзор:</div>
       <div class="periods-bar">
-        <div class="period-tab active" onclick="selectFreeForecast('life', 0, this)">Общий</div>
-        <div class="period-tab" onclick="selectFreeForecast('week', 1, this)">Неделя</div>
-        <div class="period-tab" onclick="selectFreeForecast('month', 2, this)">Месяц</div>
-        <div class="period-tab" onclick="selectFreeForecast('year', 3, this)">Год</div>
+        <div class="period-tab free-tab active" data-period="life">Общий</div>
+        <div class="period-tab free-tab" data-period="week">Неделя</div>
+        <div class="period-tab free-tab" data-period="month">Месяц</div>
+        <div class="period-tab free-tab" data-period="year">Год</div>
       </div>
 
       <div class="number-circle" id="freeNumDisplay">7</div>
       <div class="forecast-title" id="freeForecastTitle">Заголовок</div>
       <div class="forecast-text" id="freeForecastText">Текст...</div>
 
-      <button class="btn" onclick="goToInput()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 6px; font-size: 11px; padding: 8px;">Изменить данные</button>
+      <button class="btn" id="changeDataBtn" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 6px; font-size: 11px; padding: 8px;">Изменить данные</button>
     </div>
 
     <!-- СТРАНИЦА 3: Премиум-отчет -->
     <div class="card screen" id="premiumScreen">
-      <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">
+      <button class="btn" id="backToHomeBtn" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">
         ⬅️ Назад к базам прогнозов
       </button>
 
       <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Глубокий премиум-отчёт:</div>
       <div class="periods-bar">
-        <div class="period-tab premium-tab active" onclick="selectPremForecast('life_prem', 4, this)">⭐ Общий</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast('week_prem', 5, this)">⭐ Неделя</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast('month_prem', 6, this)">⭐ Месяц</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast('year_prem', 7, this)">⭐ Год</div>
+        <div class="period-tab premium-tab prem-tab active" data-period="life_prem">⭐ Общий</div>
+        <div class="period-tab premium-tab prem-tab" data-period="week_prem">⭐ Неделя</div>
+        <div class="period-tab premium-tab prem-tab" data-period="month_prem">⭐ Месяц</div>
+        <div class="period-tab premium-tab prem-tab" data-period="year_prem">⭐ Год</div>
       </div>
 
       <div class="number-circle" id="premNumDisplay">7</div>
@@ -294,200 +294,197 @@
       <div id="premSpheresContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v6.2 (Test #6)</div>
+    <div class="version-footer">Оракул Звёзд v6.3</div>
   </div>
 
   <script>
-    let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-    if (tg) {
-      try { tg.expand(); } catch(e) {}
-    }
-
-    let userData = { name: '', day: 1, month: 1, year: 2000, hour: 12 };
-
-    const letterMap = {
-      'а': 1, 'и': 1, 'с': 1, 'ъ': 1,
-      'б': 2, 'й': 2, 'т': 2, 'ы': 2,
-      'в': 3, 'к': 3, 'у': 3, 'ь': 3,
-      'г': 4, 'л': 4, 'ф': 4, 'э': 4,
-      'д': 5, 'м': 5, 'х': 5, 'ю': 5,
-      'е': 6, 'н': 6, 'ц': 6, 'я': 6,
-      'ё': 7, 'о': 7, 'ч': 7,
-      'ж': 8, 'п': 8, 'ш': 8,
-      'з': 9, 'р': 9, 'щ': 9
-    };
-
-    function reduceToSingle(num) {
-      while (num > 9 && num !== 11 && num !== 22) {
-        num = num.toString().split('').map(Number).reduce((a, b) => a + b, 0);
-      }
-      return num;
-    }
-
-    function calculateNameNumber(name) {
-      let sum = 0;
-      name.toLowerCase().split('').forEach(char => {
-        if (letterMap[char]) {
-          sum += letterMap[char];
-        }
-      });
-      if (sum === 0) sum = 5;
-      return reduceToSingle(sum);
-    }
-
-    function showScreen(screenId) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      let target = document.getElementById(screenId);
-      if (target) {
-        target.classList.add('active');
-      }
-    }
-
-    function calculateAndOpenHome() {
-      alert("Тест #6: Кнопка нажата!"); // Диагностика клика
-      
-      const nameInput = document.getElementById('userName').value.trim();
-      const dayInput = parseInt(document.getElementById('bDay').value);
-      const monthInput = parseInt(document.getElementById('bMonth').value);
-      const yearInput = parseInt(document.getElementById('bYear').value);
-      const hourInput = parseInt(document.getElementById('bHour').value);
-
-      if (!nameInput || isNaN(dayInput) || isNaN(monthInput) || isNaN(yearInput)) {
-        alert("Пожалуйста, заполните имя, день, месяц и год рождения.");
-        return;
+    document.addEventListener('DOMContentLoaded', function() {
+      let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+      if (tg) {
+        try { tg.expand(); } catch(e) {}
       }
 
-      userData = { 
-        name: nameInput, 
-        day: dayInput, 
-        month: monthInput, 
-        year: yearInput, 
-        hour: isNaN(hourInput) ? 12 : hourInput 
+      let userData = { name: '', day: 1, month: 1, year: 2000, hour: 12 };
+
+      const letterMap = {
+        'а': 1, 'и': 1, 'с': 1, 'ъ': 1,
+        'б': 2, 'й': 2, 'т': 2, 'ы': 2,
+        'в': 3, 'к': 3, 'у': 3, 'ь': 3,
+        'г': 4, 'л': 4, 'ф': 4, 'э': 4,
+        'д': 5, 'м': 5, 'х': 5, 'ю': 5,
+        'е': 6, 'н': 6, 'ц': 6, 'я': 6,
+        'ё': 7, 'о': 7, 'ч': 7,
+        'ж': 8, 'п': 8, 'ш': 8,
+        'з': 9, 'р': 9, 'щ': 9
       };
 
-      showScreen('homeScreen');
-      selectFreeForecast('life', 0, document.querySelector('#homeScreen .periods-bar .period-tab'));
-    }
-
-    function selectFreeForecast(type, offset, element) {
-      document.querySelectorAll('#homeScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
-      if (element) element.classList.add('active');
-
-      let dateSum = userData.day + userData.month + userData.year + userData.hour;
-      let nameNum = calculateNameNumber(userData.name);
-      let num = reduceToSingle(dateSum + nameNum + offset);
-
-      document.getElementById('freeNumDisplay').innerText = num;
-
-      let title = `Базовый обзор (${userData.name}, код ${num})`;
-      let text = `Ваш персональный нумерологический код (${num}) указывает на сильный потенциал самореализации. В этот период Вселенная акцентирует внимание на принятии важных решений, балансе между внутренним «Я» и внешним миром. Чтобы узнать подробный разбор по всем сферам (любовь, семья, работа, здоровье, карма) и глубокий анализ вашего имени, откройте полный премиум-отчёт выше.`;
-
-      document.getElementById('freeForecastTitle').innerText = title;
-      document.getElementById('freeForecastText').innerText = text;
-    }
-
-    function openPremiumScreen() {
-      showScreen('premiumScreen');
-      selectPremForecast('life_prem', 4, document.querySelector('#premiumScreen .periods-bar .period-tab'));
-    }
-
-    function backToHome() {
-      showScreen('homeScreen');
-    }
-
-    function goToInput() {
-      showScreen('inputScreen');
-    }
-
-    const detailedBanks = {
-      love: {
-        1: "В сфере чувств вы проявляете лидерские качества. Вам необходим партнер, который уважает вашу независимость и разделяет амбиции. Кармически важно избегать давления на близкого человека.",
-        2: "Ваша личная жизнь пронизана нежностью и интуитивным пониманием. Вы тонко чувствуете эмоциональное состояние партнера. Главное — открыто говорить о своих потребностях.",
-        3: "Любовь для вас — это праздник, вдохновение и яркие совместные эмоции. Вы легко очаровываете людей своей харизмой и теплым общением.",
-        4: "В отношениях вы цените абсолютную надежность, верность и предсказуемость. Ваш союз строится на практической заботе и взаимном уважении.",
-        5: "Ваш союз требует постоянного динамичного развития и новых впечатлений. Совместные путешествия и свежие эмоции укрепляют вашу связь сильнее всего.",
-        6: "Семья и дом — центр вашей вселенной. Вы окружаете партнера колоссальной заботой. Урок здесь — не растворяться в любимом человеке полностью.",
-        7: "Ваша любовь носит глубокий, почти сакральный характер. Вам важна ментальная и духовная связь. Избегайте излишней закрытости и отстраненности.",
-        8: "В отношениях вы выступаете надежной опорой и стратегом. Вы поддерживаете карьерные и жизненные цели друг друга.",
-        9: "Вы обладаете даром безусловной любви и глубокого сострадания. Вы умеете прощать и создавать мощный кармический союз."
-      },
-      home: {
-        1: "Ваше жилище — личная штаб-квартира. Здесь вы устанавливаете правила и черпаете энергию для новых свершений.",
-        2: "В доме вы создаете уютную, тихую гавань, свободную от конфликтов и внешнего шума.",
-        3: "Ваш очаг открыт для друзей. Дом наполнен светом, музыкой, интересными беседами и творческим беспорядком.",
-        4: "Идеальный порядок, капитальный ремонт, надежные стены и четкий семейный уклад — основа вашей безопасности.",
-        5: "Вы легко меняете обстановку и даже города. Дом там, где вам комфортно прямо сейчас, цените простор и воздух.",
-        6: "Семейный очаг для вас священен. Красивая посуда, уютные вечера в кругу близких и традиции наполняют вас силами.",
-        7: "Ваш дом — это убежище философа. Вам жизненно необходим укромный уголок, где можно побыть в абсолютной тишине.",
-        8: "Вы стремитесь к респектабельному, надежному и стильному жилью, которое подчеркивает ваш успех.",
-        9: "В вашем доме царит атмосфера душевного тепла, гостеприимства, помощи и глубокого взаимопонимания."
-      },
-      work: {
-        1: "Вы рождены для руководства, масштабных проектов и предпринимательства. Финансовый поток зависит от вашей личной инициативы.",
-        2: "Наибольших успехов вы добиваетесь в партнерстве, командной работе и дипломатии. Ваша способность сглаживать углы бесценна.",
-        3: "Ваш творческий потенциал и ораторский дар привлекают деньги из медиа, искусства или инноваций.",
-        4: "Дисциплина, упорный труд и системный подход гарантируют вам железобетонную финансовую безопасность.",
-        5: "Коммерческая жилка, гибкость и умение чувствовать тренды рынка приносят отличные доходы в динамичных сферах.",
-        6: "Вы создаете продукты высочайшего качества, вызывая абсолютное доверие. Успех через заботу, дизайн или психологию.",
-        7: "Ваш аналитический склад ума и глубина мышления выводят вас в ранг экспертов и консультантов.",
-        8: "У вас сильный денежный код. Вы умеете управлять крупными бюджетами, масштабировать бизнес и создавать капитал.",
-        9: "Ваша работа должна приносить пользу миру. Вы успешны в преподавании, медицине и социальных проектах."
-      },
-      health: {
-        1: "Энергия бьет ключом, но из-за перенапряжения возможны головные боли. Важно чередовать работу с полноценным сном.",
-        2: "Ваш организм чутко реагирует на стрессы. Полезны йога, плавание и прогулки на природе для восстановления нервной системы.",
-        3: "Источник вашего здоровья — позитивные эмоции и творчество. Полезны активные виды спорта и танцы.",
-        4: "Вашему телу необходим строгий режим дня, качественное питание и стабильная физическая нагрузка на позвоночник.",
-        5: "Энергия нестабильна: вспышки активности сменяются усталостью. Противопоказана рутина, нужны поездки и воздух.",
-        6: "Здоровье напрямую связано с душевным спокойствием в семье. Полезны пешие прогулки и домашний комфорт.",
-        7: "Вам жизненно необходимо уединение для восстановления ментальных сил и сон в абсолютной тишине.",
-        8: "Выносливость высока, но трудоголизм может подорвать силы. Следите за сердцем и давлением.",
-        9: "Хорошая природная регенерация, но берегите эмоции. Полезны духовные практики и помощь другим."
-      },
-      karma: {
-        1: "Главный урок — укротить гордыню, научиться слушать советы со стороны и работать в команде.",
-        2: "Избегайте излишней застенчивости и страха высказать мнение. Перестаньте угождать всем подряд.",
-        3: "Не распыляйте свой талант на сотню дел. Фокус на одной главной цели принесет вам успех.",
-        4: "Учитесь принимать неизбежные перемены в жизни без сопротивления и паники.",
-        5: "Избегайте импульсивных авантюр и направляйте жажду свободы в созидательное русло.",
-        6: "Не берите на себя ответственность за чужие ошибки, берегите свой ресурс.",
-        7: "Не замыкайтесь в себе. Ваша мудрость должна находить отклик у близких людей.",
-        8: "Соблюдайте баланс между материальным накоплением и духовным ростом.",
-        9: "Умейте вовремя отпускать людей и ситуации, которые уже изжили себя."
-      },
-      nameMeaning: {
-        1: "Имя несет вибрацию лидера и первопроходца. Сильная воля и независимость.",
-        2: "Имя отражает мягкость, миротворчество и талант дипломатии.",
-        3: "Имя заряжено энергией радости, творчества и высокой притягательности.",
-        4: "Имя символизирует основательность, порядок, честность и надежность.",
-        5: "Имя пропитано духом свободы, харизмы и ярких перемен.",
-        6: "Имя несет вибрацию любви, преданности и создания уютного очага.",
-        7: "Имя наделено печатью тайны, глубокого интеллекта и сильной интуиции.",
-        8: "Имя магнитит материальный успех, авторитет и масштабные цели.",
-        9: "Имя связано с гуманизмом, глубоким состраданием и мудростью."
+      function reduceToSingle(num) {
+        while (num > 9 && num !== 11 && num !== 22) {
+          num = num.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+        }
+        return num;
       }
-    };
 
-    function selectPremForecast(type, offset, element) {
-      document.querySelectorAll('#premiumScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
-      if (element) element.classList.add('active');
+      function calculateNameNumber(name) {
+        let sum = 0;
+        name.toLowerCase().split('').forEach(char => {
+          if (letterMap[char]) {
+            sum += letterMap[char];
+          }
+        });
+        if (sum === 0) sum = 5;
+        return reduceToSingle(sum);
+      }
 
-      let dateSum = userData.day + userData.month + userData.year + userData.hour;
-      let nameNum = calculateNameNumber(userData.name);
-      let num = reduceToSingle(dateSum + nameNum + offset);
+      function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        let target = document.getElementById(screenId);
+        if (target) {
+          target.classList.add('active');
+        }
+      }
 
-      document.getElementById('premNumDisplay').innerText = num;
-      let textIndex = ((num - 1) % 9) + 1;
+      // Привязка клика по кнопке расчета через addEventListener
+      document.getElementById('calcBtn').addEventListener('click', function() {
+        const nameInput = document.getElementById('userName').value.trim();
+        const dayInput = parseInt(document.getElementById('bDay').value);
+        const monthInput = parseInt(document.getElementById('bMonth').value);
+        const yearInput = parseInt(document.getElementById('bYear').value);
+        const hourInput = parseInt(document.getElementById('bHour').value);
 
-      let title = "";
-      let periodDesc = "";
+        if (!nameInput || isNaN(dayInput) || isNaN(monthInput) || isNaN(yearInput)) {
+          alert("Пожалуйста, заполните имя, день, месяц и год рождения.");
+          return;
+        }
 
-      if (type === 'life_prem') {
-        title = `⭐ Глубокий разбор Судьбы (${userData.name})`;
-        periodDesc = "на весь жизненный путь";
-      } else if (type === 'week_prem') {
-        title = `⭐ Детальный отчёт на Неделю`;
-        periodDesc = "на текущую неделю";
-      } else if (type === 'month_prem') {
-        title = `⭐ Стратегический прогноз на Месяц`;
-        periodDesc = "на текущий мес
+        userData = { 
+          name: nameInput, 
+          day: dayInput, 
+          month: monthInput, 
+          year: yearInput, 
+          hour: isNaN(hourInput) ? 12 : hourInput 
+        };
+
+        showScreen('homeScreen');
+        selectFreeForecast('life', 0, document.querySelector('.free-tab[data-period="life"]'));
+      });
+
+      // Переключение бесплатных периодов
+      document.querySelectorAll('.free-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const period = this.getAttribute('data-period');
+          let offset = 0;
+          if (period === 'week') offset = 1;
+          if (period === 'month') offset = 2;
+          if (period === 'year') offset = 3;
+          selectFreeForecast(period, offset, this);
+        });
+      });
+
+      // Кнопка открытия премиума
+      document.getElementById('openPremBtn').addEventListener('click', function() {
+        showScreen('premiumScreen');
+        selectPremForecast('life_prem', 4, document.querySelector('.prem-tab[data-period="life_prem"]'));
+      });
+
+      // Кнопка возврата
+      document.getElementById('backToHomeBtn').addEventListener('click', function() {
+        showScreen('homeScreen');
+      });
+
+      // Кнопка изменения данных
+      document.getElementById('changeDataBtn').addEventListener('click', function() {
+        showScreen('inputScreen');
+      });
+
+      // Переключение премиум периодов
+      document.querySelectorAll('.prem-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const period = this.getAttribute('data-period');
+          let offset = 4;
+          if (period === 'week_prem') offset = 5;
+          if (period === 'month_prem') offset = 6;
+          if (period === 'year_prem') offset = 7;
+          selectPremForecast(period, offset, this);
+        });
+      });
+
+      function selectFreeForecast(type, offset, element) {
+        document.querySelectorAll('.free-tab').forEach(t => t.classList.remove('active'));
+        if (element) element.classList.add('active');
+
+        let dateSum = userData.day + userData.month + userData.year + userData.hour;
+        let nameNum = calculateNameNumber(userData.name);
+        let num = reduceToSingle(dateSum + nameNum + offset);
+
+        document.getElementById('freeNumDisplay').innerText = num;
+
+        let title = `Базовый обзор (${userData.name}, код ${num})`;
+        let text = `Ваш персональный нумерологический код (${num}) указывает на сильный потенциал самореализации. В этот период Вселенная акцентирует внимание на принятии важных решений, балансе между внутренним «Я» и внешним миром. Чтобы узнать подробный разбор по всем сферам (любовь, семья, работа, здоровье, карма) и глубокий анализ вашего имени, откройте полный премиум-отчёт выше.`;
+
+        document.getElementById('freeForecastTitle').innerText = title;
+        document.getElementById('freeForecastText').innerText = text;
+      }
+
+      const detailedBanks = {
+        love: {
+          1: "В сфере чувств вы проявляете лидерские качества. Вам необходим партнер, который уважает вашу независимость и разделяет амбиции. Кармически важно избегать давления на близкого человека.",
+          2: "Ваша личная жизнь пронизана нежностью и интуитивным пониманием. Вы тонко чувствуете эмоциональное состояние партнера. Главное — открыто говорить о своих потребностях.",
+          3: "Любовь для вас — это праздник, вдохновение и яркие совместные эмоции. Вы легко очаровываете людей своей харизмой и теплым общением.",
+          4: "В отношениях вы цените абсолютную надежность, верность и предсказуемость. Ваш союз строится на практической заботе и взаимном уважении.",
+          5: "Ваш союз требует постоянного динамичного развития и новых впечатлений. Совместные путешествия и свежие эмоции укрепляют вашу связь сильнее всего.",
+          6: "Семья и дом — центр вашей вселенной. Вы окружаете партнера колоссальной заботой. Урок здесь — не растворяться в любимом человеке полностью.",
+          7: "Ваша любовь носит глубокий, почти сакральный характер. Вам важна ментальная и духовная связь. Избегайте излишней закрытости и отстраненности.",
+          8: "В отношениях вы выступаете надежной опорой и стратегом. Вы поддерживаете карьерные и жизненные цели друг друга.",
+          9: "Вы обладаете даром безусловной любви и глубокого сострадания. Вы умеете прощать и создавать мощный кармический союз."
+        },
+        home: {
+          1: "Ваше жилище — личная штаб-квартира. Здесь вы устанавливаете правила и черпаете энергию для новых свершений.",
+          2: "В доме вы создаете уютную, тихую гавань, свободную от конфликтов и внешнего шума.",
+          3: "Ваш очаг открыт для друзей. Дом наполнен светом, музыкой, интересными беседами и творческим беспорядком.",
+          4: "Идеальный порядок, капитальный ремонт, надежные стены и четкий семейный уклад — основа вашей безопасности.",
+          5: "Вы легко меняете обстановку и даже города. Дом там, где вам комфортно прямо сейчас, цените простор и воздух.",
+          6: "Семейный очаг для вас священен. Красивая посуда, уютные вечера в кругу близких и традиции наполняют вас силами.",
+          7: "Ваш дом — это убежище философа. Вам жизненно необходим укромный уголок, где можно побыть в абсолютной тишине.",
+          8: "Вы стремитесь к респектабельному, надежному и стильному жилью, которое подчеркивает ваш успех.",
+          9: "В вашем доме царит атмосфера душевного тепла, гостеприимства, помощи и глубокого взаимопонимания."
+        },
+        work: {
+          1: "Вы рождены для руководства, масштабных проектов и предпринимательства. Финансовый поток зависит от вашей личной инициативы.",
+          2: "Наибольших успехов вы добиваетесь в партнерстве, командной работе и дипломатии. Ваша способность сглаживать углы бесценна.",
+          3: "Ваш творческий потенциал и ораторский дар привлекают деньги из медиа, искусства или инноваций.",
+          4: "Дисциплина, упорный труд и системный подход гарантируют вам железобетонную финансовую безопасность.",
+          5: "Коммерческая жилка, гибкость и умение чувствовать тренды рынка приносят отличные доходы в динамичных сферах.",
+          6: "Вы создаете продукты высочайшего качества, вызывая абсолютное доверие. Успех через заботу, дизайн или психологию.",
+          7: "Ваш аналитический склад ума и глубина мышления выводят вас в ранг экспертов и консультантов.",
+          8: "У вас сильный денежный код. Вы умеете управлять крупными бюджетами, масштабировать бизнес и создавать капитал.",
+          9: "Ваша работа должна приносить пользу миру. Вы успешны в преподавании, медицине и социальных проектах."
+        },
+        health: {
+          1: "Энергия бьет ключом, но из-за перенапряжения возможны головные боли. Важно чередовать работу с полноценным сном.",
+          2: "Ваш организм чутко реагирует на стрессы. Полезны йога, плавание и прогулки на природе для восстановления нервной системы.",
+          3: "Источник вашего здоровья — позитивные эмоции и творчество. Полезны активные виды спорта и танцы.",
+          4: "Вашему телу необходим строгий режим дня, качественное питание и стабильная физическая нагрузка на позвоночник.",
+          5: "Энергия нестабильна: вспышки активности сменяются усталостью. Противопоказана рутина, нужны поездки и воздух.",
+          6: "Здоровье напрямую связано с душевным спокойствием в семье. Полезны пешие прогулки и домашний комфорт.",
+          7: "Вам жизненно необходимо уединение для восстановления ментальных сил и сон в абсолютной тишине.",
+          8: "Выносливость высока, но трудоголизм может подорвать силы. Следите за сердцем и давлением.",
+          9: "Хорошая природная регенерация, но берегите эмоции. Полезны духовные практики и помощь другим."
+        },
+        karma: {
+          1: "Главный урок — укротить гордыню, научиться слушать советы со стороны и работать в команде.",
+          2: "Избегайте излишней застенчивости и страха высказать мнение. Перестаньте угождать всем подряд.",
+          3: "Не распыляйте свой талант на сотню дел. Фокус на одной главной цели принесет вам успех.",
+          4: "Учитесь принимать неизбежные перемены в жизни без сопротивления и паники.",
+          5: "Избегайте импульсивных авантюр и направляйте жажду свободы в созидательное русло.",
+          6: "Не берите на себя ответственность за чужие ошибки, берегите свой ресурс.",
+          7: "Не замыкайтесь в себе. Ваша мудрость должна находить отклик у близких людей.",
+          8: "Соблюдайте баланс между материальным накоплением и духовным ростом.",
+          9: "Умейте вовремя отпускать людей и ситуации, которые уже изжили себя."
+        },
+        nameMeaning: {
+          1: "Имя несет вибрацию лидера и первопроходца. Сильная воля и независимость.",
+          2: "Имя отражает мягкость, миротворчество и талант дипломатии.",
+          3: "Имя заряжено энергией радости, творчества и высокой притягательности.",
+          4: "Имя символизирует основательность, порядок, честность и надежность.",
+          5: "Имя пропитано духом свободы, харизмы и ярких пере
