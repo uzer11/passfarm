@@ -219,7 +219,7 @@
       <div class="subtitle">Глубокая нумерологическая матрица</div>
     </header>
 
-    <!-- СТРАНИЦА 1: Ввод данных -->
+    <!-- СТРАНИЦА 1: Ввод данных (чистая) -->
     <div class="card screen active" id="inputScreen">
       <label for="userName">Ваше полное имя:</label>
       <input type="text" id="userName" placeholder="Например: Александр">
@@ -228,19 +228,19 @@
       <div class="date-grid">
         <div>
           <label style="font-size:8px;">День</label>
-          <input type="number" id="bDay" placeholder="ДД" min="1" max="31" value="15">
+          <input type="number" id="bDay" placeholder="ДД" min="1" max="31">
         </div>
         <div>
           <label style="font-size:8px;">Месяц</label>
-          <input type="number" id="bMonth" placeholder="ММ" min="1" max="12" value="5">
+          <input type="number" id="bMonth" placeholder="ММ" min="1" max="12">
         </div>
         <div>
           <label style="font-size:8px;">Год</label>
-          <input type="number" id="bYear" placeholder="ГГГГ" min="1900" max="2026" value="1990">
+          <input type="number" id="bYear" placeholder="ГГГГ" min="1900" max="2026">
         </div>
         <div>
           <label style="font-size:8px;">Час</label>
-          <input type="number" id="bHour" placeholder="ЧЧ" min="0" max="23" value="12">
+          <input type="number" id="bHour" placeholder="ЧЧ" min="0" max="23">
         </div>
       </div>
 
@@ -291,7 +291,6 @@
   </div>
 
   <script>
-    // Безопасная инициализация Telegram WebApp (чтобы не падало в обычном браузере)
     let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) {
       try { tg.expand(); } catch(e) {}
@@ -307,7 +306,7 @@
       }
     }
 
-    let userData = { name: 'Александр', day: 15, month: 5, year: 1990, hour: 12 };
+    let userData = { name: '', day: 1, month: 1, year: 2000, hour: 12 };
 
     const letterMap = {
       'а': 1, 'и': 1, 'с': 1, 'ъ': 1,
@@ -486,4 +485,7 @@
         title = `⭐ Глубокий разбор Судьбы (${userData.name})`;
         periodDesc = "на весь жизненный путь";
       } else if (type === 'week_prem') {
-        title = `⭐ Де
+        title = `⭐ Детальный отчёт на Неделю`;
+        periodDesc = "на текущую неделю";
+      } else if (type === 'month_prem') {
+        title = `⭐ Ст
