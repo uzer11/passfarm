@@ -110,7 +110,6 @@
     }
     .btn:active { transform: scale(0.97); }
 
-    /* Кнопка перехода на премиум страницу */
     .btn-premium {
       background: linear-gradient(135deg, #b8860b, #4a3e75);
       color: #f3ebd8;
@@ -122,7 +121,6 @@
       gap: 6px;
     }
 
-    /* Управление экранами (страницами) */
     .screen { display: none; }
     .screen.active { display: block; }
 
@@ -160,15 +158,15 @@
     }
 
     .number-circle {
-      width: 55px;
-      height: 55px;
+      width: 50px;
+      height: 50px;
       background: radial-gradient(circle, #222a4a, #0d1222);
       border: 2px solid #f0cb69;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 20px;
       color: #f0cb69;
       font-weight: bold;
       margin: 0 auto 8px auto;
@@ -185,11 +183,31 @@
       font-size: 12px;
       line-height: 1.45;
       color: #e6ded1;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       background: rgba(8, 11, 20, 0.8);
       padding: 10px;
       border-radius: 8px;
       border-left: 3px solid #f0cb69;
+    }
+
+    /* Стили для расширенного премиум-отчета со всеми сферами */
+    .sphere-section {
+      background: rgba(8, 11, 20, 0.85);
+      border: 1px solid #3c325c;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+    .sphere-section h4 {
+      margin: 0 0 4px 0;
+      font-size: 12px;
+      color: #f0cb69;
+    }
+    .sphere-section p {
+      margin: 0;
+      font-size: 11px;
+      color: #d8cebc;
+      line-height: 1.4;
     }
   </style>
 </head>
@@ -228,13 +246,13 @@
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
 
-    <!-- СТРАНИЦА 2: Главный бесплатный прогноз + Кнопка перехода в Премиум -->
+    <!-- СТРАНИЦА 2: Базовые бесплатные прогнозы -->
     <div class="card screen" id="homeScreen">
       <button class="btn btn-premium" onclick="openPremiumScreen()">
-        ⭐ Открыть Глубокий Премиум-Прогноз
+        ⭐ Открыть Полный Подробный Отчёт (Все сферы)
       </button>
 
-      <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовые периоды:</div>
+      <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовый прогноз:</div>
       <div class="periods-bar">
         <div class="period-tab active" onclick="selectFreeForecast('life', 0, this)">Общий</div>
         <div class="period-tab" onclick="selectFreeForecast('week', 1, this)">Неделя</div>
@@ -249,13 +267,13 @@
       <button class="btn" onclick="goToInput()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 6px; font-size: 11px; padding: 8px;">Изменить данные</button>
     </div>
 
-    <!-- СТРАНИЦА 3: Премиум-прогнозы (за звёзды) -->
+    <!-- СТРАНИЦА 3: Премиум-отчет со ВСЕМИ сферами сразу -->
     <div class="card screen" id="premiumScreen">
-      <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 10px; font-size: 11px; padding: 8px;">
+      <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">
         ⬅️ Назад к базам прогнозов
       </button>
 
-      <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Премиум-карта (За звёзды):</div>
+      <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Полный разбор периода:</div>
       <div class="periods-bar">
         <div class="period-tab premium-tab active" onclick="selectPremForecast('life_prem', 4, this)">⭐ Общий</div>
         <div class="period-tab premium-tab" onclick="selectPremForecast('week_prem', 5, this)">⭐ Неделя</div>
@@ -265,7 +283,10 @@
 
       <div class="number-circle" id="premNumDisplay">7</div>
       <div class="forecast-title" id="premForecastTitle">Премиум Заголовок</div>
-      <div class="forecast-text" id="premForecastText">Премиум текст...</div>
+      
+      <div id="premSpheresContainer">
+        <!-- Сюда подгружаются все сферы разом -->
+      </div>
     </div>
 
   </div>
@@ -342,16 +363,16 @@
 
       if (type === 'life') {
         title = `Общий Нумерологический Путь (${userData.name})`;
-        text = `Ваш базовый код судьбы (${num}) отражает основные черты характера и вектор жизни. Вы обладаете сильным потенциалом для самореализации, гармонично сочетая внутреннюю интуицию с практическими решениями.`;
+        text = `Ваш базовый код судьбы (${num}) отражает основные черты характера и вектор жизни. Вы обладаете сильным потенциалом для самореализации.`;
       } else if (type === 'week') {
         title = `Прогноз на неделю`;
-        text = `Энергетика недели (код ${num}) благоприятна для текущих дел. Звезды советуют уделить внимание деталям и не спешить с важными финансовыми решениями.`;
+        text = `Энергетика недели (код ${num}) благоприятна для текущих дел. Уделите внимание деталям и планам.`;
       } else if (type === 'month') {
         title = `Прогноз на текущий месяц`;
-        text = `Текущий месяц проходит под влиянием числа ${num}. Это период стабильности и планомерного продвижения к личным целям. Уделите время отдыху и общению.`;
+        text = `Текущий месяц проходит под влиянием числа ${num}. Период стабильности и планомерного продвижения к личным целям.`;
       } else if (type === 'year') {
         title = `Прогноз на год`;
-        text = `Годовой цикл (код ${num}) открывает новые возможности для личностного роста. Возможны приятные перемены в профессиональной или личной сфере.`;
+        text = `Годовой цикл (код ${num}) открывает новые возможности для личностного роста и перемен.`;
       }
 
       document.getElementById('freeForecastTitle').innerText = title;
@@ -382,24 +403,33 @@
       document.getElementById('premNumDisplay').innerText = num;
 
       let title = "";
-      let text = "";
-
-      if (type === 'life_prem') {
-        title = `⭐ Премиум: Глубокий разбор Судьбы и Карьеры`;
-        text = `Расширенный детальный анализ матрицы имени (${userData.name}) и даты рождения (код ${num}). В этот глубокий отчет входит полный разбор ваших скрытых талантов, кармических задач от рождения, а также точные рекомендации по выбору финансовой ниши и преодолению внутренних блоков.`;
-      } else if (type === 'week_prem') {
-        title = `⭐ Премиум: Детальный гороскоп недели по часам`;
-        text = `Углубленный премиум-прогноз на неделю (код ${num}) с учетом точного часа вашего рождения. Расписаны благоприятные дни для переговоров, крупных покупок, романтических встреч и дни, когда стоит побыть в тишине.`;
-      } else if (type === 'month_prem') {
-        title = `⭐ Премиум: Финансовый и любовный код месяца`;
-        text = `Детальный разбор месяца (код ${num}) по сферам: деньги, карьера, семья и здоровье. Звезды указывают на точные дни денежных поступлений и моменты, когда нужно проявить максимальную дипломатию в отношениях.`;
-      } else if (type === 'year_prem') {
-        title = `⭐ Премиум: Масштабный путеводитель на весь год`;
-        text = `Самый подробный астро-нумерологический прогноз на год (код ${num}). Включает поквартальный анализ событий, разбор судьбоносных встреч, периоды мощного финансового роста и подсказки о том, как извлечь максимум из каждого сезона.`;
-      }
+      if (type === 'life_prem') title = `⭐ Полный разбор Судьбы (${userData.name})`;
+      else if (type === 'week_prem') title = `⭐ Детальный отчет на неделю`;
+      else if (type === 'month_prem') title = `⭐ Глубокий разбор месяца`;
+      else if (type === 'year_prem') title = `⭐ Масштабный путеводитель на год`;
 
       document.getElementById('premForecastTitle').innerText = title;
-      document.getElementById('premForecastText').innerText = text;
+
+      // Заполняем всеми сферами сразу (Любовь, Дом, Деньги, Карма)
+      const container = document.getElementById('premSpheresContainer');
+      container.innerHTML = `
+        <div class="sphere-section">
+          <h4>❤️ Любовь и Отношения</h4>
+          <p>В выбранный период под влиянием кода ${num} в сфере чувств наступает гармония. Открытый диалог с партнером поможет укрепить союз и разрешить старые недомолвки.</p>
+        </div>
+        <div class="sphere-section">
+          <h4>🏡 Дом, Семья и Очаг</h4>
+          <p>Ваше личное пространство требует внимания и заботы. Прекрасное время для уютных семейных вечеров, решения бытовых вопросов и укрепления связи с близкими.</p>
+        </div>
+        <div class="sphere-section">
+          <h4>💰 Финансы и Карьера</h4>
+          <p>Числовые вибрации благоприятствуют материальному росту. Возможны новые интересные предложения или успешное завершение крупных рабочих проектов при грамотном планировании.</p>
+        </div>
+        <div class="sphere-section">
+          <h4>🔮 Карма и Скрытые Таланты</h4>
+          <p>Интуиция работает на максимум. Звезды подсказывают верные решения в запутанных ситуациях, открывая доступ к вашим скрытым внутренним ресурсам.</p>
+        </div>
+      `;
 
       if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
