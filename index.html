@@ -228,15 +228,15 @@
       <div class="date-grid">
         <div>
           <label style="font-size:8px;">День</label>
-          <input type="number" id="bDay" placeholder="ДД" min="1" max="31">
+          <input type="number" id="bDay" placeholder="ДД" min="1" max="31" value="15">
         </div>
         <div>
           <label style="font-size:8px;">Месяц</label>
-          <input type="number" id="bMonth" placeholder="ММ" min="1" max="12">
+          <input type="number" id="bMonth" placeholder="ММ" min="1" max="12" value="5">
         </div>
         <div>
           <label style="font-size:8px;">Год</label>
-          <input type="number" id="bYear" placeholder="ГГГГ" min="1900" max="2026">
+          <input type="number" id="bYear" placeholder="ГГГГ" min="1900" max="2026" value="1990">
         </div>
         <div>
           <label style="font-size:8px;">Час</label>
@@ -291,10 +291,23 @@
   </div>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    // Безопасная инициализация Telegram WebApp (чтобы не падало в обычном браузере)
+    let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) {
+      try { tg.expand(); } catch(e) {}
+    }
 
-    let userData = { name: '', day: 1, month: 1, year: 2000, hour: 12 };
+    function triggerHaptic(type = 'light') {
+      if (tg && tg.HapticFeedback) {
+        try {
+          if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+          else if (type === 'medium') tg.HapticFeedback.impactOccurred('medium');
+          else tg.HapticFeedback.impactOccurred('light');
+        } catch(e) {}
+      }
+    }
+
+    let userData = { name: 'Александр', day: 15, month: 5, year: 1990, hour: 12 };
 
     const letterMap = {
       'а': 1, 'и': 1, 'с': 1, 'ъ': 1,
@@ -322,7 +335,7 @@
           sum += letterMap[char];
         }
       });
-      if (sum === 0) sum = 5; // Безопасный фоллбек, если символы не найдены
+      if (sum === 0) sum = 5;
       return reduceToSingle(sum);
     }
 
@@ -332,20 +345,26 @@
     }
 
     function calculateAndOpenHome() {
-      const name = document.getElementById('userName').value.trim();
-      const day = parseInt(document.getElementById('bDay').value);
-      const month = parseInt(document.getElementById('bMonth').value);
-      const year = parseInt(document.getElementById('bYear').value);
-      const hour = parseInt(document.getElementById('bHour').value) || 12;
+      const nameInput = document.getElementById('userName').value.trim();
+      const dayInput = parseInt(document.getElementById('bDay').value);
+      const monthInput = parseInt(document.getElementById('bMonth').value);
+      const yearInput = parseInt(document.getElementById('bYear').value);
+      const hourInput = parseInt(document.getElementById('bHour').value);
 
-      if (!name || isNaN(day) || isNaN(month) || isNaN(year)) {
-        alert("Заполните имя и корректную дату рождения.");
+      if (!nameInput || isNaN(dayInput) || isNaN(monthInput) || isNaN(yearInput)) {
+        alert("Пожалуйста, заполните имя и корректную дату рождения.");
         return;
       }
 
-      userData = { name, day, month, year, hour };
-      if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      userData = { 
+        name: nameInput, 
+        day: dayInput, 
+        month: monthInput, 
+        year: yearInput, 
+        hour: isNaN(hourInput) ? 12 : hourInput 
+      };
 
+      triggerHaptic('success');
       showScreen('homeScreen');
       selectFreeForecast('life', 0, document.querySelector('#homeScreen .periods-bar .period-tab'));
     }
@@ -366,18 +385,18 @@
       document.getElementById('freeForecastTitle').innerText = title;
       document.getElementById('freeForecastText').innerText = text;
 
-      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+      triggerHaptic('light');
     }
 
     function openPremiumScreen() {
       showScreen('premiumScreen');
       selectPremForecast('life_prem', 4, document.querySelector('#premiumScreen .periods-bar .period-tab'));
-      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+      triggerHaptic('medium');
     }
 
     function backToHome() {
       showScreen('homeScreen');
-      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+      triggerHaptic('light');
     }
 
     const detailedBanks = {
@@ -467,18 +486,4 @@
         title = `⭐ Глубокий разбор Судьбы (${userData.name})`;
         periodDesc = "на весь жизненный путь";
       } else if (type === 'week_prem') {
-        title = `⭐ Детальный отчёт на Неделю`;
-        periodDesc = "на текущую неделю";
-      } else if (type === 'month_prem') {
-        title = `⭐ Стратегический прогноз на Месяц`;
-        periodDesc = "на текущий месяц";
-      } else if (type === 'year_prem') {
-        title = `⭐ Масштабный путеводитель на Год`;
-        periodDesc = "на текущий год";
-      }
-
-      document.getElementById('premForecastTitle').innerText = title;
-
-      document.getElementById('premSpheresContainer').innerHTML = `
-        <div class="sphere-section">
-          <h4>❤️ Л
+        title = `⭐ Де
