@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Нумерология Судьбы</title>
+  <title>Оракул Звёзд: Нумерология</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
-      background: #09070f;
-      color: #f3e9d2;
+      background: linear-gradient(135deg, #060814 0%, #10152e 50%, #080b1a 100%);
+      color: #f3ebd8;
       font-family: 'Georgia', serif;
       margin: 0;
       padding: 10px;
@@ -18,194 +18,256 @@
       align-items: center;
       min-height: 100vh;
       user-select: none;
+      position: relative;
+      overflow-x: hidden;
     }
+    /* Эффект звездного неба на фоне */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: radial-gradient(white 1px, transparent 0);
+      background-size: 35px 35px;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
     .container {
       width: 100%;
       max-width: 400px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      z-index: 1;
     }
+    
     header {
-      text-align: center;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 4px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
     }
     h1 {
       margin: 0;
-      font-size: 20px;
-      color: #d4af37;
-      letter-spacing: 2px;
+      font-size: 18px;
+      color: #f0cb69;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
     }
-    .subtitle {
-      font-size: 10px;
-      color: #9c8b74;
-      margin-top: 3px;
-      font-style: italic;
+    .stars-badge {
+      background: rgba(240, 203, 105, 0.15);
+      border: 1px solid #f0cb69;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #f0cb69;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
+
     .card {
-      background: #14101e;
-      border: 1px solid #3c2f5c;
-      border-radius: 12px;
-      padding: 14px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      background: rgba(18, 24, 43, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
     }
+    
     label {
       font-size: 11px;
-      color: #c5b294;
+      color: #d1c4a8;
       display: block;
       margin-bottom: 4px;
     }
     input {
       width: 100%;
-      background: #0b0814;
-      border: 1px solid #483870;
+      background: rgba(8, 11, 20, 0.9);
+      border: 1px solid #4a3e75;
       border-radius: 8px;
-      padding: 9px 10px;
-      color: #f3e9d2;
+      padding: 10px 12px;
+      color: #f3ebd8;
       font-size: 13px;
       font-family: inherit;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       outline: none;
     }
-    input:focus { border-color: #d4af37; }
+    input:focus { border-color: #f0cb69; }
 
-    /* Сетка для ввода даты без неудобных календарей */
     .date-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1.2fr 1fr;
+      grid-template-columns: 1fr 1fr 1.3fr 1fr;
       gap: 6px;
     }
 
     .btn {
       width: 100%;
-      background: linear-gradient(135deg, #d4af37, #997a21);
-      color: #09070f;
+      background: linear-gradient(135deg, #f0cb69, #b8860b);
+      color: #060814;
       border: none;
       border-radius: 8px;
-      padding: 11px;
+      padding: 12px;
       font-size: 13px;
       font-weight: bold;
       font-family: inherit;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      box-shadow: 0 4px 15px rgba(240, 203, 105, 0.3);
     }
     .btn:active { transform: scale(0.97); }
 
-    /* Результаты */
     .result-section { display: none; }
-    
-    /* Переключатели периодов */
+
+    /* Периоды с ценами в Звездах */
     .periods-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 4px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .period-tab {
-      background: #0b0814;
-      border: 1px solid #3c2f5c;
-      border-radius: 6px;
-      padding: 6px 2px;
+      background: rgba(10, 14, 26, 0.8);
+      border: 1px solid #3c325c;
+      border-radius: 8px;
+      padding: 8px 2px;
       font-size: 10px;
-      color: #9c8b74;
+      color: #a89bb8;
       text-align: center;
       cursor: pointer;
       font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
     .period-tab.active {
-      background: #d4af37;
-      color: #09070f;
+      background: #f0cb69;
+      color: #060814;
       font-weight: bold;
-      border-color: #d4af37;
+      border-color: #f0cb69;
+    }
+    .period-tab .price {
+      font-size: 9px;
+      opacity: 0.85;
     }
 
     .number-circle {
-      width: 60px;
-      height: 60px;
-      background: radial-gradient(circle, #251d3b, #14101e);
-      border: 2px solid #d4af37;
+      width: 65px;
+      height: 65px;
+      background: radial-gradient(circle, #222a4a, #0d1222);
+      border: 2px solid #f0cb69;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      color: #d4af37;
+      font-size: 26px;
+      color: #f0cb69;
       font-weight: bold;
-      margin: 0 auto 10px auto;
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+      margin: 0 auto 12px auto;
+      box-shadow: 0 0 20px rgba(240, 203, 105, 0.25);
     }
+
     .forecast-title {
-      font-size: 13px;
-      color: #d4af37;
+      font-size: 14px;
+      color: #f0cb69;
       text-align: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: bold;
     }
+
     .forecast-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #e6ded1;
+      margin-bottom: 12px;
+      background: rgba(8, 11, 20, 0.75);
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 3px solid #f0cb69;
+    }
+
+    /* Блок платного контента / замка */
+    .locked-box {
+      text-align: center;
+      padding: 20px 10px;
+      background: rgba(8, 11, 20, 0.85);
+      border-radius: 8px;
+      border: 1px dashed #f0cb69;
+    }
+    .locked-box p {
       font-size: 12px;
-      line-height: 1.45;
-      color: #dcd0bc;
-      margin-bottom: 8px;
-      background: #0b0814;
-      padding: 8px;
-      border-radius: 6px;
-      border-left: 2px solid #d4af37;
+      color: #d1c4a8;
+      margin-bottom: 12px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Оракул Судьбы</h1>
-      <div class="subtitle">Точная нумерологическая матрица</div>
+      <h1>Оракул Звёзд</h1>
+      <div class="stars-badge">⭐ <span id="userStars">50</span> Звёзд</div>
     </header>
 
-    <!-- Ввод данных (без неудобных календарей) -->
+    <!-- Ввод данных -->
     <div class="card" id="inputCard">
-      <label for="userName">Полное имя:</label>
-      <input type="text" id="userName" placeholder="Например: Александр">
+      <label for="userName">Ваше имя (для матричного расчёта):</label>
+      <input type="text" id="userName" placeholder="Например: Елизавета">
 
-      <label>Дата и время рождения:</label>
+      <label>Дата и точное время рождения:</label>
       <div class="date-grid">
         <div>
-          <label style="font-size:9px;">День</label>
+          <label style="font-size:8px;">День</label>
           <input type="number" id="bDay" placeholder="ДД" min="1" max="31">
         </div>
         <div>
-          <label style="font-size:9px;">Месяц</label>
+          <label style="font-size:8px;">Месяц</label>
           <input type="number" id="bMonth" placeholder="ММ" min="1" max="12">
         </div>
         <div>
-          <label style="font-size:9px;">Год</label>
+          <label style="font-size:8px;">Год</label>
           <input type="number" id="bYear" placeholder="ГГГГ" min="1900" max="2026">
         </div>
         <div>
-          <label style="font-size:9px;">Час (0-23)</label>
+          <label style="font-size:8px;">Час</label>
           <input type="number" id="bHour" placeholder="ЧЧ" min="0" max="23" value="12">
         </div>
       </div>
 
-      <button class="btn" onclick="generateForecast()" style="margin-top: 6px;">Рассчитать карту</button>
+      <button class="btn" onclick="generateMatrix()" style="margin-top: 6px;">Открыть звёздную карту</button>
     </div>
 
-    <!-- Результаты с выбором периода -->
+    <!-- Результаты и премиум периоды -->
     <div class="card result-section" id="resultCard">
       <div class="periods-bar">
-        <div class="period-tab active" onclick="switchPeriod('life', this)">Общий</div>
-        <div class="period-tab" onclick="switchPeriod('year', this)">Год</div>
-        <div class="period-tab" onclick="switchPeriod('month', this)">Месяц</div>
-        <div class="period-tab" onclick="switchPeriod('week', this)">Неделя</div>
+        <div class="period-tab active" onclick="switchPeriod('life', 0, this)">
+          <span>Общий</span>
+          <span class="price">Бесплатно</span>
+        </div>
+        <div class="period-tab" onclick="switchPeriod('week', 15, this)">
+          <span>Неделя</span>
+          <span class="price">⭐ 15</span>
+        </div>
+        <div class="period-tab" onclick="switchPeriod('month', 35, this)">
+          <span>Месяц</span>
+          <span class="price">⭐ 35</span>
+        </div>
+        <div class="period-tab" onclick="switchPeriod('year', 75, this)">
+          <span>Год</span>
+          <span class="price">⭐ 75</span>
+        </div>
       </div>
 
       <div class="number-circle" id="numDisplay">7</div>
-      <div class="forecast-title" id="periodTitle">Число Жизненного Пути</div>
-      <div class="forecast-text" id="forecastDesc">Загрузка прогноза...</div>
+      <div class="forecast-title" id="periodTitle">Число Судьбы</div>
+      
+      <div id="forecastContent">
+        <!-- Сюда динамически подставляется текст или замок -->
+      </div>
 
-      <button class="btn" onclick="resetForm()" style="background: #1f1833; color: #d4af37; border: 1px solid #483870; margin-top: 8px; font-size: 11px; padding: 8px;">Ввести другие данные</button>
+      <button class="btn" onclick="resetForm()" style="background: rgba(18, 24, 43, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 10px; font-size: 11px; padding: 9px;">Ввести другие данные</button>
     </div>
   </div>
 
@@ -213,10 +275,24 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    let userData = { name: '', day: 0, month: 0, year: 0, hour: 0 };
-    let currentPeriod = 'life';
+    let stars = parseInt(localStorage.getItem('user_stars')) || 50;
+    let userData = { name: '', day: 1, month: 1, year: 2000, hour: 12 };
+    
+    // Состояние разблокированных периодов
+    let unlocked = {
+      life: true,
+      week: false,
+      month: false,
+      year: false
+    };
 
-    // Нумерологическое соответствие букв русского алфавита (Пифагорейская система)
+    function updateStarsDisplay() {
+      document.getElementById('userStars').innerText = stars;
+      localStorage.setItem('user_stars', stars);
+    }
+    updateStarsDisplay();
+
+    // Нумерологический алфавит (Пифагорейская система для русского языка)
     const letterMap = {
       'а': 1, 'и': 1, 'с': 1, 'ъ': 1,
       'б': 2, 'й': 2, 'т': 2, 'ы': 2,
@@ -225,7 +301,7 @@
       'д': 5, 'м': 5, 'х': 5, 'ю': 5,
       'е': 6, 'н': 6, 'ц': 6, 'я': 6,
       'ё': 7, 'о': 7, 'ч': 7,
-      'ж': 8, 'п': 8, 'ш': 8,
+      'ж': 8, 'p': 8, 'ш': 8,
       'з': 9, 'р': 9, 'щ': 9
     };
 
@@ -244,7 +320,7 @@
       return reduceToSingle(sum);
     }
 
-    function generateForecast() {
+    function generateMatrix() {
       const name = document.getElementById('userName').value.trim();
       const day = parseInt(document.getElementById('bDay').value);
       const month = parseInt(document.getElementById('bMonth').value);
@@ -252,84 +328,85 @@
       const hour = parseInt(document.getElementById('bHour').value) || 12;
 
       if (!name || isNaN(day) || isNaN(month) || isNaN(year)) {
-        alert("Пожалуйста, заполните имя и корректную дату рождения (день, месяц, год).");
+        alert("Пожалуйста, укажите имя и корректную дату рождения.");
         return;
       }
 
       userData = { name, day, month, year, hour };
-
       if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
       document.getElementById('inputCard').style.display = 'none';
       document.getElementById('resultCard').style.display = 'block';
-      
-      switchPeriod('life', document.querySelector('.period-tab'));
+
+      switchPeriod('life', 0, document.querySelector('.period-tab'));
     }
 
-    function switchPeriod(period, element) {
-      currentPeriod = period;
+    let currentPeriodKey = 'life';
+    let currentCost = 0;
+
+    function switchPeriod(periodKey, cost, element) {
+      currentPeriodKey = periodKey;
+      currentCost = cost;
+
       document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
       if (element) element.classList.add('active');
 
-      let num = 1;
-      let title = '';
-      let text = '';
-
-      // Базовый расчет по дате, имени и времени
       let dateSum = userData.day + userData.month + userData.year + userData.hour;
       let nameNum = calculateNameNumber(userData.name);
-
-      if (period === 'life') {
-        num = reduceToSingle(dateSum + nameNum);
-        title = `Число Судьбы и Пути (${userData.name})`;
-        text = getLifeDescription(num);
-      } else if (period === 'year') {
-        let currentYear = new Date().getFullYear();
-        num = reduceToSingle(userData.day + userData.month + currentYear + userData.hour);
-        title = `Прогноз на ${currentYear} год`;
-        text = getYearDescription(num);
-      } else if (period === 'month') {
-        let now = new Date();
-        num = reduceToSingle(userData.day + now.getMonth() + 1 + now.getFullYear());
-        title = `Прогноз на текущий месяц`;
-        text = getMonthDescription(num);
-      } else if (period === 'week') {
-        num = reduceToSingle(userData.day + userData.hour + 7);
-        title = `Энергетический прогноз на неделю`;
-        text = getWeekDescription(num);
-      }
+      let num = reduceToSingle(dateSum + nameNum + (periodKey === 'year' ? 2026 : 0));
 
       document.getElementById('numDisplay').innerText = num;
-      document.getElementById('periodTitle').innerText = title;
-      document.getElementById('forecastDesc').innerText = text;
+
+      if (periodKey === 'life') {
+        document.getElementById('periodTitle').innerText = `Главный Код Судьбы: ${userData.name}`;
+      } else if (periodKey === 'week') {
+        document.getElementById('periodTitle').innerText = `Звёздный прогноз на неделю`;
+      } else if (periodKey === 'month') {
+        document.getElementById('periodTitle').innerText = `Энергетический код месяца`;
+      } else if (periodKey === 'year') {
+        document.getElementById('periodTitle').innerText = `Глубокий прогноз на 2026 год`;
+      }
+
+      const contentBox = document.getElementById('forecastContent');
+
+      // Проверка доступа (куплено ли или бесплатно)
+      if (unlocked[periodKey]) {
+        contentBox.innerHTML = `<div class="forecast-text">${getDetailedForecastText(periodKey, num)}</div>`;
+      } else {
+        contentBox.innerHTML = `
+          <div class="locked-box">
+            <p>🔒 Этот глубокий нумерологический прогноз скрыт завесой звезд.</p>
+            <button class="btn" onclick="unlockPeriod('${periodKey}', ${cost})">Разблокировать за ⭐ ${cost} Звёзд</button>
+          </div>
+        `;
+      }
+
       if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
 
-    function getLifeDescription(n) {
-      const desc = {
-        1: "Энергия Лидера. Вы обладаете сильным внутренним стержнем и способностью вести за собой людей. Ваша жизненная задача — преодолевать сомнения и открывать новые горизонты.",
-        2: "Энергия Дипломата. Ваша сила в тонкой интуиции и умении находить компромиссы. Вы великолепно чувствуете окружение и строите крепкие долгосрочные союзы.",
-        3: "Энергия Созидателя. Вас отличает яркий творческий потенциал, оптимизм и дар убеждения. Вы привносите радость и нестандартные идеи в любую сферу.",
-        4: "Энергия Строителя. Надежность, системность и упорный труд — ваши главные союзники. Вы создаете прочный фундамент для себя и близких.",
-        5: "Энергия Свободы. Динамика, жажда путешествий и перемен ведут вас по жизни. Вы легко адаптируетесь к любым трансформациям.",
-        6: "Энергия Гармонии и Опеки. Забота о семье, доме и близких людях наполняет вашу жизнь глубоким смыслом и поддержкой вселенной.",
-        7: "Энергия Мудреца. Аналитический ум и тяга к тайным знаниям помогают вам видеть скрытые закономерности там, где другие видят хаос.",
-        8: "Энергия Материального Успеха и Кармы. У вас мощный потенциал для достижения масштабных целей, управления ресурсами и финансами.",
-        9: "Энергия Гуманиста. Глубокое понимание мира, сострадание и завершение старых циклов открывают для вас высшие духовные уровни."
-      };
-      return desc[n] || desc[7];
+    function unlockPeriod(key, cost) {
+      if (stars >= cost) {
+        stars -= cost;
+        unlocked[key] = true;
+        updateStarsDisplay();
+        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        switchPeriod(key, cost, document.querySelector('.period-tab.active'));
+      } else {
+        alert("Недостаточно Звёзд ⭐ для разблокировки прогноза!");
+        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+      }
     }
 
-    function getYearDescription(n) {
-      return `Этот год под влиянием числа ${n} приносит важные изменения в делах. Время переоценки ценностей, устранения преград и закладки фундамента для будущих побед. Будьте внимательны к знакам судьбы.`;
-    }
-
-    function getMonthDescription(n) {
-      return `Текущий месяц акцентирует внимание на внутренних ресурсах и сфере общения. Число ${n} советует не спешить с выводами и уделить время завершению текущих задач.`;
-    }
-
-    function getWeekDescription(n) {
-      return `Энергетика недели (код ${n}) благоприятна для решения текущих вопросов. Возможны неожиданные приятные известия или удачные стечения обстоятельств.`;
+    function getDetailedForecastText(key, n) {
+      if (key === 'life') {
+        return `Ваша матрица рождения и числовое поле имени (${userData.name}) образуют уникальную гармонию. Код ${n} указывает на сильное скрытое предназначение. В сфере финансов вас ожидает прорыв при условии точного планирования. В личных отношениях звезды советуют довериться интуиции — она подскажет верный шаг.`;
+      } else if (key === 'week') {
+        return `На этой неделе числовой код ${n} активирует зону коммуникаций и новых возможностей. Возможны неожиданные денежные поступления или важные вести издалека. Избегайте спонтанных эмоциональных решений в среду.`;
+      } else if (key === 'month') {
+        return `Этот месяц станет периодом трансформации. Энергия числа ${n} требует закрыть старые долги и обязательства. Благоприятное время для старта новых проектов, обустройства дома и заботы о здоровье.`;
+      } else if (key === 'year') {
+        return `Глобальный прогноз на 2026 год под влиянием числа ${n}: год кармических наград и реализации долгосрочных амбиций. Перед вами откроются двери, которые раньше казались закрытыми. Главное — сохранять внутренний баланс.`;
+      }
     }
 
     function resetForm() {
