@@ -110,21 +110,27 @@
     }
     .btn:active { transform: scale(0.97); }
 
-    .result-section { display: none; }
-
-    /* Блоки вкладок (Бесплатные и Премиум со Звездой) */
-    .section-label {
-      font-size: 10px;
-      color: #a89bb8;
-      margin: 6px 0 3px 2px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    /* Кнопка перехода на премиум страницу */
+    .btn-premium {
+      background: linear-gradient(135deg, #b8860b, #4a3e75);
+      color: #f3ebd8;
+      border: 1px solid #f0cb69;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
+
+    /* Управление экранами (страницами) */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
     .periods-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 4px;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
     .period-tab {
       background: rgba(8, 11, 20, 0.85);
@@ -143,12 +149,12 @@
       font-weight: bold;
       border-color: #f0cb69;
     }
-    .period-tab.premium {
-      border-color: #b8860b;
-      background: rgba(184, 134, 11, 0.15);
+    .period-tab.premium-tab {
+      border-color: #f0cb69;
+      background: rgba(240, 203, 105, 0.15);
       color: #f0cb69;
     }
-    .period-tab.premium.active {
+    .period-tab.premium-tab.active {
       background: linear-gradient(135deg, #f0cb69, #b8860b);
       color: #05070e;
     }
@@ -191,11 +197,11 @@
   <div class="container">
     <header>
       <h1>Оракул Звёзд</h1>
-      <div class="subtitle">Нумерологическая карта судьбы</div>
+      <div class="subtitle">Нумерологическая матрица судьбы</div>
     </header>
 
-    <!-- Ввод данных -->
-    <div class="card" id="inputCard">
+    <!-- СТРАНИЦА 1: Ввод данных -->
+    <div class="card screen active" id="inputScreen">
       <label for="userName">Ваше полное имя:</label>
       <input type="text" id="userName" placeholder="Например: Александр">
 
@@ -219,36 +225,49 @@
         </div>
       </div>
 
-      <button class="btn" onclick="generateMatrix()" style="margin-top: 6px;">Рассчитать карту</button>
+      <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
 
-    <!-- Результаты с периодами -->
-    <div class="card result-section" id="resultCard">
-      
-      <!-- Бесплатные периоды -->
-      <div class="section-label">🌿 Базовые прогнозы (Бесплатно)</div>
+    <!-- СТРАНИЦА 2: Главный бесплатный прогноз + Кнопка перехода в Премиум -->
+    <div class="card screen" id="homeScreen">
+      <button class="btn btn-premium" onclick="openPremiumScreen()">
+        ⭐ Открыть Глубокий Премиум-Прогноз
+      </button>
+
+      <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовые периоды:</div>
       <div class="periods-bar">
-        <div class="period-tab active" onclick="selectForecast('life_free', 0, this)">Общий</div>
-        <div class="period-tab" onclick="selectForecast('week_free', 1, this)">Неделя</div>
-        <div class="period-tab" onclick="selectForecast('month_free', 2, this)">Месяц</div>
-        <div class="period-tab" onclick="selectForecast('year_free', 3, this)">Год</div>
+        <div class="period-tab active" onclick="selectFreeForecast('life', 0, this)">Общий</div>
+        <div class="period-tab" onclick="selectFreeForecast('week', 1, this)">Неделя</div>
+        <div class="period-tab" onclick="selectFreeForecast('month', 2, this)">Месяц</div>
+        <div class="period-tab" onclick="selectFreeForecast('year', 3, this)">Год</div>
       </div>
 
-      <!-- Платные периоды (отмечены звездой ⭐) -->
-      <div class="section-label">⭐ Премиум прогнозы (Детальные)</div>
-      <div class="periods-bar">
-        <div class="period-tab premium" onclick="selectForecast('life_prem', 4, this)">⭐ Общий</div>
-        <div class="period-tab premium" onclick="selectForecast('week_prem', 5, this)">⭐ Неделя</div>
-        <div class="period-tab premium" onclick="selectForecast('month_prem', 6, this)">⭐ Месяц</div>
-        <div class="period-tab premium" onclick="selectForecast('year_prem', 7, this)">⭐ Год</div>
-      </div>
+      <div class="number-circle" id="freeNumDisplay">7</div>
+      <div class="forecast-title" id="freeForecastTitle">Заголовок</div>
+      <div class="forecast-text" id="freeForecastText">Текст...</div>
 
-      <div class="number-circle" id="numDisplay">7</div>
-      <div class="forecast-title" id="forecastTitle">Заголовок прогноза</div>
-      <div class="forecast-text" id="forecastText">Текст прогноза...</div>
-
-      <button class="btn" onclick="resetForm()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 8px; font-size: 11px; padding: 8px;">Ввести другие данные</button>
+      <button class="btn" onclick="goToInput()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 6px; font-size: 11px; padding: 8px;">Изменить данные</button>
     </div>
+
+    <!-- СТРАНИЦА 3: Премиум-прогнозы (за звёзды) -->
+    <div class="card screen" id="premiumScreen">
+      <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 10px; font-size: 11px; padding: 8px;">
+        ⬅️ Назад к базам прогнозов
+      </button>
+
+      <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Премиум-карта (За звёзды):</div>
+      <div class="periods-bar">
+        <div class="period-tab premium-tab active" onclick="selectPremForecast('life_prem', 4, this)">⭐ Общий</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast('week_prem', 5, this)">⭐ Неделя</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast('month_prem', 6, this)">⭐ Месяц</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast('year_prem', 7, this)">⭐ Год</div>
+      </div>
+
+      <div class="number-circle" id="premNumDisplay">7</div>
+      <div class="forecast-title" id="premForecastTitle">Премиум Заголовок</div>
+      <div class="forecast-text" id="premForecastText">Премиум текст...</div>
+    </div>
+
   </div>
 
   <script>
@@ -284,7 +303,12 @@
       return reduceToSingle(sum);
     }
 
-    function generateMatrix() {
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function calculateAndOpenHome() {
       const name = document.getElementById('userName').value.trim();
       const day = parseInt(document.getElementById('bDay').value);
       const month = parseInt(document.getElementById('bMonth').value);
@@ -299,43 +323,73 @@
       userData = { name, day, month, year, hour };
       if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
-      document.getElementById('inputCard').style.display = 'none';
-      document.getElementById('resultCard').style.display = 'block';
-
-      selectForecast('life_free', 0, document.querySelector('.period-tab'));
+      showScreen('homeScreen');
+      selectFreeForecast('life', 0, document.querySelector('.periods-bar .period-tab'));
     }
 
-    function selectForecast(type, offset, element) {
-      document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+    function selectFreeForecast(type, offset, element) {
+      document.querySelectorAll('#homeScreen .period-tab').forEach(t => t.classList.remove('active'));
       if (element) element.classList.add('active');
 
       let dateSum = userData.day + userData.month + userData.year + userData.hour;
       let nameNum = calculateNameNumber(userData.name);
       let num = reduceToSingle(dateSum + nameNum + offset);
 
-      document.getElementById('numDisplay').innerText = num;
+      document.getElementById('freeNumDisplay').innerText = num;
 
       let title = "";
       let text = "";
 
-      if (type === 'life_free') {
+      if (type === 'life') {
         title = `Общий Нумерологический Путь (${userData.name})`;
         text = `Ваш базовый код судьбы (${num}) отражает основные черты характера и вектор жизни. Вы обладаете сильным потенциалом для самореализации, гармонично сочетая внутреннюю интуицию с практическими решениями.`;
-      } else if (type === 'week_free') {
+      } else if (type === 'week') {
         title = `Прогноз на неделю`;
-        text = `Энергетика недели (код ${num}) благоприятна для текущих дел. Звезды советуют уделить внимание деталям и не спешить с важными финансовыми решениями в первые дни недели.`;
-      } else if (type === 'month_free') {
+        text = `Энергетика недели (код ${num}) благоприятна для текущих дел. Звезды советуют уделить внимание деталям и не спешить с важными финансовыми решениями.`;
+      } else if (type === 'month') {
         title = `Прогноз на текущий месяц`;
-        text = `Текущий месяц проходит под влиянием числа ${num}. Это период стабильности и планомерного продвижения к личным целям. Уделите время отдыху и общению с близкими.`;
-      } else if (type === 'year_free') {
+        text = `Текущий месяц проходит под влиянием числа ${num}. Это период стабильности и планомерного продвижения к личным целям. Уделите время отдыху и общению.`;
+      } else if (type === 'year') {
         title = `Прогноз на год`;
         text = `Годовой цикл (код ${num}) открывает новые возможности для личностного роста. Возможны приятные перемены в профессиональной или личной сфере.`;
-      } else if (type === 'life_prem') {
+      }
+
+      document.getElementById('freeForecastTitle').innerText = title;
+      document.getElementById('freeForecastText').innerText = text;
+
+      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    function openPremiumScreen() {
+      showScreen('premiumScreen');
+      selectPremForecast('life_prem', 4, document.querySelector('#premiumScreen .period-tab'));
+      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    }
+
+    function backToHome() {
+      showScreen('homeScreen');
+      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    function selectPremForecast(type, offset, element) {
+      document.querySelectorAll('#premiumScreen .period-tab').forEach(t => t.classList.remove('active'));
+      if (element) element.classList.add('active');
+
+      let dateSum = userData.day + userData.month + userData.year + userData.hour;
+      let nameNum = calculateNameNumber(userData.name);
+      let num = reduceToSingle(dateSum + nameNum + offset);
+
+      document.getElementById('premNumDisplay').innerText = num;
+
+      let title = "";
+      let text = "";
+
+      if (type === 'life_prem') {
         title = `⭐ Премиум: Глубокий разбор Судьбы и Карьеры`;
-        text = `Расширенный анализ матрицы имени (${userData.name}) и даты рождения (код ${num}). В этот глубокий отчет входит полный разбор ваших скрытых талантов, кармических задач от рождения, а также точные рекомендации по выбору финансовой ниши и преодолению внутренних блоков.`;
+        text = `Расширенный детальный анализ матрицы имени (${userData.name}) и даты рождения (код ${num}). В этот глубокий отчет входит полный разбор ваших скрытых талантов, кармических задач от рождения, а также точные рекомендации по выбору финансовой ниши и преодолению внутренних блоков.`;
       } else if (type === 'week_prem') {
         title = `⭐ Премиум: Детальный гороскоп недели по часам`;
-        text = `Углубленный прогноз на неделю (код ${num}) с учетом точного часа вашего рождения. Расписаны благоприятные дни для переговоров, крупных покупок, романтических встреч и дни, когда стоит побыть в тишине.`;
+        text = `Углубленный премиум-прогноз на неделю (код ${num}) с учетом точного часа вашего рождения. Расписаны благоприятные дни для переговоров, крупных покупок, романтических встреч и дни, когда стоит побыть в тишине.`;
       } else if (type === 'month_prem') {
         title = `⭐ Премиум: Финансовый и любовный код месяца`;
         text = `Детальный разбор месяца (код ${num}) по сферам: деньги, карьера, семья и здоровье. Звезды указывают на точные дни денежных поступлений и моменты, когда нужно проявить максимальную дипломатию в отношениях.`;
@@ -344,15 +398,14 @@
         text = `Самый подробный астро-нумерологический прогноз на год (код ${num}). Включает поквартальный анализ событий, разбор судьбоносных встреч, периоды мощного финансового роста и подсказки о том, как извлечь максимум из каждого сезона.`;
       }
 
-      document.getElementById('forecastTitle').innerText = title;
-      document.getElementById('forecastText').innerText = text;
+      document.getElementById('premForecastTitle').innerText = title;
+      document.getElementById('premForecastText').innerText = text;
 
       if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
 
-    function resetForm() {
-      document.getElementById('inputCard').style.display = 'block';
-      document.getElementById('resultCard').style.display = 'none';
+    function goToInput() {
+      showScreen('inputScreen');
       if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
   </script>
