@@ -335,61 +335,49 @@
     }
 
     function calculateAndOpenHome() {
-      try {
-        const nameInput = document.getElementById('userName').value.trim();
-        const dayInput = parseInt(document.getElementById('bDay').value);
-        const monthInput = parseInt(document.getElementById('bMonth').value);
-        const yearInput = parseInt(document.getElementById('bYear').value);
-        const hourInput = parseInt(document.getElementById('bHour').value);
+      const nameInput = document.getElementById('userName').value.trim();
+      const dayInput = parseInt(document.getElementById('bDay').value);
+      const monthInput = parseInt(document.getElementById('bMonth').value);
+      const yearInput = parseInt(document.getElementById('bYear').value);
+      const hourInput = parseInt(document.getElementById('bHour').value);
 
-        if (!nameInput || isNaN(dayInput) || isNaN(monthInput) || isNaN(yearInput)) {
-          alert("Пожалуйста, заполните имя, день, месяц и год рождения.");
-          return;
-        }
-
-        userData = { 
-          name: nameInput, 
-          day: dayInput, 
-          month: monthInput, 
-          year: yearInput, 
-          hour: isNaN(hourInput) ? 12 : hourInput 
-        };
-
-        showScreen('homeScreen');
-        selectFreeForecast('life', 0, document.querySelector('#homeScreen .periods-bar .period-tab'));
-      } catch (err) {
-        alert("Ошибка в расчете: " + err.message);
+      if (!nameInput || isNaN(dayInput) || isNaN(monthInput) || isNaN(yearInput)) {
+        alert("Пожалуйста, заполните имя, день, месяц и год рождения.");
+        return;
       }
+
+      userData = { 
+        name: nameInput, 
+        day: dayInput, 
+        month: monthInput, 
+        year: yearInput, 
+        hour: isNaN(hourInput) ? 12 : hourInput 
+      };
+
+      showScreen('homeScreen');
+      selectFreeForecast('life', 0, document.querySelector('#homeScreen .periods-bar .period-tab'));
     }
 
     function selectFreeForecast(type, offset, element) {
-      try {
-        document.querySelectorAll('#homeScreen .period-tab').forEach(t => t.classList.remove('active'));
-        if (element) element.classList.add('active');
+      document.querySelectorAll('#homeScreen .period-tab').forEach(t => t.classList.remove('active'));
+      if (element) element.classList.add('active');
 
-        let dateSum = userData.day + userData.month + userData.year + userData.hour;
-        let nameNum = calculateNameNumber(userData.name);
-        let num = reduceToSingle(dateSum + nameNum + offset);
+      let dateSum = userData.day + userData.month + userData.year + userData.hour;
+      let nameNum = calculateNameNumber(userData.name);
+      let num = reduceToSingle(dateSum + nameNum + offset);
 
-        document.getElementById('freeNumDisplay').innerText = num;
+      document.getElementById('freeNumDisplay').innerText = num;
 
-        let title = `Базовый обзор (${userData.name}, код ${num})`;
-        let text = `Ваш персональный нумерологический код (${num}) указывает на сильный потенциал самореализации. В этот период Вселенная акцентирует внимание на принятии важных решений, балансе между внутренним «Я» и внешним миром. Чтобы узнать подробный разбор по всем сферам (любовь, семья, работа, здоровье, карма) и глубокий анализ вашего имени, откройте полный премиум-отчёт выше.`;
+      let title = `Базовый обзор (${userData.name}, код ${num})`;
+      let text = `Ваш персональный нумерологический код (${num}) указывает на сильный потенциал самореализации. В этот период Вселенная акцентирует внимание на принятии важных решений, балансе между внутренним «Я» и внешним миром. Чтобы узнать подробный разбор по всем сферам (любовь, семья, работа, здоровье, карма) и глубокий анализ вашего имени, откройте полный премиум-отчёт выше.`;
 
-        document.getElementById('freeForecastTitle').innerText = title;
-        document.getElementById('freeForecastText').innerText = text;
-      } catch (err) {
-        alert("Ошибка прогноза: " + err.message);
-      }
+      document.getElementById('freeForecastTitle').innerText = title;
+      document.getElementById('freeForecastText').innerText = text;
     }
 
     function openPremiumScreen() {
-      try {
-        showScreen('premiumScreen');
-        selectPremForecast('life_prem', 4, document.querySelector('#premiumScreen .periods-bar .period-tab'));
-      } catch (err) {
-        alert("Ошибка премиум экрана: " + err.message);
-      }
+      showScreen('premiumScreen');
+      selectPremForecast('life_prem', 4, document.querySelector('#premiumScreen .periods-bar .period-tab'));
     }
 
     function backToHome() {
@@ -466,26 +454,35 @@
     };
 
     function selectPremForecast(type, offset, element) {
-      try {
-        document.querySelectorAll('#premiumScreen .period-tab').forEach(t => t.classList.remove('active'));
-        if (element) element.classList.add('active');
+      document.querySelectorAll('#premiumScreen .period-tab').forEach(t => t.classList.remove('active'));
+      if (element) element.classList.add('active');
 
-        let dateSum = userData.day + userData.month + userData.year + userData.hour;
-        let nameNum = calculateNameNumber(userData.name);
-        let num = reduceToSingle(dateSum + nameNum + offset);
+      let dateSum = userData.day + userData.month + userData.year + userData.hour;
+      let nameNum = calculateNameNumber(userData.name);
+      let num = reduceToSingle(dateSum + nameNum + offset);
 
-        document.getElementById('premNumDisplay').innerText = num;
-        let textIndex = ((num - 1) % 9) + 1;
+      document.getElementById('premNumDisplay').innerText = num;
+      let textIndex = ((num - 1) % 9) + 1;
 
-        let title = "";
-        let periodDesc = "";
+      let title = "";
+      let periodDesc = "";
 
-        if (type === 'life_prem') {
-          title = `⭐ Глубокий разбор Судьбы (${userData.name})`;
-          periodDesc = "на весь жизненный путь";
-        } else if (type === 'week_prem') {
-          title = `⭐ Детальный отчёт на Неделю`;
-          periodDesc = "на текущую неделю";
-        } else if (type === 'month_prem') {
-          title = `⭐ Стратегический прогноз на Месяц`;
-        
+      if (type === 'life_prem') {
+        title = `⭐ Глубокий разбор Судьбы (${userData.name})`;
+        periodDesc = "на весь жизненный путь";
+      } else if (type === 'week_prem') {
+        title = `⭐ Детальный отчёт на Неделю`;
+        periodDesc = "на текущую неделю";
+      } else if (type === 'month_prem') {
+        title = `⭐ Стратегический прогноз на Месяц`;
+        periodDesc = "на текущий месяц";
+      } else if (type === 'year_prem') {
+        title = `⭐ Масштабный путеводитель на Год`;
+        periodDesc = "на текущий год";
+      }
+
+      document.getElementById('premForecastTitle').innerText = title;
+
+      document.getElementById('premSpheresContainer').innerHTML = `
+        <div class="sphere-section">
+          <h4>❤️ Любовь и Отношения (${
