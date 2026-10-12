@@ -7,7 +7,7 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
-      background-color: #0b130f;
+      background-color: #0c1410;
       color: #d0e1d4;
       font-family: 'Courier New', Courier, monospace;
       margin: 0;
@@ -18,7 +18,7 @@
       user-select: none;
       overflow: hidden;
     }
-    .container {
+    .box {
       width: 100%;
       max-width: 400px;
       display: flex;
@@ -33,71 +33,39 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 13px;
     }
-    .creature-info { font-size: 13px; color: #79db9d; font-weight: bold; }
-    .stats { font-size: 11px; display: flex; gap: 6px; }
-
     #gameCanvas {
-      background: #193322;
+      background: #183322;
       border: 3px solid #2e6944;
       border-radius: 8px;
       width: 100%;
-      height: 220px;
+      height: 240px;
       touch-action: none;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
     }
-
     .panel {
       background: #121f17;
       border: 2px solid #2e6944;
       border-radius: 8px;
-      padding: 6px 8px;
+      padding: 6px;
       font-size: 11px;
-    }
-    .selection-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 4px;
-    }
-    .species-btn {
-      flex: 1;
-      background: #1b3a26;
-      color: #a3e4c1;
-      border: 1px solid #388253;
-      border-radius: 5px;
-      padding: 5px 2px;
-      font-size: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      text-align: center;
-    }
-    .species-btn.active {
-      background: #2e6944;
-      color: #fff;
-      border-color: #55b57d;
-    }
-    .action-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 4px;
     }
     .btn {
       background: #2e6944;
       color: #fff;
       border: 1px solid #55b57d;
       border-radius: 4px;
-      padding: 5px 10px;
+      padding: 6px 12px;
       font-weight: bold;
       cursor: pointer;
-      font-size: 11px;
     }
     .btn:active { transform: scale(0.95); }
-    .log-box {
-      height: 38px;
+    .log {
+      height: 45px;
       overflow-y: auto;
-      background: #0d1711;
-      border: 1px solid #224a31;
+      background: #080f0b;
+      border: 1px solid #1a3825;
       border-radius: 4px;
       padding: 4px;
       font-size: 10px;
@@ -106,39 +74,23 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="box">
     <header>
-      <div id="creatureName" class="creature-info">🫘 Ур. 1 Мышь</div>
-      <div class="stats">
-        <span>🍖 <b id="food">10</b></span>
-        <span>❤️ <b id="hp">100</b></span>
-      </div>
+      <div>🐁 Мышь (Ур. <b id="lvl">1</b>)</div>
+      <div>🍖 <b id="food">15</b> | ❤️ <b id="hp">100</b></div>
     </header>
 
-    <!-- Выбор вида животного -->
+    <canvas id="gameCanvas" width="400" height="240"></canvas>
+    <div style="text-align:center; font-size:10px; color:#8ecfb2;">🎮 Тапайте по экрану, чтобы зверёк бежал, собирал еду и исследовал мир!</div>
+
     <div class="panel">
-      <div style="margin-bottom: 4px; color: #8ecfb2; text-align: center;">🧬 Выберите класс существа</div>
-      <div class="selection-row">
-        <button class="species-btn active" onclick="setSpecies(0)">🐛 Насекомое</button>
-        <button class="species-btn" onclick="setSpecies(1)">🐁 Грызун</button>
-        <button class="species-btn" onclick="setSpecies(2)">🦊 Хищник</button>
-      </div>
+      <div>📜 Лог выживания:</div>
+      <div id="logBox" class="log">Мир загружен. Управляйте персонажем тапами.</div>
     </div>
 
-    <!-- Игровой холст (Живой Мир) -->
-    <canvas id="gameCanvas" width="400" height="220"></canvas>
-    <div style="text-align: center; font-size: 10px; color: #8ecfb2;">🌲 Тапайте по миру: собирайте ресурсы, исследуйте норки и пещеры!</div>
-
-    <!-- Лог событий (борьба за выживание) -->
-    <div class="panel">
-      <div style="font-size: 10px; color: #8ecfb2; margin-bottom: 2px;">📜 События экосистемы:</div>
-      <div id="gameLog" class="log-box">Мир создан. Выберите убежище и начните охоту.</div>
-    </div>
-
-    <!-- Управление -->
-    <div class="panel action-row">
-      <div>🏠 Уровень норы: <b id="burrowLvl">Ур. 1</b></div>
-      <button class="btn" onclick="upgradeBurrow()">Улучшить дом (15 🍖)</button>
+    <div class="panel" style="display:flex; justify-content:space-between; align-items:center;">
+      <div>🕳️ Уровень норы: <b id="burrowLvl">1</b></div>
+      <button class="btn" onclick="upgradeBurrow()">Улучшить нору (20 🍖)</button>
     </div>
   </div>
 
@@ -146,166 +98,130 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    let speciesList = [
-      {name: 'Жук', icon: '🐛', foodCost: 10, power: 2},
-      {name: 'Мышь', icon: '🐁', foodCost: 15, power: 5},
-      {name: 'Лиса', icon: '🦊', foodCost: 30, power: 12}
-    ];
-
-    let currentSpeciesIdx = parseInt(localStorage.getItem('dw_spec')) || 1;
-    let food = parseInt(localStorage.getItem('dw_food')) || 20;
-    let hp = parseInt(localStorage.getItem('dw_hp')) || 100;
-    let burrowLevel = parseInt(localStorage.getItem('dw_burrow')) || 1;
-    let playerLevel = parseInt(localStorage.getItem('dw_lvl')) || 1;
-
-    // Объекты дикого мира (норки, пещеры, еда, враги)
-    let worldObjects = [
-      {x: 60, y: 70, type: 'burrow', label: 'Ваша норка', emoji: '🕳️'},
-      {x: 200, y: 60, type: 'cave', label: 'Темная пещера', emoji: '🕳️', danger: 'Высокая'},
-      {x: 320, y: 80, type: 'nest', label: 'Чужое гнездо', emoji: '🪺', danger: 'Средняя'},
-      {x: 120, y: 160, type: 'food', label: 'Ягоды/Зерно', emoji: '🍓'},
-      {x: 270, y: 150, type: 'prey', label: 'Мл. насекомое', emoji: '🪱'}
-    ];
+    let food = parseInt(localStorage.getItem('f')) || 20;
+    let hp = parseInt(localStorage.getItem('hp')) || 100;
+    let lvl = parseInt(localStorage.getItem('lvl')) || 1;
+    let burrowLvl = parseInt(localStorage.getItem('blvl')) || 1;
 
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Позиция игрока в мире
-    let player = { x: 50, y: 140, targetX: 50, targetY: 140 };
+    // Позиция и движение игрока
+    let player = { x: 200, y: 120, targetX: 200, targetY: 120, speed: 2.8 };
 
-    function log(text) {
-      const box = document.getElementById('gameLog');
-      box.innerHTML = text + "<br>" + box.innerHTML;
+    // Интерактивные объекты мира
+    let worldItems = [
+      { x: 70, y: 50, type: 'food', emoji: '🍓', val: 5 },
+      { x: 320, y: 70, type: 'food', emoji: '🐛', val: 8 },
+      { x: 90, y: 190, type: 'burrow', emoji: '🕳️', name: 'Норка' },
+      { x: 330, y: 180, type: 'cave', emoji: '⛰️', name: 'Пещера' }
+    ];
+
+    function log(msg) {
+      const box = document.getElementById('logBox');
+      box.innerHTML = msg + '<br>' + box.innerHTML;
     }
 
     function updateUI() {
-      let spec = speciesList[currentSpeciesIdx];
-      document.getElementById('creatureName.innerText` // fixed below
-      document.getElementById('creatureName').innerText = `${spec.icon} Ур. ${playerLevel} ${spec.name}`;
       document.getElementById('food').innerText = food;
       document.getElementById('hp').innerText = hp;
-      document.getElementById('burrowLvl').innerText = `Ур. ${burrowLevel}`;
-
-      localStorage.setItem('dw_spec', currentSpeciesIdx);
-      localStorage.setItem('dw_food', food);
-      localStorage.setItem('dw_hp', hp);
-      localStorage.setItem('dw_burrow', burrowLevel);
-      localStorage.setItem('dw_lvl', playerLevel);
+      document.getElementById('lvl').innerText = lvl;
+      document.getElementById('burrowLvl').innerText = burrowLvl;
+      localStorage.setItem('f', food);
+      localStorage.setItem('hp', hp);
+      localStorage.setItem('lvl', lvl);
+      localStorage.setItem('blvl', burrowLvl);
     }
     updateUI();
 
-    window.setSpecies = function(idx) {
-      currentSpeciesIdx = idx;
-      document.querySelectorAll('.species-btn').forEach((b, i) => {
-        b.classList.toggle('active', i === idx);
-      });
-      log(`Вы перевоплотились в ${speciesList[idx].name}!`);
-      updateUI();
-    };
-
-    // Тап по миру для движения и взаимодействия
+    // Управление тапами по игровому холсту
     canvas.addEventListener('click', (e) => {
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
-      const x = (e.clientX - rect.left) * scaleX;
-      const y = (e.clientY - rect.top) * scaleY;
-
-      player.targetX = x;
-      player.targetY = y;
-
-      // Проверка клика по объектам мира
-      worldObjects.forEach(obj => {
-        let dist = Math.hypot(x - obj.x, y - obj.y);
-        if (dist < 28) {
-          interactWithObject(obj);
-        }
-      });
+      player.targetX = (e.clientX - rect.left) * scaleX;
+      player.targetY = (e.clientY - rect.top) * scaleY;
     });
 
-    function interactWithObject(obj) {
-      if (obj.type === 'food') {
-        food += 5 * playerLevel;
-        log(`🍓 Вы нашли пропитание (+${5 * playerLevel} мяса/ресурсов)`);
-        obj.x = Math.random() * 320 + 40;
-        obj.y = Math.random() * 100 + 100;
-      } else if (obj.type === 'prey') {
-        food += 10;
-        log(`🪱 Успешная охота! Добыта еда (+10)`);
-        obj.x = Math.random() * 320 + 40;
-        obj.y = Math.random() * 100 + 100;
-      } else if (obj.type === 'cave' || obj.type === 'nest') {
-        // Уровень пещер: шанс съесть или быть съеденным
-        let roll = Math.random();
-        if (roll > 0.4) {
-          let reward = 15 * playerLevel;
-          food += reward;
-          playerLevel++;
-          log(`⚔️ Рейд удался! Вы зачистили ${obj.label}, +${reward} еды, рост уровня! 🎉`);
-          if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        } else {
-          hp -= 20;
-          log(`⚠️ В ${obj.label} вас встретил сильный хищник! Получен урон (-20 HP).`);
-          if (hp <= 0) {
-            hp = 100;
-            food = Math.max(0, food - 15);
-            log(`💀 Вы погибли в схватке и возродились в норке...`);
-          }
-          if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-        }
-      } else if (obj.type === 'burrow') {
-        hp = Math.min(100, hp + 30);
-        log(`🏠 Вы отдохнули в безопасной норке. Здоровье восстановлено!`);
-      }
-      updateUI();
-    }
-
-    // Игровой цикл рендеринга
+    // Игровой цикл анимации и логики
     function gameLoop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Плавное движение персонажа к точке тапа
+      let dx = player.targetX - player.x;
+      let dy = player.targetY - player.y;
+      let dist = Math.hypot(dx, dy);
+      if (dist > 2) {
+        player.x += (dx / dist) * player.speed;
+        player.y += (dy / dist) * player.speed;
+      }
 
-      // Лесной фон (трава и земля)
-      ctx.fillStyle = '#1e3827';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Тропинки
-      ctx.fillStyle = '#14271c';
-      ctx.beginPath();
-      ctx.ellipse(200, 110, 180, 70, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Отрисовка объектов мира (норки, пещеры, еда)
-      worldObjects.forEach(obj => {
-        ctx.font = '22px sans-serif';
-        ctx.fillText(obj.emoji, obj.x - 11, obj.y + 8);
-        ctx.font = '9px sans-serif';
-        ctx.fillStyle = '#a3e4c1';
-        ctx.fillText(obj.label, obj.x - 22, obj.y + 22);
+      // Проверка столкновений с объектами мира
+      worldItems.forEach(item => {
+        if (Math.hypot(player.x - item.x, player.y - item.y) < 26) {
+          if (item.type === 'food') {
+            food += item.val;
+            log(`🍓 Добыта еда (+${item.val} еды)`);
+            item.x = Math.random() * 320 + 40;
+            item.y = Math.random() * 160 + 40;
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            updateUI();
+          } else if (item.type === 'burrow') {
+            hp = Math.min(100, hp + 30);
+            log(`🕳️ Вы отдохнули в норке. Здоровье восстановлено.`);
+            player.targetX = player.x; player.targetY = player.y;
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            updateUI();
+          } else if (item.type === 'cave') {
+            let success = Math.random() > 0.45;
+            if (success) {
+              food += 15 * lvl;
+              lvl++;
+              log(`🎉 Успешный рейд! Прорыв в эволюции, уровень ${lvl}!`);
+              if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            } else {
+              hp -= 25;
+              log(`⚠️ В пещере столкновение с хищником! Урон -25 HP.`);
+              if (hp <= 0) {
+                hp = 100; food = Math.max(0, food - 10);
+                log(`💀 Вы погибли в схватке и возродились в норке.`);
+              }
+            }
+            player.x = 90; player.y = 190; player.targetX = 90; player.targetY = 190;
+            updateUI();
+          }
+        }
       });
 
-      // Плавное движение игрока к точке тапа
-      player.x += (player.targetX - player.x) * 0.1;
-      player.y += (player.targetY - player.y) * 0.1;
+      // Рендеринг графики на Canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Отрисовка персонажа игрока
-      let spec = speciesList[currentSpeciesIdx];
-      ctx.font = '26px sans-serif';
-      ctx.fillText(spec.icon, player.x - 12, player.y + 8);
+      // Лесная поляна
+      ctx.fillStyle = '#173322';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Отрисовка объектов (еда, норки, пещеры)
+      worldItems.forEach(item => {
+        ctx.font = '24px sans-serif';
+        ctx.fillText(item.emoji, item.x - 12, item.y + 8);
+      });
+
+      // Отрисовка бегущего игрока
+      ctx.font = '28px sans-serif';
+      ctx.fillText('🐁', player.x - 14, player.y + 10);
 
       requestAnimationFrame(gameLoop);
     }
     requestAnimationFrame(gameLoop);
 
     window.upgradeBurrow = function() {
-      let cost = burrowLevel * 15;
+      let cost = burrowLvl * 20;
       if (food >= cost) {
         food -= cost;
-        burrowLevel++;
-        log(`🏡 Ваша нора улучшена до Ур. ${burrowLevel}! Уютнее и безопаснее.`);
+        burrowLvl++;
+        log(`🏡 Норка улучшена до Ур. ${burrowLvl}!`);
         updateUI();
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
       } else {
-        log(`❌ Не хватает еды (${food}/${cost}) для улучшения норы!`);
+        log(`❌ Недостаточно еды (${food}/${cost}) для улучшения.`);
       }
     };
   </script>
