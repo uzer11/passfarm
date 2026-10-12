@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+python3 -c '
+html = """<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -7,217 +8,34 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
-    body {
-      background: linear-gradient(135deg, #05070e 0%, #0e1326 50%, #060812 100%);
-      color: #f3ebd8;
-      font-family: 'Georgia', serif;
-      margin: 0;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      user-select: none;
-      position: relative;
-    }
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-image: radial-gradient(white 1px, transparent 0);
-      background-size: 30px 30px;
-      opacity: 0.1;
-      pointer-events: none;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 1;
-    }
-    
-    header {
-      text-align: center;
-      padding: 8px 4px;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-    }
-    h1 {
-      margin: 0;
-      font-size: 18px;
-      color: #f0cb69;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    .subtitle {
-      font-size: 10px;
-      color: #a89bb8;
-      margin-top: 2px;
-      font-style: italic;
-    }
-
-    .card {
-      background: rgba(15, 20, 36, 0.92);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      border-radius: 12px;
-      padding: 14px;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.6);
-    }
-    
-    label {
-      font-size: 11px;
-      color: #d1c4a8;
-      display: block;
-      margin-bottom: 4px;
-    }
-    input {
-      width: 100%;
-      background: rgba(7, 10, 18, 0.95);
-      border: 1px solid #4a3e75;
-      border-radius: 8px;
-      padding: 9px 10px;
-      color: #f3ebd8;
-      font-size: 13px;
-      font-family: inherit;
-      margin-bottom: 10px;
-      outline: none;
-    }
+    body { background: linear-gradient(135deg, #05070e 0%, #0e1326 50%, #060812 100%); color: #f3ebd8; font-family: Georgia, serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; position: relative; }
+    body::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(white 1px, transparent 0); background-size: 30px 30px; opacity: 0.1; pointer-events: none; }
+    .container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; z-index: 1; }
+    header { text-align: center; padding: 8px 4px; border-bottom: 1px solid rgba(212, 175, 55, 0.25); }
+    h1 { margin: 0; font-size: 18px; color: #f0cb69; letter-spacing: 1px; text-transform: uppercase; }
+    .subtitle { font-size: 10px; color: #a89bb8; margin-top: 2px; font-style: italic; }
+    .card { background: rgba(15, 20, 36, 0.92); backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 14px; box-shadow: 0 6px 25px rgba(0,0,0,0.6); }
+    label { font-size: 11px; color: #d1c4a8; display: block; margin-bottom: 4px; }
+    input { width: 100%; background: rgba(7, 10, 18, 0.95); border: 1px solid #4a3e75; border-radius: 8px; padding: 9px 10px; color: #f3ebd8; font-size: 13px; font-family: inherit; margin-bottom: 10px; outline: none; }
     input:focus { border-color: #f0cb69; }
-
-    .date-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1.3fr 1fr;
-      gap: 6px;
-    }
-
-    .btn {
-      width: 100%;
-      background: linear-gradient(135deg, #f0cb69, #b8860b);
-      color: #05070e;
-      border: none;
-      border-radius: 8px;
-      padding: 11px;
-      font-size: 12px;
-      font-weight: bold;
-      font-family: inherit;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 12px rgba(240, 203, 105, 0.25);
-    }
+    .date-grid { display: grid; grid-template-columns: 1fr 1fr 1.3fr 1fr; gap: 6px; }
+    .btn { width: 100%; background: linear-gradient(135deg, #f0cb69, #b8860b); color: #05070e; border: none; border-radius: 8px; padding: 11px; font-size: 12px; font-weight: bold; font-family: inherit; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(240, 203, 105, 0.25); }
     .btn:active { transform: scale(0.97); }
-
-    .btn-premium {
-      background: linear-gradient(135deg, #b8860b, #4a3e75);
-      color: #f3ebd8;
-      border: 1px solid #f0cb69;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
+    .btn-premium { background: linear-gradient(135deg, #b8860b, #4a3e75); color: #f3ebd8; border: 1px solid #f0cb69; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .screen { display: none; }
     .screen.active { display: block; }
-
-    .periods-bar {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 4px;
-      margin-bottom: 10px;
-    }
-    .period-tab {
-      background: rgba(8, 11, 20, 0.85);
-      border: 1px solid #3c325c;
-      border-radius: 7px;
-      padding: 7px 2px;
-      font-size: 10px;
-      color: #d1c4a8;
-      text-align: center;
-      cursor: pointer;
-      font-family: sans-serif;
-    }
-    .period-tab.active {
-      background: #f0cb69;
-      color: #05070e;
-      font-weight: bold;
-      border-color: #f0cb69;
-    }
-    .period-tab.premium-tab {
-      border-color: #f0cb69;
-      background: rgba(240, 203, 105, 0.15);
-      color: #f0cb69;
-    }
-    .period-tab.premium-tab.active {
-      background: linear-gradient(135deg, #f0cb69, #b8860b);
-      color: #05070e;
-    }
-
-    .number-circle {
-      width: 50px;
-      height: 50px;
-      background: radial-gradient(circle, #222a4a, #0d1222);
-      border: 2px solid #f0cb69;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      color: #f0cb69;
-      font-weight: bold;
-      margin: 0 auto 8px auto;
-      box-shadow: 0 0 15px rgba(240, 203, 105, 0.2);
-    }
-    .forecast-title {
-      font-size: 13px;
-      color: #f0cb69;
-      text-align: center;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
-    .forecast-text {
-      font-size: 12px;
-      line-height: 1.5;
-      color: #e6ded1;
-      margin-bottom: 8px;
-      background: rgba(8, 11, 20, 0.85);
-      padding: 12px;
-      border-radius: 8px;
-      border-left: 3px solid #f0cb69;
-    }
-
-    .sphere-section {
-      background: rgba(8, 11, 20, 0.85);
-      border: 1px solid #3c325c;
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-    .sphere-section h4 {
-      margin: 0 0 6px 0;
-      font-size: 12px;
-      color: #f0cb69;
-      border-bottom: 1px solid rgba(212,175,55,0.2);
-      padding-bottom: 4px;
-    }
-    .sphere-section p {
-      margin: 0;
-      font-size: 11.5px;
-      color: #d8cebc;
-      line-height: 1.5;
-    }
-    .version-footer {
-      text-align: center;
-      font-size: 12px;
-      color: #f0cb69;
-      margin-top: 8px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-    }
+    .periods-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 10px; }
+    .period-tab { background: rgba(8, 11, 20, 0.85); border: 1px solid #3c325c; border-radius: 7px; padding: 7px 2px; font-size: 10px; color: #d1c4a8; text-align: center; cursor: pointer; }
+    .period-tab.active { background: #f0cb69; color: #05070e; font-weight: bold; border-color: #f0cb69; }
+    .period-tab.premium-tab { border-color: #f0cb69; background: rgba(240, 203, 105, 0.15); color: #f0cb69; }
+    .period-tab.premium-tab.active { background: linear-gradient(135deg, #f0cb69, #b8860b); color: #05070e; }
+    .number-circle { width: 50px; height: 50px; background: radial-gradient(circle, #222a4a, #0d1222); border: 2px solid #f0cb69; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #f0cb69; font-weight: bold; margin: 0 auto 8px auto; box-shadow: 0 0 15px rgba(240, 203, 105, 0.2); }
+    .forecast-title { font-size: 13px; color: #f0cb69; text-align: center; margin-bottom: 6px; font-weight: bold; }
+    .forecast-text { font-size: 12px; line-height: 1.5; color: #e6ded1; margin-bottom: 8px; background: rgba(8, 11, 20, 0.85); padding: 12px; border-radius: 8px; border-left: 3px solid #f0cb69; }
+    .sphere-section { background: rgba(8, 11, 20, 0.85); border: 1px solid #3c325c; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+    .sphere-section h4 { margin: 0 0 6px 0; font-size: 12px; color: #f0cb69; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 4px; }
+    .sphere-section p { margin: 0; font-size: 11.5px; color: #d8cebc; line-height: 1.5; }
+    .version-footer { text-align: center; font-size: 15px; color: #f0cb69; margin-top: 10px; font-weight: bold; letter-spacing: 1px; }
   </style>
 </head>
 <body>
@@ -227,148 +45,111 @@
       <div class="subtitle">Глубокая нумерологическая матрица</div>
     </header>
 
-    <!-- СТРАНИЦА 1: Ввод данных -->
     <div class="card screen active" id="inputScreen">
       <label for="userName">Ваше полное имя:</label>
       <input type="text" id="userName" placeholder="Например: Александр">
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div>
-          <label style="font-size:8px;">День (1-31)</label>
-          <input type="number" id="bDay" placeholder="ДД" min="1" max="31" maxlength="2">
-        </div>
-        <div>
-          <label style="font-size:8px;">Месяц (1-12)</label>
-          <input type="number" id="bMonth" placeholder="ММ" min="1" max="12" maxlength="2">
-        </div>
-        <div>
-          <label style="font-size:8px;">Год (1900+)</label>
-          <input type="number" id="bYear" placeholder="ГГГГ" min="1900" max="2026" maxlength="4">
-        </div>
-        <div>
-          <label style="font-size:8px;">Час (1-12)</label>
-          <input type="number" id="bHour" placeholder="1-12" min="1" max="12" maxlength="2">
-        </div>
+        <div><label style="font-size:8px;">День (1-31)</label><input type="number" id="bDay" placeholder="ДД" min="1" max="31" maxlength="2"></div>
+        <div><label style="font-size:8px;">Месяц (1-12)</label><input type="number" id="bMonth" placeholder="ММ" min="1" max="12" maxlength="2"></div>
+        <div><label style="font-size:8px;">Год (1900+)</label><input type="number" id="bYear" placeholder="ГГГГ" min="1900" max="2026" maxlength="4"></div>
+        <div><label style="font-size:8px;">Час (1-12)</label><input type="number" id="bHour" placeholder="1-12" min="1" max="12" maxlength="2"></div>
       </div>
 
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
 
-    <!-- СТРАНИЦА 2: Бесплатный обзор -->
     <div class="card screen" id="homeScreen">
-      <button class="btn btn-premium" onclick="openPremiumScreen()">
-        ⭐ Открыть Полный Развёрнутый Отчёт (Все 5 сфер + Имя)
-      </button>
-
+      <button class="btn btn-premium" onclick="openPremiumScreen()">⭐ Открыть Полный Развёрнутый Отчёт (Все 5 сфер + Имя)</button>
       <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовый обзор:</div>
       <div class="periods-bar">
-        <div class="period-tab active" onclick="selectFreeForecast('life', 0, this)">Общий</div>
-        <div class="period-tab" onclick="selectFreeForecast('week', 1, this)">Неделя</div>
-        <div class="period-tab" onclick="selectFreeForecast('month', 2, this)">Месяц</div>
-        <div class="period-tab" onclick="selectFreeForecast('year', 3, this)">Год</div>
+        <div class="period-tab active" onclick="selectFreeForecast(\x27life\x27, 0, this)">Общий</div>
+        <div class="period-tab" onclick="selectFreeForecast(\x27week\x27, 1, this)">Неделя</div>
+        <div class="period-tab" onclick="selectFreeForecast(\x27month\x27, 2, this)">Месяц</div>
+        <div class="period-tab" onclick="selectFreeForecast(\x27year\x27, 3, this)">Год</div>
       </div>
-
       <div class="number-circle" id="freeNumDisplay">7</div>
       <div class="forecast-title" id="freeForecastTitle">Заголовок</div>
       <div class="forecast-text" id="freeForecastText">Текст...</div>
-
       <button class="btn" onclick="goToInput()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 6px; font-size: 11px; padding: 8px;">Изменить данные</button>
     </div>
 
-    <!-- СТРАНИЦА 3: Премиум-отчет -->
     <div class="card screen" id="premiumScreen">
-      <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">
-        ⬅️ Назад к базам прогнозов
-      </button>
-
+      <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">⬅️ Назад к базам прогнозов</button>
       <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Глубокий премиум-отчёт:</div>
       <div class="periods-bar">
-        <div class="period-tab premium-tab active" onclick="selectPremForecast('life_prem', 4, this)">⭐ Общий</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast('week_prem', 5, this)">⭐ Неделя</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast('month_prem', 6, this)">⭐ Месяц</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast('year_prem', 7, this)">⭐ Год</div>
+        <div class="period-tab premium-tab active" onclick="selectPremForecast(\x27life_prem\x27, 4, this)">⭐ Общий</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27week_prem\x27, 5, this)">⭐ Неделя</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27month_prem\x27, 6, this)">⭐ Месяц</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27year_prem\x27, 7, this)">⭐ Год</div>
       </div>
-
       <div class="number-circle" id="premNumDisplay">7</div>
       <div class="forecast-title" id="premForecastTitle">Премиум Заголовок</div>
-      
       <div id="premSpheresContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v7.0 (Stable)</div>
+    <div class="version-footer">Оракул Звёзд v7.2</div>
   </div>
 
   <script>
     let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-    if (tg) {
-      try { tg.expand(); } catch(e) {}
-    }
+    if (tg) { try { tg.expand(); } catch(e) {} }
 
-    let userData = { name: '', day: 1, month: 1, year: 2000, hour: 12 };
+    let userData = { name: \x27\x27, day: 1, month: 1, year: 2000, hour: 12 };
 
-    // Автоматический переход между полями ввода при наборе чисел
     document.addEventListener("DOMContentLoaded", function() {
-      const bDay = document.getElementById('bDay');
-      const bMonth = document.getElementById('bMonth');
-      const bYear = document.getElementById('bYear');
-      const bHour = document.getElementById('bHour');
-
-      bDay.addEventListener('input', function() {
-        if (this.value.length >= 2) bMonth.focus();
-      });
-      bMonth.addEventListener('input', function() {
-        if (this.value.length >= 2) bYear.focus();
-      });
-      bYear.addEventListener('input', function() {
-        if (this.value.length >= 4) bHour.focus();
-      });
+      const bDay = document.getElementById(\x27bDay\x27);
+      const bMonth = document.getElementById(\x27bMonth\x27);
+      const bYear = document.getElementById(\x27bYear\x27);
+      const bHour = document.getElementById(\x27bHour\x27);
+      if(bDay && bMonth && bYear && bHour) {
+        bDay.addEventListener(\x27input\x27, function() { if (this.value.length >= 2) bMonth.focus(); });
+        bMonth.addEventListener(\x27input\x27, function() { if (this.value.length >= 2) bYear.focus(); });
+        bYear.addEventListener(\x27input\x27, function() { if (this.value.length >= 4) bHour.focus(); });
+      }
     });
 
     const letterMap = {
-      'а': 1, 'и': 1, 'с': 1, 'ъ': 1,
-      'б': 2, 'й': 2, 'т': 2, 'ы': 2,
-      'в': 3, 'к': 3, 'у': 3, 'ь': 3,
-      'г': 4, 'л': 4, 'ф': 4, 'э': 4,
-      'д': 5, 'м': 5, 'х': 5, 'ю': 5,
-      'е': 6, 'н': 6, 'ц': 6, 'я': 6,
-      'ё': 7, 'о': 7, 'ч': 7,
-      'ж': 8, 'п': 8, 'ш': 8,
-      'з': 9, 'р': 9, 'щ': 9
+      \x27а\x27: 1, \x27и\x27: 1, \x27с\x27: 1, \x27ъ\x27: 1,
+      \x27б\x27: 2, \x27й\x27: 2, \x27т\x27: 2, \x27ы\x27: 2,
+      \x27в\x27: 3, \x27к\x27: 3, \x27у\x27: 3, \x27ь\x27: 3,
+      \x27г\x27: 4, \x27л\x27: 4, \x27ф\x27: 4, \x27э\x27: 4,
+      \x27д\x27: 5, \x27м\x27: 5, \x27х\x27: 5, \x27ю\x27: 5,
+      \x27е\x27: 6, \x27н\x27: 6, \x27ц\x27: 6, \x27я\x27: 6,
+      \x27ё\x27: 7, \x27о\x27: 7, \x27ч\x27: 7,
+      \x27ж\x27: 8, \x27п\x27: 8, \x27ш\x27: 8,
+      \x27з\x27: 9, \x27р\x27: 9, \x27щ\x27: 9
     };
 
     function reduceToSingle(num) {
       while (num > 9 && num !== 11 && num !== 22) {
-        num = num.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+        num = num.toString().split(\x27\x27).map(Number).reduce((a, b) => a + b, 0);
       }
       return num;
     }
 
     function calculateNameNumber(name) {
       let sum = 0;
-      name.toLowerCase().split('').forEach(char => {
-        if (letterMap[char]) {
-          sum += letterMap[char];
-        }
+      name.toLowerCase().split(\x27\x27).forEach(char => {
+        if (letterMap[char]) { sum += letterMap[char]; }
       });
       if (sum === 0) sum = 5;
       return reduceToSingle(sum);
     }
 
     function showScreen(screenId) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll(\x27.screen\x27).forEach(s => s.classList.remove(\x27active\x27));
       let target = document.getElementById(screenId);
-      if (target) {
-        target.classList.add('active');
-      }
+      if (target) { target.classList.add(\x27active\x27); }
     }
 
     function calculateAndOpenHome() {
-      const nameInput = document.getElementById('userName').value.trim();
-      const dayInput = parseInt(document.getElementById('bDay').value);
-      const monthInput = parseInt(document.getElementById('bMonth').value);
-      const yearInput = parseInt(document.getElementById('bYear').value);
-      const hourInput = parseInt(document.getElementById('bHour').value);
+      const nameInput = document.getElementById(\x27userName\x27).value.trim();
+      const dayInput = parseInt(document.getElementById(\x27bDay\x27).value);
+      const monthInput = parseInt(document.getElementById(\x27bMonth\x27).value);
+      const yearInput = parseInt(document.getElementById(\x27bYear\x27).value);
+      const hourInput = parseInt(document.getElementById(\x27bHour\x27).value);
 
       if (!nameInput || isNaN(dayInput) || isNaN(monthInput) || isNaN(yearInput)) {
         alert("Пожалуйста, заполните имя, день, месяц и год рождения.");
@@ -383,39 +164,34 @@
         hour: isNaN(hourInput) ? 12 : hourInput 
       };
 
-      showScreen('homeScreen');
-      selectFreeForecast('life', 0, document.querySelector('#homeScreen .periods-bar .period-tab'));
+      showScreen(\x27homeScreen\x27);
+      selectFreeForecast(\x27life\x27, 0, document.querySelector(\x27#homeScreen .periods-bar .period-tab\x27));
     }
 
     function selectFreeForecast(type, offset, element) {
-      document.querySelectorAll('#homeScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
-      if (element) element.classList.add('active');
+      document.querySelectorAll(\x27#homeScreen .periods-bar .period-tab\x27).forEach(t => t.classList.remove(\x27active\x27));
+      if (element) element.classList.add(\x27active\x27);
 
       let dateSum = userData.day + userData.month + userData.year + userData.hour;
       let nameNum = calculateNameNumber(userData.name);
       let num = reduceToSingle(dateSum + nameNum + offset);
 
-      document.getElementById('freeNumDisplay').innerText = num;
+      document.getElementById(\x27freeNumDisplay\x27).innerText = num;
 
       let title = `Базовый обзор (${userData.name}, код ${num})`;
       let text = `Ваш персональный нумерологический код (${num}) указывает на сильный потенциал самореализации. В этот период Вселенная акцентирует внимание на принятии важных решений, балансе между внутренним «Я» и внешним миром. Чтобы узнать подробный разбор по всем сферам (любовь, семья, работа, здоровье, карма) и глубокий анализ вашего имени, откройте полный премиум-отчёт выше.`;
 
-      document.getElementById('freeForecastTitle').innerText = title;
-      document.getElementById('freeForecastText').innerText = text;
+      document.getElementById(\x27freeForecastTitle\x27).innerText = title;
+      document.getElementById(\x27freeForecastText\x27).innerText = text;
     }
 
     function openPremiumScreen() {
-      showScreen('premiumScreen');
-      selectPremForecast('life_prem', 4, document.querySelector('#premiumScreen .periods-bar .period-tab'));
+      showScreen(\x27premiumScreen\x27);
+      selectPremForecast(\x27life_prem\x27, 4, document.querySelector(\x27#premiumScreen .periods-bar .period-tab\x27));
     }
 
-    function backToHome() {
-      showScreen('homeScreen');
-    }
-
-    function goToInput() {
-      showScreen('inputScreen');
-    }
+    function backToHome() { showScreen(\x27homeScreen\x27); }
+    function goToInput() { showScreen(\x27inputScreen\x27); }
 
     const detailedBanks = {
       love: {
@@ -487,7 +263,31 @@
     };
 
     function selectPremForecast(type, offset, element) {
-      document.querySelectorAll('#premiumScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
-      if (element) element.classList.add('active');
+      document.querySelectorAll(\x27#premiumScreen .periods-bar .period-tab\x27).forEach(t => t.classList.remove(\x27active\x27));
+      if (element) element.classList.add(\x27active\x27);
 
-      let dateSum = userData.d
+      let dateSum = userData.day + userData.month + userData.year + userData.hour;
+      let nameNum = calculateNameNumber(userData.name);
+      let num = reduceToSingle(dateSum + nameNum + offset);
+
+      document.getElementById(\x27premNumDisplay\x27).innerText = num;
+      let textIndex = ((num - 1) % 9) + 1;
+
+      let title = "";
+      let periodDesc = "";
+
+      if (type === \x27life_prem\x27) {
+        title = `⭐ Глубокий разбор Судьбы (${userData.name})`;
+        periodDesc = "на весь жизненный путь";
+      } else if (type === \x27week_prem\x27) {
+        title = `⭐ Детальный отчёт на Неделю`;
+        periodDesc = "на текущую неделю";
+      } else if (type === \x27month_prem\x27) {
+        title = `⭐ Стратегический прогноз на Месяц`;
+        periodDesc = "на текущий месяц";
+      } else if (type === \x27year_prem\x27) {
+        title = `⭐ Масштабный путеводитель на Год`;
+        periodDesc = "на текущий год";
+      }
+
+      document.getElementById(\x27premForecastTitl
