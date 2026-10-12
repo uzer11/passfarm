@@ -3,310 +3,305 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PassFarm: Живой Дикий Запад</title>
+  <title>PassFarm: Дикий Запад</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
-      background-color: #15100e;
+      background-color: #150e0a;
       color: #f3e5ab;
       font-family: 'Courier New', Courier, monospace;
       margin: 0;
-      padding: 8px;
+      padding: 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
       user-select: none;
-      overflow-x: hidden;
+      overflow: hidden;
     }
     .container {
       width: 100%;
       max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
     header {
-      background: #251b16;
+      background: #251811;
       border: 2px solid #8c6239;
       border-radius: 8px;
-      padding: 8px;
-      margin-bottom: 8px;
+      padding: 6px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .username { font-size: 15px; color: #ffcc00; font-weight: bold; }
-    .stats { font-size: 13px; }
-
-    /* Живая сцена ранчо (холст анимации) */
-    .ranch-scene {
-      position: relative;
-      width: 100%;
-      height: 180px;
-      background: linear-gradient(to bottom, #4a3319, #2c1d11);
+    .username { font-size: 14px; color: #ffcc00; font-weight: bold; }
+    .stats { font-size: 12px; display: flex; gap: 8px; }
+    
+    /* Интерактивный игровой холст (настоящая игра) */
+    #gameCanvas {
+      background: #3c5e2a;
       border: 3px solid #8c6239;
       border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 8px;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+      width: 100%;
+      height: 210px;
+      touch-action: none;
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
     }
-    .sky-sun {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 24px;
-    }
-    /* Анимированные элементы */
-    @keyframes moveHorse {
-      0% { transform: translateX(-30px); }
-      50% { transform: translateX(30px) scaleX(-1); }
-      100% { transform: translateX(-30px); }
-    }
-    @keyframes moveChicken {
-      0% { transform: translateX(0px); }
-      50% { transform: translateX(80px); }
-      100% { transform: translateX(0px); }
-    }
-    @keyframes smokeRise {
-      0% { transform: translateY(0) scale(1); opacity: 0.8; }
-      100% { transform: translateY(-30px) scale(1.5); opacity: 0; }
-    }
-    .horse {
-      position: absolute;
-      bottom: 25px;
-      left: 30px;
-      font-size: 28px;
-      animation: moveHorse 8s infinite ease-in-out;
-    }
-    .chicken {
-      position: absolute;
-      bottom: 10px;
-      left: 150px;
-      font-size: 20px;
-      animation: moveChicken 5s infinite alternate ease-in-out;
-    }
-    .forge-smoke {
-      position: absolute;
-      top: 40px;
-      left: 280px;
-      font-size: 14px;
-      animation: smokeRise 2s infinite linear;
-    }
-    .building-icon {
-      position: absolute;
-      font-size: 32px;
-    }
-    .field-pos { bottom: 20px; left: 90px; }
-    .ranch-pos { bottom: 20px; left: 15px; }
-    .hut-pos   { top: 20px; right: 80px; }
-    .tower-pos { top: 15px; right: 15px; font-size: 36px; }
 
-    /* Панель караула */
-    .guard-panel {
-      background: #2b1f18;
-      border: 1px solid #b8860b;
-      border-radius: 6px;
-      padding: 6px;
-      margin-bottom: 8px;
+    .panel {
+      background: #221610;
+      border: 2px solid #8c6239;
+      border-radius: 8px;
+      padding: 6px 8px;
+    }
+    .guard-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
+      font-size: 11px;
     }
-    .guard-btn {
-      padding: 4px 8px;
+    .btn {
       background: #8b4513;
       color: #fff;
       border: 1px solid #d2b48c;
       border-radius: 4px;
+      padding: 4px 8px;
       font-weight: bold;
       cursor: pointer;
       font-size: 11px;
     }
+    .btn:active { transform: scale(0.95); }
 
-    /* Участки фермы */
-    .farm-grid {
+    .buildings-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-bottom: 8px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
     }
-    .plot {
-      background: #221813;
-      border: 2px solid #6b4423;
+    .b-card {
+      background: #19100c;
+      border: 1px solid #6b4423;
       border-radius: 6px;
-      padding: 6px;
+      padding: 4px;
       text-align: center;
-    }
-    .plot-title { font-size: 11px; color: #d2b48c; }
-    .plot-level { font-size: 13px; font-weight: bold; color: #ffa500; margin: 2px 0; }
-    .upgrade-btn {
-      background: #cd853f;
-      color: #15100e;
-      border: none;
-      border-radius: 4px;
-      padding: 3px 6px;
       font-size: 10px;
+    }
+    .b-card b { color: #ffa500; display: block; font-size: 11px; margin: 2px 0; }
+    .b-card button {
+      background: #cd853f;
+      border: none;
+      color: #150e0a;
       font-weight: bold;
-      cursor: pointer;
+      border-radius: 3px;
+      padding: 3px;
+      font-size: 9px;
       width: 100%;
-    }
-
-    /* Большая кнопка сбора */
-    .action-section {
-      background: #251b16;
-      border: 2px solid #8c6239;
-      border-radius: 8px;
-      padding: 8px;
-      text-align: center;
-    }
-    .main-btn {
-      background: linear-gradient(135deg, #d2691e, #8b4513);
-      color: #fff;
-      border: 2px solid #ffcc00;
-      border-radius: 50%;
-      width: 85px;
-      height: 85px;
-      font-size: 32px;
       cursor: pointer;
-      margin: 6px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
     }
-    .main-btn:active { transform: scale(0.93); }
+    .hint-text {
+      text-align: center;
+      font-size: 10px;
+      color: #d2b48c;
+      margin-top: -2px;
+    }
   </style>
 </head>
 <body>
-
   <div class="container">
     <header>
       <div id="username" class="username">Шериф</div>
-      <div class="stats">🌾 <b id="score">0</b> | ⭐ <b id="stars">10</b></div>
+      <div class="stats">
+        <span>🌾 <b id="score">30</b></span>
+        <span>⭐ <b id="stars">10</b></span>
+      </div>
     </header>
 
-    <!-- ЖИВАЯ СЦЕНА РАНЧО -->
-    <div class="ranch-scene">
-      <div class="sky-sun">☀️</div>
-      <!-- Графические элементы ранчо -->
-      <div class="building-icon ranch-pos">🏡</div>
-      <div class="building-icon field-pos">🌽</div>
-      <div class="building-icon hut-pos">🛖</div>
-      <div class="building-icon tower-pos">🔭</div>
+    <!-- Игровой движок (Canvas) -->
+    <canvas id="gameCanvas" width="400" height="210"></canvas>
+    <div class="hint-text">💡 Нажимайте прямо на грядки на ферме, чтобы сажать и собирать урожай!</div>
 
-      <!-- Живые анимированные обитатели -->
-      <div class="horse">🐎</div>
-      <div class="chicken">🐓</div>
-      <div class="chicken" style="left: 200px; animation-duration: 4s;">🐔</div>
-      <div class="forge-smoke">💨</div>
+    <!-- Караул -->
+    <div class="panel guard-row">
+      <div>🛡️ Караул заставы: <b id="guardTimer">05:00:00</b></div>
+      <button class="btn" id="renewGuardBtn">Сменить (Налог)</button>
     </div>
 
-    <!-- Караул и Налог -->
-    <div class="guard-panel">
-      <div>🛡️ Караул: <b id="guardTimer">05:00:00</b></div>
-      <button id="renewGuardBtn" class="guard-btn">🔄 Сменить (Налог)</button>
-    </div>
-
-    <!-- Участки фермы -->
-    <div class="farm-grid">
-      <div class="plot">
-        <div class="plot-title">🌽 Плантация</div>
-        <div class="plot-level" id="level0">Ур. 1</div>
-        <button class="upgrade-btn" onclick="upgradePlot(0)">Улучшить (5 🌾)</button>
+    <!-- Улучшения построек -->
+    <div class="panel">
+      <div style="font-size: 11px; margin-bottom: 4px; color: #d2b48c; text-align: center;">⚙️ Улучшения ранчо</div>
+      <div class="buildings-grid">
+        <div class="b-card">
+          🌽 Поля<b id="lvl0">Ур. 1</b>
+          <button onclick="upgrade(0)">Улучшить</button>
+        </div>
+        <div class="b-card">
+          🐂 Загон<b id="lvl1">Уr. 1</b>
+          <button onclick="upgrade(1)">Улучшить</button>
+        </div>
+        <div class="b-card">
+          🛖 Кузня<b id="lvl2">Ур. 1</b>
+          <button onclick="upgrade(2)">Улучшить</button>
+        </div>
+        <div class="b-card">
+          🔭 Вышка<b id="lvl3">Ур. 1</b>
+          <button onclick="upgrade(3)">Улучшить</button>
+        </div>
       </div>
-      <div class="plot">
-        <div class="plot-title">🐂 Загон скота</div>
-        <div class="plot-level" id="level1">Ур. 1</div>
-        <button class="upgrade-btn" onclick="upgradePlot(1)">Улучшить (10 🌾)</button>
-      </div>
-      <div class="plot">
-        <div class="plot-title">🛖 Кузня/Хижина</div>
-        <div class="plot-level" id="level2">Ур. 1</div>
-        <button class="upgrade-btn" onclick="upgradePlot(2)">Улучшить (15 🌾)</button>
-      </div>
-      <div class="plot">
-        <div class="plot-title">🔭 Дозорная вышка</div>
-        <div class="plot-level" id="level3">Ур. 1</div>
-        <button class="upgrade-btn" onclick="upgradePlot(3)">Улучшить (20 🌾)</button>
-      </div>
-    </div>
-
-    <!-- Кнопка сбора -->
-    <div class="action-section">
-      <div style="font-size: 12px;">Собрать урожай с ранчо</div>
-      <div id="farmBtn" class="main-btn">🌾</div>
     </div>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
-
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
       document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
     }
 
-    let score = parseInt(localStorage.getItem('pass_farm_score')) || 0;
-    let stars = parseInt(localStorage.getItem('pass_farm_stars')) || 10;
-    let levels = JSON.parse(localStorage.getItem('pass_farm_levels')) || [1, 1, 1, 1];
+    let score = parseInt(localStorage.getItem('pf_score')) || 30;
+    let stars = parseInt(localStorage.getItem('pf_stars')) || 10;
+    let levels = JSON.parse(localStorage.getItem('pf_levels')) || [1, 1, 1, 1];
 
-    function updateDisplay() {
+    // Интерактивные грядки на ферме
+    let plots = [
+      {x: 60, y: 70, state: 'ready', progress: 100},
+      {x: 140, y: 70, state: 'growing', progress: 30},
+      {x: 220, y: 70, state: 'empty', progress: 0},
+      {x: 100, y: 140, state: 'growing', progress: 60},
+      {x: 180, y: 140, state: 'ready', progress: 100}
+    ];
+
+    // Бегающие животные
+    let animals = [
+      {x: 50, y: 170, vx: 0.6, type: 'horse'},
+      {x: 260, y: 160, vx: -0.5, type: 'chicken'},
+      {x: 300, y: 175, vx: 0.4, type: 'chicken'}
+    ];
+
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function updateUI() {
       document.getElementById('score').innerText = score;
       document.getElementById('stars').innerText = stars;
-      for (let i = 0; i < 4; i++) {
-        document.getElementById(`level${i}`).innerText = `Ур. ${levels[i]}`;
+      for(let i=0; i<4; i++) {
+        document.getElementById(`lvl${i}`).innerText = `Ур. ${levels[i]}`;
       }
-      localStorage.setItem('pass_farm_score', score);
-      localStorage.setItem('pass_farm_stars', stars);
-      localStorage.setItem('pass_farm_levels', JSON.stringify(levels));
+      localStorage.setItem('pf_score', score);
+      localStorage.setItem('pf_stars', stars);
+      localStorage.setItem('pf_levels', JSON.stringify(levels));
     }
-    updateDisplay();
+    updateUI();
 
-    document.getElementById('farmBtn').addEventListener('click', () => {
-      let income = levels.reduce((a, b) => a + b, 0);
-      score += income;
-      updateDisplay();
-      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    // Обработка тапа по игровому полю (интерактив!)
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const x = (e.clientX - rect.left) * scaleX;
+      const y = (e.clientY - rect.top) * scaleY;
+
+      plots.forEach(plot => {
+        let dist = Math.hypot(x - plot.x, y - plot.y);
+        if (dist < 26) {
+          if (plot.state === 'ready') {
+            score += 5 * levels[0];
+            plot.state = 'empty';
+            plot.progress = 0;
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+          } else if (plot.state === 'empty') {
+            plot.state = 'growing';
+            plot.progress = 0;
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+          }
+        }
+      });
+      updateUI();
     });
 
-    window.upgradePlot = function(index) {
-      let cost = levels[index] * 5;
+    // Игровой цикл анимации и рендеринга
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Фон фермы (трава)
+      ctx.fillStyle = '#416a2b';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Дорожка на ранчо
+      ctx.fillStyle = '#7a5230';
+      ctx.fillRect(0, 105, canvas.width, 22);
+
+      // Отрисовка грядок и прогресса роста
+      plots.forEach(plot => {
+        ctx.fillStyle = plot.state === 'empty' ? '#5a3d28' : '#6b4423';
+        ctx.beginPath();
+        ctx.arc(plot.x, plot.y, 22, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#a0815c';
+        ctx.stroke();
+
+        if (plot.state === 'growing') {
+          plot.progress += 0.15 * levels[0];
+          if (plot.progress >= 100) plot.state = 'ready';
+          ctx.font = '16px sans-serif';
+          ctx.fillText('🌱', plot.x - 8, plot.y + 6);
+        } else if (plot.state === 'ready') {
+          ctx.font = '22px sans-serif';
+          ctx.fillText('🌽', plot.x - 11, plot.y + 8);
+        } else {
+          ctx.font = '11px sans-serif';
+          ctx.fillStyle = '#d2b48c';
+          ctx.fillText('Тап', plot.x - 10, plot.y + 4);
+        }
+      });
+
+      // Здания ранчо на заднем плане (Кузня и Вышка)
+      ctx.font = '26px sans-serif';
+      ctx.fillText('🛖', 320, 35);
+      ctx.fillText('🔭', 360, 35);
+
+      // Анимация бегающих животных
+      animals.forEach(anim => {
+        anim.x += anim.vx;
+        if (anim.x < 15 || anim.x > 320) anim.vx *= -1;
+
+        ctx.font = anim.type === 'horse' ? '24px sans-serif' : '16px sans-serif';
+        ctx.fillText(anim.type === 'horse' ? '🐎' : '🐔', anim.x, anim.y);
+      });
+
+      requestAnimationFrame(gameLoop);
+    }
+    requestAnimationFrame(gameLoop);
+
+    window.upgrade = function(idx) {
+      let cost = (levels[idx]) * 15;
       if (score >= cost) {
         score -= cost;
-        levels[index]++;
-        updateDisplay();
+        levels[idx]++;
+        updateUI();
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
       } else {
-        alert("Не хватает ресурсов (🌾)!");
+        alert("Не хватает урожая (🌾) для улучшения!");
       }
     };
 
-    let guardTimeLeft = parseInt(localStorage.getItem('pass_guard_time')) || 18000;
+    let guardSecs = parseInt(localStorage.getItem('pf_guard')) || 18000;
     setInterval(() => {
-      if (guardTimeLeft > 0) {
-        guardTimeLeft--;
-        localStorage.setItem('pass_guard_time', guardTimeLeft);
-        let h = Math.floor(guardTimeLeft / 3600);
-        let m = Math.floor((guardTimeLeft % 3600) / 60);
-        let s = guardTimeLeft % 60;
-        document.getElementById('guardTimer').innerText = 
-          `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      if (guardSecs > 0) {
+        guardSecs--;
+        localStorage.setItem('pf_guard', guardSecs);
+        let h = Math.floor(guardSecs / 3600), m = Math.floor((guardSecs%3600)/60), s = guardSecs%60;
+        document.getElementById('guardTimer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
       }
     }, 1000);
 
     document.getElementById('renewGuardBtn').addEventListener('click', () => {
-      let choice = confirm("Смена караула:\n[OK] — Реклама (Бесплатно)\n[Отмена] — ⭐️ Stars");
-      if (choice) {
-        alert("🎬 Реклама просмотрена! Караул продлен.");
+      if (confirm("Смена караула:\n[OK] — Реклама (Бесплатно)\n[Отмена] — ⭐️ Stars (2)")) {
+        alert("🎬 Реклама просмотрена! Караул заставы продлен.");
+        guardSecs = 18000;
       } else {
-        if (stars >= 2) {
-          stars -= 2;
-          alert("💎 Оплачено звёздами!");
-        } else {
-          alert("Не хватает Stars!");
-          return;
-        }
+        if (stars >= 2) { stars -= 2; guardSecs = 18000; updateUI(); alert("💎 Оплачено звёздами!"); }
+        else alert("Недостаточно Telegram Stars!");
       }
-      guardTimeLeft = 18000;
-      updateDisplay();
     });
   </script>
 </body>
