@@ -225,7 +225,7 @@
       <div class="subtitle">Глубокая нумерологическая матрица</div>
     </header>
 
-    <!-- СТРАНИЦА 1: Ввод данных (чистые поля) -->
+    <!-- СТРАНИЦА 1: Ввод данных -->
     <div class="card screen active" id="inputScreen">
       <label for="userName">Ваше полное имя:</label>
       <input type="text" id="userName" placeholder="Например: Александр">
@@ -233,20 +233,20 @@
       <label>Дата и время рождения:</label>
       <div class="date-grid">
         <div>
-          <label style="font-size:8px;">День</label>
+          <label style="font-size:8px;">День (1-31)</label>
           <input type="number" id="bDay" placeholder="ДД" min="1" max="31">
         </div>
         <div>
-          <label style="font-size:8px;">Месяц</label>
+          <label style="font-size:8px;">Месяц (1-12)</label>
           <input type="number" id="bMonth" placeholder="ММ" min="1" max="12">
         </div>
         <div>
-          <label style="font-size:8px;">Год</label>
+          <label style="font-size:8px;">Год (1900+)</label>
           <input type="number" id="bYear" placeholder="ГГГГ" min="1900" max="2026">
         </div>
         <div>
-          <label style="font-size:8px;">Час</label>
-          <input type="number" id="bHour" placeholder="ЧЧ" min="0" max="23">
+          <label style="font-size:8px;">Час (0-23)</label>
+          <input type="number" id="bHour" placeholder="0-23" min="0" max="23">
         </div>
       </div>
 
@@ -294,7 +294,7 @@
       <div id="premSpheresContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v6.0 (Stable)</div>
+    <div class="version-footer">Оракул Звёзд v6.2 (Test #6)</div>
   </div>
 
   <script>
@@ -344,6 +344,8 @@
     }
 
     function calculateAndOpenHome() {
+      alert("Тест #6: Кнопка нажата!"); // Диагностика клика
+      
       const nameInput = document.getElementById('userName').value.trim();
       const dayInput = parseInt(document.getElementById('bDay').value);
       const monthInput = parseInt(document.getElementById('bMonth').value);
@@ -488,6 +490,4 @@
         periodDesc = "на текущую неделю";
       } else if (type === 'month_prem') {
         title = `⭐ Стратегический прогноз на Месяц`;
-        periodDesc = "на текущий месяц";
-      } else if (type === 'year_prem') {
-        title = `⭐ Масштабный путеводите
+        periodDesc = "на текущий мес
