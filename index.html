@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Оракул Звёзд: Матрица Судьбы</title>
+  <title>Оракул Звёзд: Нумерология</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
@@ -40,27 +40,22 @@
     }
     
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      text-align: center;
       padding: 8px 4px;
       border-bottom: 1px solid rgba(212, 175, 55, 0.25);
     }
     h1 {
       margin: 0;
-      font-size: 17px;
+      font-size: 18px;
       color: #f0cb69;
       letter-spacing: 1px;
       text-transform: uppercase;
     }
-    .stars-badge {
-      background: rgba(240, 203, 105, 0.15);
-      border: 1px solid #f0cb69;
-      border-radius: 20px;
-      padding: 3px 9px;
-      font-size: 11px;
-      color: #f0cb69;
-      font-weight: bold;
+    .subtitle {
+      font-size: 10px;
+      color: #a89bb8;
+      margin-top: 2px;
+      font-style: italic;
     }
 
     .card {
@@ -117,84 +112,78 @@
 
     .result-section { display: none; }
 
-    /* Выбор сфер жизни */
-    .spheres-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-    .sphere-card {
-      background: rgba(8, 11, 20, 0.85);
-      border: 1px solid #3c325c;
-      border-radius: 8px;
-      padding: 8px;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.2s;
-    }
-    .sphere-card.active {
-      border-color: #f0cb69;
-      background: rgba(240, 203, 105, 0.1);
-    }
-    .sphere-card .s-title {
-      font-size: 11px;
-      font-weight: bold;
-      color: #f0cb69;
-      margin-bottom: 2px;
-    }
-    .sphere-card .s-price {
+    /* Блоки вкладок (Бесплатные и Премиум со Звездой) */
+    .section-label {
       font-size: 10px;
       color: #a89bb8;
+      margin: 6px 0 3px 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .periods-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .period-tab {
+      background: rgba(8, 11, 20, 0.85);
+      border: 1px solid #3c325c;
+      border-radius: 7px;
+      padding: 7px 2px;
+      font-size: 10px;
+      color: #d1c4a8;
+      text-align: center;
+      cursor: pointer;
+      font-family: sans-serif;
+    }
+    .period-tab.active {
+      background: #f0cb69;
+      color: #05070e;
+      font-weight: bold;
+      border-color: #f0cb69;
+    }
+    .period-tab.premium {
+      border-color: #b8860b;
+      background: rgba(184, 134, 11, 0.15);
+      color: #f0cb69;
+    }
+    .period-tab.premium.active {
+      background: linear-gradient(135deg, #f0cb69, #b8860b);
+      color: #05070e;
     }
 
-    .number-display-box {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(8, 11, 20, 0.7);
-      padding: 8px 12px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      border-left: 3px solid #f0cb69;
-    }
     .number-circle {
-      width: 45px;
-      height: 45px;
+      width: 55px;
+      height: 55px;
       background: radial-gradient(circle, #222a4a, #0d1222);
       border: 2px solid #f0cb69;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 22px;
       color: #f0cb69;
       font-weight: bold;
-      flex-shrink: 0;
+      margin: 0 auto 8px auto;
+      box-shadow: 0 0 15px rgba(240, 203, 105, 0.2);
     }
-    .sphere-info h3 {
-      margin: 0 0 2px 0;
-      font-size: 12px;
+    .forecast-title {
+      font-size: 13px;
       color: #f0cb69;
-    }
-    .sphere-info p {
-      margin: 0;
-      font-size: 11px;
-      color: #d8cebc;
-      line-height: 1.4;
-    }
-
-    .locked-report {
       text-align: center;
-      padding: 16px 10px;
-      background: rgba(8, 11, 20, 0.8);
-      border-radius: 8px;
-      border: 1px dashed #f0cb69;
+      margin-bottom: 6px;
+      font-weight: bold;
     }
-    .locked-report p {
-      font-size: 11px;
-      color: #d1c4a8;
+    .forecast-text {
+      font-size: 12px;
+      line-height: 1.45;
+      color: #e6ded1;
       margin-bottom: 10px;
+      background: rgba(8, 11, 20, 0.8);
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 3px solid #f0cb69;
     }
   </style>
 </head>
@@ -202,13 +191,13 @@
   <div class="container">
     <header>
       <h1>Оракул Звёзд</h1>
-      <div class="stars-badge">⭐ <span id="userStars">60</span> Звёзд</div>
+      <div class="subtitle">Нумерологическая карта судьбы</div>
     </header>
 
     <!-- Ввод данных -->
     <div class="card" id="inputCard">
       <label for="userName">Ваше полное имя:</label>
-      <input type="text" id="userName" placeholder="Например: Марина">
+      <input type="text" id="userName" placeholder="Например: Александр">
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
@@ -230,37 +219,35 @@
         </div>
       </div>
 
-      <button class="btn" onclick="generateMatrix()" style="margin-top: 6px;">Рассчитать сферы жизни</button>
+      <button class="btn" onclick="generateMatrix()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
 
-    <!-- Результаты по сферам жизни -->
+    <!-- Результаты с периодами -->
     <div class="card result-section" id="resultCard">
-      <div style="font-size: 11px; color: #d1c4a8; margin-bottom: 6px; text-align: center;">Выберите сферу для детального разбора:</div>
       
-      <div class="spheres-grid">
-        <div class="sphere-card active" onclick="selectSphere('love', 0, this)">
-          <div class="s-title">❤️ Любовь и Союз</div>
-          <div class="s-price">Бесплатно</div>
-        </div>
-        <div class="sphere-card" onclick="selectSphere('home', 20, this)">
-          <div class="s-title">🏡 Дом и Семья</div>
-          <div class="s-price">⭐ 20 звёзд</div>
-        </div>
-        <div class="sphere-card" onclick="selectSphere('money', 25, this)">
-          <div class="s-title">💰 Деньги и Карьера</div>
-          <div class="s-price">⭐ 25 звёзд</div>
-        </div>
-        <div class="sphere-card" onclick="selectSphere('karma', 35, this)">
-          <div class="s-title">🔮 Тайны и Карма</div>
-          <div class="s-price">⭐ 35 звёзд</div>
-        </div>
+      <!-- Бесплатные периоды -->
+      <div class="section-label">🌿 Базовые прогнозы (Бесплатно)</div>
+      <div class="periods-bar">
+        <div class="period-tab active" onclick="selectForecast('life_free', 0, this)">Общий</div>
+        <div class="period-tab" onclick="selectForecast('week_free', 1, this)">Неделя</div>
+        <div class="period-tab" onclick="selectForecast('month_free', 2, this)">Месяц</div>
+        <div class="period-tab" onclick="selectForecast('year_free', 3, this)">Год</div>
       </div>
 
-      <div id="sphereContent">
-        <!-- Динамический контент сферы -->
+      <!-- Платные периоды (отмечены звездой ⭐) -->
+      <div class="section-label">⭐ Премиум прогнозы (Детальные)</div>
+      <div class="periods-bar">
+        <div class="period-tab premium" onclick="selectForecast('life_prem', 4, this)">⭐ Общий</div>
+        <div class="period-tab premium" onclick="selectForecast('week_prem', 5, this)">⭐ Неделя</div>
+        <div class="period-tab premium" onclick="selectForecast('month_prem', 6, this)">⭐ Месяц</div>
+        <div class="period-tab premium" onclick="selectForecast('year_prem', 7, this)">⭐ Год</div>
       </div>
 
-      <button class="btn" onclick="resetForm()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 10px; font-size: 11px; padding: 9px;">Ввести другие данные</button>
+      <div class="number-circle" id="numDisplay">7</div>
+      <div class="forecast-title" id="forecastTitle">Заголовок прогноза</div>
+      <div class="forecast-text" id="forecastText">Текст прогноза...</div>
+
+      <button class="btn" onclick="resetForm()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 8px; font-size: 11px; padding: 8px;">Ввести другие данные</button>
     </div>
   </div>
 
@@ -268,21 +255,7 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    let stars = parseInt(localStorage.getItem('user_stars')) || 60;
     let userData = { name: '', day: 1, month: 1, year: 2000, hour: 12 };
-    
-    let unlockedSpheres = {
-      love: true,
-      home: false,
-      money: false,
-      karma: false
-    };
-
-    function updateStars() {
-      document.getElementById('userStars').innerText = stars;
-      localStorage.setItem('user_stars', stars);
-    }
-    updateStars();
 
     const letterMap = {
       'а': 1, 'и': 1, 'с': 1, 'ъ': 1,
@@ -319,7 +292,7 @@
       const hour = parseInt(document.getElementById('bHour').value) || 12;
 
       if (!name || isNaN(day) || isNaN(month) || isNaN(year)) {
-        alert("Заполните имя и дату рождения.");
+        alert("Заполните имя и корректную дату рождения.");
         return;
       }
 
@@ -329,74 +302,52 @@
       document.getElementById('inputCard').style.display = 'none';
       document.getElementById('resultCard').style.display = 'block';
 
-      selectSphere('love', 0, document.querySelector('.sphere-card'));
+      selectForecast('life_free', 0, document.querySelector('.period-tab'));
     }
 
-    let currentSphereKey = 'love';
-
-    function selectSphere(key, cost, element) {
-      currentSphereKey = key;
-      document.querySelectorAll('.sphere-card').forEach(c => c.classList.remove('active'));
+    function selectForecast(type, offset, element) {
+      document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
       if (element) element.classList.add('active');
 
       let dateSum = userData.day + userData.month + userData.year + userData.hour;
       let nameNum = calculateNameNumber(userData.name);
-      
-      // Свои числа для каждой сферы
-      let sphereOffset = { love: 1, home: 3, money: 5, karma: 7 }[key];
-      let num = reduceToSingle(dateSum + nameNum + sphereOffset);
+      let num = reduceToSingle(dateSum + nameNum + offset);
 
-      const contentBox = document.getElementById('sphereContent');
+      document.getElementById('numDisplay').innerText = num;
 
-      if (unlockedSpheres[key]) {
-        contentBox.innerHTML = `
-          <div class="number-display-box">
-            <div class="number-circle">${num}</div>
-            <div class="sphere-info">
-              <h3>Код сферы: ${getSphereTitle(key)}</h3>
-              <p>${getSphereText(key, num)}</p>
-            </div>
-          </div>
-        `;
-      } else {
-        contentBox.innerHTML = `
-          <div class="locked-report">
-            <p>🔒 Подробный разбор сферы <b>«${getSphereTitle(key)}»</b> скрыт.</p>
-            <button class="btn" onclick="unlockSphere('${key}', ${cost})">Открыть за ⭐ ${cost} Звёзд</button>
-          </div>
-        `;
+      let title = "";
+      let text = "";
+
+      if (type === 'life_free') {
+        title = `Общий Нумерологический Путь (${userData.name})`;
+        text = `Ваш базовый код судьбы (${num}) отражает основные черты характера и вектор жизни. Вы обладаете сильным потенциалом для самореализации, гармонично сочетая внутреннюю интуицию с практическими решениями.`;
+      } else if (type === 'week_free') {
+        title = `Прогноз на неделю`;
+        text = `Энергетика недели (код ${num}) благоприятна для текущих дел. Звезды советуют уделить внимание деталям и не спешить с важными финансовыми решениями в первые дни недели.`;
+      } else if (type === 'month_free') {
+        title = `Прогноз на текущий месяц`;
+        text = `Текущий месяц проходит под влиянием числа ${num}. Это период стабильности и планомерного продвижения к личным целям. Уделите время отдыху и общению с близкими.`;
+      } else if (type === 'year_free') {
+        title = `Прогноз на год`;
+        text = `Годовой цикл (код ${num}) открывает новые возможности для личностного роста. Возможны приятные перемены в профессиональной или личной сфере.`;
+      } else if (type === 'life_prem') {
+        title = `⭐ Премиум: Глубокий разбор Судьбы и Карьеры`;
+        text = `Расширенный анализ матрицы имени (${userData.name}) и даты рождения (код ${num}). В этот глубокий отчет входит полный разбор ваших скрытых талантов, кармических задач от рождения, а также точные рекомендации по выбору финансовой ниши и преодолению внутренних блоков.`;
+      } else if (type === 'week_prem') {
+        title = `⭐ Премиум: Детальный гороскоп недели по часам`;
+        text = `Углубленный прогноз на неделю (код ${num}) с учетом точного часа вашего рождения. Расписаны благоприятные дни для переговоров, крупных покупок, романтических встреч и дни, когда стоит побыть в тишине.`;
+      } else if (type === 'month_prem') {
+        title = `⭐ Премиум: Финансовый и любовный код месяца`;
+        text = `Детальный разбор месяца (код ${num}) по сферам: деньги, карьера, семья и здоровье. Звезды указывают на точные дни денежных поступлений и моменты, когда нужно проявить максимальную дипломатию в отношениях.`;
+      } else if (type === 'year_prem') {
+        title = `⭐ Премиум: Масштабный путеводитель на весь год`;
+        text = `Самый подробный астро-нумерологический прогноз на год (код ${num}). Включает поквартальный анализ событий, разбор судьбоносных встреч, периоды мощного финансового роста и подсказки о том, как извлечь максимум из каждого сезона.`;
       }
+
+      document.getElementById('forecastTitle').innerText = title;
+      document.getElementById('forecastText').innerText = text;
 
       if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-    }
-
-    function unlockSphere(key, cost) {
-      if (stars >= cost) {
-        stars -= cost;
-        unlockedSpheres[key] = true;
-        updateStars();
-        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        selectSphere(key, cost, document.querySelector('.sphere-card.active'));
-      } else {
-        alert("Недостаточно Звёзд ⭐ для разблокировки!");
-        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
-      }
-    }
-
-    function getSphereTitle(key) {
-      return { love: 'Любовь и Союз', home: 'Дом, Семья и Очаг', money: 'Деньги и Карьера', karma: 'Тайны и Карма' }[key];
-    }
-
-    function getSphereText(key, n) {
-      if (key === 'love') {
-        return `В матрице имени ${userData.name} число ${n} отвечает за сердечные связи. Вы склонны к глубоким, преданным чувствам. Звезды советуют избегать излишней закрытости и открыто говорить о своих желаниях партцеру.`;
-      } else if (key === 'home') {
-        return `Код вашего дома (${n}) символизирует гармонию пространства и семейные традиции. Для вас критически важно иметь безопасное, уютное личное пространство, где вы восстанавливаете силы. Возможны приятные хлопоты по обустройству жилья.`;
-      } else if (key === 'money') {
-        return `Финансовый код ${n} указывает на скрытый потенциал в сфере материального роста. Деньги приходят через систематический труд и личную инициативу. Избегайте спонтанных рискованных вложений в этом месяце.`;
-      } else if (key === 'karma') {
-        return `Мистический код ${n} раскрывает ваши кармические задачи и интуитивные способности. Вам свойственно видеть то, что скрыто от других. Используйте этот дар для принятия важных жизненных решений.`;
-      }
     }
 
     function resetForm() {
