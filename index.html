@@ -2,150 +2,194 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Дикий Мир: Эволюция</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Wild World: Evolution</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
-      background-color: #0c1410;
-      color: #d0e1d4;
-      font-family: 'Courier New', Courier, monospace;
+    * { box-sizing: border-box; }
+    body, html {
       margin: 0;
-      padding: 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      user-select: none;
-      overflow: hidden;
-    }
-    .box {
+      padding: 0;
       width: 100%;
-      max-width: 400px;
+      height: 100%;
+      background-color: #0b110e;
+      color: #e0f2e9;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+      user-select: none;
+    }
+    .game-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      gap: 6px;
     }
-    header {
-      background: #14241b;
-      border: 2px solid #2e6944;
-      border-radius: 8px;
-      padding: 6px 10px;
+    /* Стильный полупрозрачный HUD поверх игры */
+    .hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: rgba(11, 25, 17, 0.85);
+      border: 1px solid rgba(74, 158, 103, 0.4);
+      padding: 8px 12px;
+      border-radius: 12px;
+      backdrop-filter: blur(5px);
+      z-index: 10;
+    }
+    .hud-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-size: 13px;
+      font-weight: 600;
     }
-    #gameCanvas {
-      background: #183322;
-      border: 3px solid #2e6944;
-      border-radius: 8px;
+    .bar-container {
+      width: 70px;
+      height: 8px;
+      background: #1a2e22;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .bar-fill {
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+    #hpBar { background: #e74c3c; }
+    #expBar { background: #f1c40f; }
+
+    /* Полноэкранный холст игры */
+    canvas {
+      display: block;
       width: 100%;
-      height: 240px;
+      height: 100%;
+      background: #13271c;
       touch-action: none;
-      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
     }
-    .panel {
-      background: #121f17;
-      border: 2px solid #2e6944;
-      border-radius: 8px;
-      padding: 6px;
-      font-size: 11px;
-    }
-    .btn {
-      background: #2e6944;
-      color: #fff;
-      border: 1px solid #55b57d;
-      border-radius: 4px;
-      padding: 6px 12px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .btn:active { transform: scale(0.95); }
-    .log {
-      height: 45px;
-      overflow-y: auto;
-      background: #080f0b;
-      border: 1px solid #1a3825;
-      border-radius: 4px;
-      padding: 4px;
-      font-size: 10px;
-      color: #98cbb0;
+
+    /* Всплывающие уведомления в стиле игр */
+    .floating-popup {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 30, 20, 0.9);
+      border: 1px solid #4a9e67;
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      text-align: center;
+      pointer-events: none;
+      z-index: 10;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      transition: opacity 0.3s;
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <header>
-      <div>🐁 Мышь (Ур. <b id="lvl">1</b>)</div>
-      <div>🍖 <b id="food">15</b> | ❤️ <b id="hp">100</b></div>
-    </header>
-
-    <canvas id="gameCanvas" width="400" height="240"></canvas>
-    <div style="text-align:center; font-size:10px; color:#8ecfb2;">🎮 Тапайте по экрану, чтобы зверёк бежал, собирал еду и исследовал мир!</div>
-
-    <div class="panel">
-      <div>📜 Лог выживания:</div>
-      <div id="logBox" class="log">Мир загружен. Управляйте персонажем тапами.</div>
+  <div class="game-container">
+    <!-- Игровой HUD -->
+    <div class="hud">
+      <div class="hud-group">
+        <span id="playerIcon">🐁</span>
+        <div>
+          <div id="playerName" style="font-size:12px; color:#a3e4c1;">Мышь (Эр. 1)</div>
+          <div style="display:flex; align-items:center; gap:4px; margin-top:2px;">
+            <span style="font-size:9px; color:#e74c3c;">HP</span>
+            <div class="bar-container"><div id="hpBar" class="bar-fill" style="width:100%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="hud-group">
+        <div>
+          <div style="font-size:11px; text-align:right;">🍖 <span id="scoreVal">25</span></div>
+          <div style="display:flex; align-items:center; gap:4px; margin-top:2px;">
+            <span style="font-size:9px; color:#f1c40f;">EXP</span>
+            <div class="bar-container"><div id="expBar" class="bar-fill" style="width:30%"></div></div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="panel" style="display:flex; justify-content:space-between; align-items:center;">
-      <div>🕳️ Уровень норы: <b id="burrowLvl">1</b></div>
-      <button class="btn" onclick="upgradeBurrow()">Улучшить нору (20 🍖)</button>
-    </div>
+    <!-- Холст мира -->
+    <canvas id="worldCanvas"></canvas>
+
+    <!-- Подсказка -->
+    <div id="popup" class="floating-popup">🌿 Исследуйте мир, собирайте еду и прячьтесь в норках!</div>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    let food = parseInt(localStorage.getItem('f')) || 20;
-    let hp = parseInt(localStorage.getItem('hp')) || 100;
-    let lvl = parseInt(localStorage.getItem('lvl')) || 1;
-    let burrowLvl = parseInt(localStorage.getItem('blvl')) || 1;
-
-    const canvas = document.getElementById('gameCanvas');
+    const canvas = document.getElementById('worldCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Позиция и движение игрока
-    let player = { x: 200, y: 120, targetX: 200, targetY: 120, speed: 2.8 };
+    // Автоматическое масштабирование под экран телефона
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
 
-    // Интерактивные объекты мира
-    let worldItems = [
-      { x: 70, y: 50, type: 'food', emoji: '🍓', val: 5 },
-      { x: 320, y: 70, type: 'food', emoji: '🐛', val: 8 },
-      { x: 90, y: 190, type: 'burrow', emoji: '🕳️', name: 'Норка' },
-      { x: 330, y: 180, type: 'cave', emoji: '⛰️', name: 'Пещера' }
+    // Данные игрока
+    let player = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      targetX: canvas.width / 2,
+      targetY: canvas.height / 2,
+      speed: 3.5,
+      radius: 18,
+      tier: 1,
+      name: 'Мышь',
+      icon: '🐁',
+      hp: 100,
+      maxHp: 100,
+      score: 30,
+      exp: 0,
+      maxExp: 100
+    };
+
+    // Обитатели и объекты дикого мира
+    let entities = [
+      { x: 100, y: 150, type: 'food', emoji: '🍓', val: 10, radius: 12 },
+      { x: 300, y: 200, type: 'food', emoji: '🐛', val: 15, radius: 12 },
+      { x: canvas.width - 120, y: 180, type: 'burrow', emoji: '🕳️', name: 'Норка', radius: 24 },
+      { x: 200, y: canvas.height - 180, type: 'cave', emoji: '⛰️', name: 'Пещера хищника', radius: 28 },
+      { x: canvas.width - 150, y: canvas.height - 150, type: 'predator', emoji: '🦊', speed: 1.2, radius: 22, hp: 50 }
     ];
 
-    function log(msg) {
-      const box = document.getElementById('logBox');
-      box.innerHTML = msg + '<br>' + box.innerHTML;
+    function showPopup(text) {
+      const p = document.getElementById('popup');
+      p.innerText = text;
+      p.style.opacity = '1';
+      setTimeout(() => { p.style.opacity = '0.7'; }, 2500);
     }
 
-    function updateUI() {
-      document.getElementById('food').innerText = food;
-      document.getElementById('hp').innerText = hp;
-      document.getElementById('lvl').innerText = lvl;
-      document.getElementById('burrowLvl').innerText = burrowLvl;
-      localStorage.setItem('f', food);
-      localStorage.setItem('hp', hp);
-      localStorage.setItem('lvl', lvl);
-      localStorage.setItem('blvl', burrowLvl);
+    function updateHUD() {
+      document.getElementById('playerIcon').innerText = player.icon;
+      document.getElementById('playerName').innerText = `${player.name} (Эр. ${player.tier})`;
+      document.getElementById('scoreVal').innerText = player.score;
+      document.getElementById('hpBar').style.width = `${(player.hp / player.maxHp) * 100}%`;
+      document.getElementById('expBar').style.width = `${(player.exp / player.maxExp) * 100}%`;
     }
-    updateUI();
 
-    // Управление тапами по игровому холсту
-    canvas.addEventListener('click', (e) => {
+    // Управление касаниями (плавное движение к точке тапа)
+    canvas.addEventListener('pointerdown', (e) => {
       const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
-      player.targetX = (e.clientX - rect.left) * scaleX;
-      player.targetY = (e.clientY - rect.top) * scaleY;
+      player.targetX = e.clientX - rect.left;
+      player.targetY = e.clientY - rect.top;
     });
 
-    // Игровой цикл анимации и логики
+    // Игровой цикл физики и рендеринга
     function gameLoop() {
-      // Плавное движение персонажа к точке тапа
+      // Движение игрока
       let dx = player.targetX - player.x;
       let dy = player.targetY - player.y;
       let dist = Math.hypot(dx, dy);
@@ -154,76 +198,110 @@
         player.y += (dy / dist) * player.speed;
       }
 
-      // Проверка столкновений с объектами мира
-      worldItems.forEach(item => {
-        if (Math.hypot(player.x - item.x, player.y - item.y) < 26) {
-          if (item.type === 'food') {
-            food += item.val;
-            log(`🍓 Добыта еда (+${item.val} еды)`);
-            item.x = Math.random() * 320 + 40;
-            item.y = Math.random() * 160 + 40;
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-            updateUI();
-          } else if (item.type === 'burrow') {
-            hp = Math.min(100, hp + 30);
-            log(`🕳️ Вы отдохнули в норке. Здоровье восстановлено.`);
-            player.targetX = player.x; player.targetY = player.y;
-            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            updateUI();
-          } else if (item.type === 'cave') {
-            let success = Math.random() > 0.45;
-            if (success) {
-              food += 15 * lvl;
-              lvl++;
-              log(`🎉 Успешный рейд! Прорыв в эволюции, уровень ${lvl}!`);
-              if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            } else {
-              hp -= 25;
-              log(`⚠️ В пещере столкновение с хищником! Урон -25 HP.`);
-              if (hp <= 0) {
-                hp = 100; food = Math.max(0, food - 10);
-                log(`💀 Вы погибли в схватке и возродились в норке.`);
-              }
+      // ИИ хищника (преследует игрока, если близко)
+      entities.forEach(ent => {
+        if (ent.type === 'predator') {
+          let pdx = player.x - ent.x;
+          let pdy = player.y - ent.y;
+          let pdist = Math.hypot(pdx, pdy);
+          if (pdist < 220) {
+            ent.x += (pdx / pdist) * ent.speed;
+            ent.y += (pdy / pdist) * ent.speed;
+          }
+          // Столкновение с хищником
+          if (pdist < player.radius + ent.radius) {
+            player.hp -= 0.8;
+            if (player.hp <= 0) {
+              player.hp = player.maxHp;
+              player.score = Math.max(0, player.score - 20);
+              showPopup("💀 Вы были пойманы хищником! Возрождение в норке.");
+              player.x = canvas.width / 2;
+              player.y = canvas.height / 2;
+              player.targetX = player.x;
+              player.targetY = player.y;
             }
-            player.x = 90; player.y = 190; player.targetX = 90; player.targetY = 190;
-            updateUI();
           }
         }
       });
 
-      // Рендеринг графики на Canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Проверка столкновений с объектами
+      entities.forEach((ent, index) => {
+        let edist = Math.hypot(player.x - ent.x, player.y - ent.y);
+        if (edist < player.radius + ent.radius) {
+          if (ent.type === 'food') {
+            player.score += ent.val;
+            player.exp += 25;
+            showPopup(`🍓 Вы нашли еду (+${ent.val})`);
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
 
-      // Лесная поляна
-      ctx.fillStyle = '#173322';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Проверка эволюции
+            if (player.exp >= player.maxExp) {
+              player.tier++;
+              player.exp = 0;
+              player.maxExp += 75;
+              if (player.tier === 2) { player.name = 'Кролик'; player.icon = '🐇'; player.speed = 4.0; }
+              else if (player.tier >= 3) { player.name = 'Лисица'; player.icon = '🦊'; player.speed = 4.5; }
+              showPopup(`🎉 ЭВОЛЮЦИЯ! Вы стали существом: ${player.name}!`);
+              if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            }
 
-      // Отрисовка объектов (еда, норки, пещеры)
-      worldItems.forEach(item => {
-        ctx.font = '24px sans-serif';
-        ctx.fillText(item.emoji, item.x - 12, item.y + 8);
+            // Перенос еды в другое место
+            ent.x = Math.random() * (canvas.width - 80) + 40;
+            ent.y = Math.random() * (canvas.height - 120) + 60;
+          } else if (ent.type === 'burrow') {
+            if (player.hp < player.maxHp) {
+              player.hp = Math.min(player.maxHp, player.hp + 0.5);
+            }
+          } else if (ent.type === 'cave') {
+            // Исследование пещеры
+            if (Math.random() < 0.02) {
+              let loot = 40 * player.tier;
+              player.score += loot;
+              showPopup(`⚔️ Удачный рейд в пещеру! Добыто +${loot} очков.`);
+              if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            }
+          }
+        }
       });
 
-      // Отрисовка бегущего игрока
-      ctx.font = '28px sans-serif';
-      ctx.fillText('🐁', player.x - 14, player.y + 10);
+      updateHUD();
+
+      // Рендеринг сцены
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Рисуем траву / текстуру мира
+      ctx.fillStyle = '#13271c';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Декоративные тропинки / пятна на земле
+      ctx.fillStyle = '#102118';
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 140, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Отрисовка сущностей мира
+      entities.forEach(ent => {
+        ctx.font = '28px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(ent.emoji, ent.x, ent.y);
+
+        if (ent.name) {
+          ctx.font = '10px sans-serif';
+          ctx.fillStyle = '#8ecfb2';
+          ctx.fillText(ent.name, ent.x, ent.y + 22);
+        }
+      });
+
+      // Отрисовка игрока
+      ctx.font = '32px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(player.icon, player.x, player.y);
 
       requestAnimationFrame(gameLoop);
     }
     requestAnimationFrame(gameLoop);
-
-    window.upgradeBurrow = function() {
-      let cost = burrowLvl * 20;
-      if (food >= cost) {
-        food -= cost;
-        burrowLvl++;
-        log(`🏡 Норка улучшена до Ур. ${burrowLvl}!`);
-        updateUI();
-        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-      } else {
-        log(`❌ Недостаточно еды (${food}/${cost}) для улучшения.`);
-      }
-    };
   </script>
 </body>
 </html>
