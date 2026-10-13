@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Оракул Звёзд v8.4</title>
+  <title>Оракул Звёзд v8.5</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
@@ -50,10 +50,10 @@
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bMonth\x27).focus();"></div>
-        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bYear\x27).focus();"></div>
-        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\\D/g,\x27\x27).slice(0,4); if(this.value.length>=4) document.getElementById(\x27bHour\x27).focus();"></div>
-        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\x27\x27).slice(0,2);"></div>
+        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2"></div>
+        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2"></div>
+        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4"></div>
+        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2"></div>
       </div>
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
@@ -87,14 +87,30 @@
       <div id="premContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v8.4</div>
+    <div class="version-footer">Оракул Звёзд v8.5</div>
   </div>
 
   <script>
     let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) { try { tg.expand(); } catch(e) {} }
 
-    let uData = { name: \x27Игорь\x27, d: 1, m: 1, y: 2000, h: 12 };
+    let uData = { name: \x27Игорь\x27, d: 10, m: 2, y: 1975, h: 12 };
+
+    // Автопереход фокуса по символам
+    document.addEventListener("DOMContentLoaded", () => {
+      const ids = [\x27bDay\x27, \x27bMonth\x27, \x27bYear\x27, \x27bHour\x27];
+      ids.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.addEventListener(\x27input\x27, (e) => {
+          el.value = el.value.replace(/\\D/g, \x27\x27);
+          const max = el.getAttribute(\x27maxlength\x27);
+          if (el.value.length >= parseInt(max) && idx < ids.length - 1) {
+            document.getElementById(ids[idx + 1]).focus();
+          }
+        });
+      });
+    });
 
     const letters = {
       \x27а\x27:1,\x27и\x27:1,\x27с\x27:1,\x27ъ\x27:1, \x27б\x27:2,\x27й\x27:2,\x27т\x27:2,\x27ы\x27:2,
