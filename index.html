@@ -304,3 +304,45 @@ EOFcat >> index.html << 'EOF'
       `;
     }
 </script>
+ "⭐ Глубокий разбор Судьбы (" + userData.name + ")";
+        periodDesc = "на весь жизненный путь";
+      } else if (type === 'week_prem') {
+        title = "⭐ Детальный отчёт на Неделю";
+        periodDesc = "на текущую неделю";
+      } else if (type === 'month_prem') {
+        title = "⭐ Стратегический прогноз на Месяц";
+        periodDesc = "на текущий месяц";
+      } else if (type === 'year_prem') {
+        title = "⭐ Масштабный путеводитель на Год";
+        periodDesc = "на текущий год";
+      }
+      document.getElementById('premForecastTitle').innerText = title;
+      document.getElementById('premSpheresContainer').innerHTML = `
+        <div class="sphere-section">
+          <h4>❤️ Любовь и Отношения (${periodDesc})</h4>
+          <p>${detailedBanks.love[textIndex]}</p>
+        </div>
+        <div class="sphere-section">
+          <h4>🏡 Дом, Семья и Очаг</h4>
+          <p>${detailedBanks.home[textIndex]}</p>
+        </div>
+        <div class="sphere-section">
+          <h4>💰 Работа, Карьера и Финансы</h4>
+          <p>${detailedBanks.work[textIndex]}</p>
+        </div>
+        <div class="sphere-section">
+          <h4>🍏 Здоровье и Энергетический Баланс</h4>
+          <p>${detailedBanks.health[textIndex]}</p>
+        </div>
+        <div class="sphere-section">
+          <h4>🔮 Карма и Скрытые Таланты</h4>
+          <p>${detailedBanks.karma[textIndex]}</p>
+        </div>
+        <div class="sphere-section" style="border: 1px solid #f0cb69; background: rgba(240,203,105,0.08);">
+          <h4>✨ Тайное Значение Вашего Имени (${userData.name})</h4>
+          <p>${detailedBanks.nameMeaning[textIndex]}</p>
+        </div>
+      `;
+    }
+  </script>
+</html>
