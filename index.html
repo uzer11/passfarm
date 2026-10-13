@@ -46,14 +46,14 @@
 
     <div class="card screen active" id="inputScreen">
       <label for="userName">Ваше полное имя:</label>
-      <input type="text" id="userName" value="Игорь" style="text-align: left;">
+      <input type="text" id="userName" placeholder="Например: Александр" style="text-align: left;">
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" value="10" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bMonth\x27).focus();"></div>
-        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" value="2" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bYear\x27).focus();"></div>
-        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" value="1975" maxlength="4" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,4); if(this.value.length>=4) document.getElementById(\x27bHour\x27).focus();"></div>
-        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" value="12" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2);"></div>
+        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bMonth\x27).focus();"></div>
+        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bYear\x27).focus();"></div>
+        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,4); if(this.value.length>=4) document.getElementById(\x27bHour\x27).focus();"></div>
+        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2);"></div>
       </div>
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
