@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Оракул Звёзд v8.2</title>
+  <title>Оракул Звёзд v8.3</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
@@ -87,14 +87,14 @@
       <div id="premContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v8.2</div>
+    <div class="version-footer">Оракул Звёзд v8.3</div>
   </div>
 
   <script>
     let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) { try { tg.expand(); } catch(e) {} }
 
-    let uData = { name: \x27Игорь\x27, d: 10, m: 2, y: 1975, h: 12 };
+    let uData = { name: \x27Игорь\x27, d: 1, m: 1, y: 2000, h: 12 };
 
     const letters = {
       \x27а\x27:1,\x27и\x27:1,\x27с\x27:1,\x27ъ\x27:1, \x27б\x27:2,\x27й\x27:2,\x27т\x27:2,\x27ы\x27:2,
@@ -122,11 +122,17 @@
     }
 
     function calculateAndOpenHome() {
-      uData.name = document.getElementById(\x27userName\x27).value.trim() || \x27Игорь\x27;
-      uData.d = parseInt(document.getElementById(\x27bDay\x27).value) || 10;
-      uData.m = parseInt(document.getElementById(\x27bMonth\x27).value) || 2;
-      uData.y = parseInt(document.getElementById(\x27bYear\x27).value) || 1975;
-      uData.h = parseInt(document.getElementById(\x27bHour\x27).value) || 12;
+      const nameVal = document.getElementById(\x27userName\x27).value.trim();
+      const dayVal = document.getElementById(\x27bDay\x27).value.trim();
+      const monthVal = document.getElementById(\x27bMonth\x27).value.trim();
+      const yearVal = document.getElementById(\x27bYear\x27).value.trim();
+      const hourVal = document.getElementById(\x27bHour\x27).value.trim();
+
+      uData.name = nameVal || \x27Игорь\x27;
+      uData.d = dayVal ? parseInt(dayVal) : 1;
+      uData.m = monthVal ? parseInt(monthVal) : 1;
+      uData.y = yearVal ? parseInt(yearVal) : 2000;
+      uData.h = hourVal ? parseInt(hourVal) : 12;
 
       showScreen(\x27homeScreen\x27);
       selectFree(\x27life\x27, 0, document.querySelector(\x27#homeScreen .periods-bar .period-tab\x27));
