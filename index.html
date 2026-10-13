@@ -45,18 +45,51 @@
         .input-group { display: flex; flex-direction: column; gap: 10px; }
         label { font-size: 12px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .date-selectors { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; }
-        .time-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        select {
+        .time-selectors { display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px; }
+        
+        /* Стильные кастомные селекторы без белых багов */
+        .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
+        .custom-select-trigger {
             background: rgba(11, 15, 25, 0.9);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             padding: 10px;
             border-radius: 8px;
             font-size: 13px;
-            outline: none;
-            width: 100%;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        select:focus { border-color: var(--accent-gold); box-shadow: 0 0 8px var(--accent-glow); }
+        .custom-select-trigger::after {
+            content: '▼';
+            font-size: 9px;
+            color: var(--accent-gold);
+            margin-left: 6px;
+        }
+        .custom-options {
+            position: absolute;
+            top: 100%; left: 0; right: 0;
+            background: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-top: 4px;
+            max-height: 180px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+        }
+        .custom-select-wrapper.open .custom-options { display: block; }
+        .custom-option {
+            padding: 10px;
+            font-size: 13px;
+            color: var(--text-main);
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .custom-option:hover { background: var(--accent-glow); color: var(--accent-gold); }
+
         .btn {
             background: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #aa771c 100%);
             color: #0b0f19;
@@ -126,43 +159,58 @@
             <div class="input-group">
                 <label>Дата рождения</label>
                 <div class="date-selectors">
-                    <select id="day"></select>
-                    <select id="month">
-                        <option value="1">Январь</option>
-                        <option value="2">Февраль</option>
-                        <option value="3">Март</option>
-                        <option value="4">Апрель</option>
-                        <option value="5">Май</option>
-                        <option value="6">Июнь</option>
-                        <option value="7">Июль</option>
-                        <option value="8">Август</option>
-                        <option value="9">Сентябрь</option>
-                        <option value="10">Октябрь</option>
-                        <option value="11">Ноябрь</option>
-                        <option value="12">Декабрь</option>
-                    </select>
-                    <select id="year"></select>
+                    <div class="custom-select-wrapper" id="select-day">
+                        <div class="custom-select-trigger" id="trigger-day">15</div>
+                        <div class="custom-options" id="options-day"></div>
+                    </div>
+                    <div class="custom-select-wrapper" id="select-month">
+                        <div class="custom-select-trigger" id="trigger-month">Апрель</div>
+                        <div class="custom-options" id="options-month">
+                            <div class="custom-option" data-value="1" onclick="selectOption('month', '1', 'Январь')">Январь</div>
+                            <div class="custom-option" data-value="2" onclick="selectOption('month', '2', 'Февраль')">Февраль</div>
+                            <div class="custom-option" data-value="3" onclick="selectOption('month', '3', 'Март')">Март</div>
+                            <div class="custom-option" data-value="4" onclick="selectOption('month', '4', 'Апрель')">Апрель</div>
+                            <div class="custom-option" data-value="5" onclick="selectOption('month', '5', 'Май')">Май</div>
+                            <div class="custom-option" data-value="6" onclick="selectOption('month', '6', 'Июнь')">Июнь</div>
+                            <div class="custom-option" data-value="7" onclick="selectOption('month', '7', 'Июль')">Июль</div>
+                            <div class="custom-option" data-value="8" onclick="selectOption('month', '8', 'Август')">Август</div>
+                            <div class="custom-option" data-value="9" onclick="selectOption('month', '9', 'Сентябрь')">Сентябрь</div>
+                            <div class="custom-option" data-value="10" onclick="selectOption('month', '10', 'Октябрь')">Октябрь</div>
+                            <div class="custom-option" data-value="11" onclick="selectOption('month', '11', 'Ноябрь')">Ноябрь</div>
+                            <div class="custom-option" data-value="12" onclick="selectOption('month', '12', 'Декабрь')">Декабрь</div>
+                        </div>
+                    </div>
+                    <div class="custom-select-wrapper" id="select-year">
+                        <div class="custom-select-trigger" id="trigger-year">1995</div>
+                        <div class="custom-options" id="options-year"></div>
+                    </div>
                 </div>
 
                 <label style="margin-top: 4px;">Время рождения (для точных циклов)</label>
-                <div class="time-selector">
-                    <select id="birth-hour">
-                        <option value="-1">Точно не знаю</option>
-                        <option value="0">00:00 - 03:00 (Ночь)</option>
-                        <option value="3">03:00 - 06:00 (Рассвет)</option>
-                        <option value="6">06:00 - 09:00 (Утро)</option>
-                        <option value="9">09:00 - 12:00 (Полдень)</option>
-                        <option value="12">12:00 - 15:00 (День)</option>
-                        <option value="15">15:00 - 18:00 (Закат)</option>
-                        <option value="18">18:00 - 21:00 (Вечер)</option>
-                        <option value="21">21:00 - 24:00 (Полночь)</option>
-                    </select>
-                    <select id="birth-minute">
-                        <option value="0">Минуты (~00)</option>
-                        <option value="15">~15 мин</option>
-                        <option value="30">~30 мин</option>
-                        <option value="45">~45 мин</option>
-                    </select>
+                <div class="time-selectors">
+                    <div class="custom-select-wrapper" id="select-hour">
+                        <div class="custom-select-trigger" id="trigger-hour">Точно не знаю</div>
+                        <div class="custom-options" id="options-hour">
+                            <div class="custom-option" data-value="-1" onclick="selectOption('hour', '-1', 'Точно не знаю')">Точно не знаю</div>
+                            <div class="custom-option" data-value="0" onclick="selectOption('hour', '0', '00:00 - 03:00 (Ночь)')">00:00 - 03:00 (Ночь)</div>
+                            <div class="custom-option" data-value="3" onclick="selectOption('hour', '3', '03:00 - 06:00 (Рассвет)')">03:00 - 06:00 (Рассвет)</div>
+                            <div class="custom-option" data-value="6" onclick="selectOption('hour', '6', '06:00 - 09:00 (Утро)')">06:00 - 09:00 (Утро)</div>
+                            <div class="custom-option" data-value="9" onclick="selectOption('hour', '9', '09:00 - 12:00 (Полдень)')">09:00 - 12:00 (Полдень)</div>
+                            <div class="custom-option" data-value="12" onclick="selectOption('hour', '12', '12:00 - 15:00 (День)')">12:00 - 15:00 (День)</div>
+                            <div class="custom-option" data-value="15" onclick="selectOption('hour', '15', '15:00 - 18:00 (Закат)')">15:00 - 18:00 (Закат)</div>
+                            <div class="custom-option" data-value="18" onclick="selectOption('hour', '18', '18:00 - 21:00 (Вечер)')">18:00 - 21:00 (Вечер)</div>
+                            <div class="custom-option" data-value="21" onclick="selectOption('hour', '21', '21:00 - 24:00 (Полночь)')">21:00 - 24:00 (Полночь)</div>
+                        </div>
+                    </div>
+                    <div class="custom-select-wrapper" id="select-minute">
+                        <div class="custom-select-trigger" id="trigger-minute">Минуты (~00)</div>
+                        <div class="custom-options" id="options-minute">
+                            <div class="custom-option" data-value="0" onclick="selectOption('minute', '0', 'Минуты (~00)')">Минуты (~00)</div>
+                            <div class="custom-option" data-value="15" onclick="selectOption('minute', '15', '~15 мин')">~15 мин</div>
+                            <div class="custom-option" data-value="30" onclick="selectOption('minute', '30', '~30 мин')">~30 мин</div>
+                            <div class="custom-option" data-value="45" onclick="selectOption('minute', '45', '~45 мин')">~45 мин</div>
+                        </div>
+                    </div>
                 </div>
 
                 <button class="btn" onclick="generateForecast()">Узнать прогноз судьбы</button>
@@ -177,81 +225,67 @@
                 <button class="tab-btn" onclick="switchTab('week')">⏳ Неделя</button>
             </div>
 
+            <!-- Общий прогноз (с тизером и одной рекламой внизу) -->
             <div id="tab-general" class="tab-content active">
                 <div class="report-section">
                     <h3>🧿 Базовый код судьбы</h3>
                     <p id="general-teaser-text">Загрузка...</p>
                 </div>
+                <div class="report-section">
+                    <h3>💫 Кармический потенциал и скрытые таланты</h3>
+                    <p>В вашей матрице заложен мощный энергетический поток, который долгое время находился в состоянии спячки. Нумерологические аспекты указывают на скрытый дар убеждения и тонкую интуицию...</p>
+                </div>
+                <div class="report-section">
+                    <h3>❤️ Личная жизнь и сокровенные союзы</h3>
+                    <p>На эмоциональном фронте вас ждет период глубокой трансформации. Одинокие сердца смогут встретить человека, резонирующего на той же частоте...</p>
+                </div>
                 <div class="teaser-container">
                     <div id="general-deep-block">
                         <div class="report-section blurred">
-                           <h3>💫 Кармический потенциал и скрытые таланты</h3>
-                           <p>В вашей матрице заложен мощный энергетический поток, который долгое время находился в состоянии спячки. Нумерологические аспекты указывают на скрытый дар убеждения и тонкую интуицию...</p>
-                           <h3>❤️ Личная жизнь и сокровенные союзы</h3>
-                           <p>На эмоциональном фронте вас ждет период глубокой трансформации. Одинокие сердца смогут встретить человека, резонирующего на той же частоте...</p>
                            <h3>💰 Финансовый код и материальный успех</h3>
-                           <p>Звезды выстраиваются в уникальную денежную комбинацию. Период нестабильности окончательно сменяется устойчивым ростом...</p>
+                           <p>Звезды выстраиваются в уникальную денежную комбинацию. Период нестабильности окончательно сменяется устойчивым ростом и крупными поступлениями...</p>
                         </div>
                         <div id="paywall-general" class="paywall-overlay">
-                            <p>🔒 Полный разбор скрыт звёздами. Посмотрите видео, чтобы открыть всю правду.</p>
+                            <p>🔒 Полный финансовый и карьерный разбор скрыт звёздами. Посмотрите видео, чтобы открыть всю правду.</p>
                             <button class="btn btn-ad" onclick="watchAd('general')">🎁 Открыть весь прогноз</button>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Прогноз на Год (полностью открытый) -->
             <div id="tab-year" class="tab-content">
-                <div class="teaser-container">
-                    <div id="year-deep-block">
-                        <div class="report-section blurred">
-                            <h3>🚀 Макро-цикл текущего года</h3>
-                            <p>Этот год станет поворотным пунктом вашего двенадцатилетнего цикла. Судьба предоставляет уникальные шансы для кардинальной смены деятельности...</p>
-                            <h3>⚡ Ключевые точки и испытания года</h3>
-                            <p>В середине года возможны временные турбулентности в сфере деловых партнерств, которые закалят ваш характер...</p>
-                        </div>
-                        <div id="paywall-year" class="paywall-overlay">
-                            <p>🔒 Годовой астрологический прогноз доступен после просмотра видео.</p>
-                            <button class="btn btn-ad" onclick="watchAd('year')">🎁 Разблокировать год</button>
-                        </div>
-                    </div>
+                <div class="report-section">
+                    <h3>🚀 Макро-цикл текущего года</h3>
+                    <p>Этот год станет поворотным пунктом вашего двенадцатилетнего цикла. Судьба предоставляет уникальные шансы для кардинальной смены деятельности, реализации масштабных планов и укрепления личного авторитета.</p>
+                </div>
+                <div class="report-section">
+                    <h3>⚡ Ключевые точки и испытания года</h3>
+                    <p>В середине года возможны временные турбулентности в сфере деловых партнерств, которые закалят ваш характер и откроют новые двери к финансовой независимости.</p>
                 </div>
             </div>
 
+            <!-- Прогноз на Месяц (полностью открытый) -->
             <div id="tab-month" class="tab-content">
                 <div class="report-section">
                     <h3>🌙 Энергетика текущего месяца</h3>
-                    <p>Текущий лунный месяц требует сосредоточения на внутренних ресурсах и завершении старых обязательств.</p>
+                    <p>Текущий лунный месяц требует сосредоточения на внутренних ресурсах и завершении старых обязательств. Энергия планет благоприятствует духовному росту и наведению порядка в делах.</p>
                 </div>
-                <div class="teaser-container">
-                    <div id="month-deep-block">
-                        <div class="report-section blurred">
-                            <h3>💼 Карьера и финансовые потоки месяца</h3>
-                            <p>Благоприятное время для переговоров, подписания долгосрочных контрактов и монетизации давних хобби...</p>
-                        </div>
-                        <div id="paywall-month" class="paywall-overlay">
-                            <p>🔒 Полный расклад на месяц с точными датами.</p>
-                            <button class="btn btn-ad" onclick="watchAd('month')">🎁 Разблокировать месяц</button>
-                        </div>
-                    </div>
+                <div class="report-section">
+                    <h3>💼 Карьера и финансовые потоки месяца</h3>
+                    <p>Благоприятное время для переговоров, подписания долгосрочных контрактов и монетизации давних хобби. Избегайте импульсивных трат в период новолуния.</p>
                 </div>
             </div>
 
+            <!-- Прогноз на Неделю (полностью открытый) -->
             <div id="tab-week" class="tab-content">
                 <div class="report-section">
                     <h3>⏳ Краткосрочные вибрации недели</h3>
-                    <p>Ближайшие семь дней пройдут под знаком активного взаимодействия с окружением. Будьте внимательны к знакам.</p>
+                    <p>Ближайшие семь дней пройдут под знаком активного взаимодействия с окружением. Будьте внимательны к знакам и случайным встречам — они принесут важные подсказки.</p>
                 </div>
-                <div class="teaser-container">
-                    <div id="week-deep-block">
-                        <div class="report-section blurred">
-                            <h3>🎯 Совет оракула на каждый день недели</h3>
-                            <p>Понедельник и вторник посвятите планированию. Среда и четверг идеальны для решения финансовых вопросов...</p>
-                        </div>
-                        <div id="paywall-week" class="paywall-overlay">
-                            <p>🔒 Узнайте точный совет на каждый день недели.</p>
-                            <button class="btn btn-ad" onclick="watchAd('week')">🎁 Разблокировать неделю</button>
-                        </div>
-                    </div>
+                <div class="report-section">
+                    <h3>🎯 Совет оракула на каждый день недели</h3>
+                    <p>Понедельник и вторник посвятите планированию. Среда и четверг идеальны для решения финансовых вопросов. Выходные проведите в кругу близких людей.</p>
                 </div>
             </div>
 
@@ -267,43 +301,69 @@
         let tg = window.Telegram.WebApp;
         if (tg) { tg.expand(); }
 
-        window.onload = function() {
-            const daySelect = document.getElementById('day');
-            const yearSelect = document.getElementById('year');
+        let formData = { day: 15, month: 4, year: 1995, hour: -1, minute: 0 };
+
+        function initCustomSelects() {
+            const daysContainer = document.getElementById('options-day');
             for (let i = 1; i <= 31; i++) {
-                let opt = document.createElement('option');
-                opt.value = i; opt.textContent = i;
-                if (i === 15) opt.selected = true;
-                daySelect.appendChild(opt);
+                let opt = document.createElement('div');
+                opt.className = 'custom-option';
+                opt.textContent = i;
+                opt.onclick = () => selectOption('day', i, i);
+                daysContainer.appendChild(opt);
             }
+
+            const yearsContainer = document.getElementById('options-year');
             const currentYear = new Date().getFullYear();
             for (let i = currentYear; i >= 1940; i--) {
-                let opt = document.createElement('option');
-                opt.value = i; opt.textContent = i;
-                if (i === 1995) opt.selected = true;
-                yearSelect.appendChild(opt);
+                let opt = document.createElement('div');
+                opt.className = 'custom-option';
+                opt.textContent = i;
+                opt.onclick = () => selectOption('year', i, i);
+                yearsContainer.appendChild(opt);
             }
+
+            document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                const trigger = wrapper.querySelector('.custom-select-trigger');
+                trigger.onclick = (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.custom-select-wrapper').forEach(w => {
+                        if (w !== wrapper) w.classList.remove('open');
+                    });
+                    wrapper.classList.toggle('open');
+                };
+            });
+
+            window.onclick = () => {
+                document.querySelectorAll('.custom-select-wrapper').forEach(w => w.classList.remove('open'));
+            };
+        }
+
+        function selectOption(type, val, text) {
+            formData[type] = val;
+            document.getElementById('trigger-' + type).textContent = text;
+            document.getElementById('select-' + type).classList.remove('open');
+        }
+
+        window.onload = function() {
+            initCustomSelects();
         };
 
         const adController = window.Adsgram ? window.Adsgram.init({ blockId: "bot-53766" }) : null;
 
         function generateForecast() {
-            const day = document.getElementById('day').value;
-            const month = document.getElementById('month').options[document.getElementById('month').selectedIndex].text;
-            const year = document.getElementById('year').value;
-            const hour = document.getElementById('birth-hour').value;
-
+            const monthNames = ["", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            const monthName = monthNames[formData.month] || "Апрель";
+            
             let timeVibe = "Время рождения не указано, расчет ведется по чистым солнечным суткам.";
-            if (hour !== "-1") {
-                const hNum = parseInt(hour);
-                if (hNum >= 0 && hNum < 6) timeVibe = "Ночной час рождения наделяет вас глубокой интуицией и даром предвидения.";
-                else if (hNum >= 6 && hNum < 12) timeVibe = "Утренний час рождения дарует мощный заряд созидательной энергии и лидерства.";
-                else if (hNum >= 12 && hNum < 18) timeVibe = "Дневной час рождения усиливает ваш социальный потенциал и денежные потоки.";
-                else timeVibe = "Вечерний час рождения открывает доступ к тайным знаниям и мудрости.";
-            }
+            const hNum = parseInt(formData.hour);
+            if (hNum >= 0 && hNum < 6) timeVibe = "Ночной час рождения наделяет вас глубокой интуицией и даром предвидения.";
+         else if (hNum >= 6 && hNum < 12) timeVibe = "Утренний час рождения дарует мощный заряд созидательной энергии и лидерства.";
+            else if (hNum >= 12 && hNum < 18) timeVibe = "Дневной час рождения усиливает ваш социальный потенциал и денежные потоки.";
+            else if (hNum >= 18) timeVibe = "Вечерний час рождения открывает доступ к тайным знаниям и мудрости.";
 
             document.getElementById('general-teaser-text').innerHTML = 
-                `Дата рождения: <b>${day} ${month} ${year} г.</b><br>${timeVibe}<br><br>` +
+                `Дата рождения: <b>${formData.day} ${monthName} ${formData.year} г.</b><br>${timeVibe}<br><br>` +
                 `Базовый нумерологический код указывает на гармоничное сочетание внутренней силы и творческого начала. Вы находитесь на пороге важного цикла обновления.`;
 
             document.getElementById('input-card').classList.add('hidden');
