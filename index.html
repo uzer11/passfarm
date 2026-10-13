@@ -50,29 +50,16 @@
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div>
-          <label style="font-size:8px;">День (1-31)</label>
-          <input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2); if(this.value.length>=2) document.getElementById('bMonth').focus();">
-        </div>
-        <div>
-          <label style="font-size:8px;">Месяц (1-12)</label>
-          <input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2); if(this.value.length>=2) document.getElementById('bYear').focus();">
-        </div>
-        <div>
-          <label style="font-size:8px;">Год (1900+)</label>
-          <input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4); if(this.value.length>=4) document.getElementById('bHour').focus();">
-        </div>
-        <div>
-          <label style="font-size:8px;">Час (1-12)</label>
-          <input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2);">
-        </div>
+        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2); if(this.value.length>=2) document.getElementById('bMonth').focus();"></div>
+        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2); if(this.value.length>=2) document.getElementById('bYear').focus();"></div>
+        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4); if(this.value.length>=4) document.getElementById('bHour').focus();"></div>
+        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2);"></div>
       </div>
-
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
 
     <div class="card screen" id="homeScreen">
-      <button class="btn btn-premium" onclick="openPremiumScreen()">⭐ Открыть Полный Развёрнутый Отчёт (Все 5 сфер + Имя)</button>
+      <button class="btn btn-premium" onclick="openPremiumScreen()">⭐ Открыть Полный Отчёт (5 сфер + Имя)</button>
       <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовый обзор:</div>
       <div class="periods-bar">
         <div class="period-tab active" onclick="selectFreeForecast('life', 0, this)">Общий</div>
@@ -87,8 +74,8 @@
     </div>
 
     <div class="card screen" id="premiumScreen">
-      <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">⬅️ Назад к базам прогнозов</button>
-      <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Глубокий премиум-отчёт:</div>
+      <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">⬅️ Назад</button>
+      <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Премиум-отчёт:</div>
       <div class="periods-bar">
         <div class="period-tab premium-tab active" onclick="selectPremForecast('life_prem', 4, this)">⭐ Общий</div>
         <div class="period-tab premium-tab" onclick="selectPremForecast('week_prem', 5, this)">⭐ Неделя</div>
@@ -186,7 +173,10 @@
 
     function backToHome() { showScreen('homeScreen'); }
     function goToInput() { showScreen('inputScreen'); }
+  </script>
+</html>
 EOFcat >> index.html << 'EOF'
+<script>
     const detailedBanks = {
       love: {
         1: "В сфере чувств вы проявляете ярко выраженные лидерские качества. Вам необходим надежный партнер, который уважает вашу независимость и разделяет амбиции.",
@@ -313,5 +303,4 @@ EOFcat >> index.html << 'EOF'
         </div>
       `;
     }
-  </script>
-</html>
+</script>
