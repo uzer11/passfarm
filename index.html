@@ -1,5 +1,4 @@
-python3 -c '
-html = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -16,7 +15,7 @@ html = """<!DOCTYPE html>
     .subtitle { font-size: 10px; color: #a89bb8; margin-top: 2px; font-style: italic; }
     .card { background: rgba(15, 20, 36, 0.92); backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 14px; box-shadow: 0 6px 25px rgba(0,0,0,0.6); }
     label { font-size: 11px; color: #d1c4a8; display: block; margin-bottom: 4px; }
-    input { width: 100%; background: rgba(7, 10, 18, 0.95); border: 1px solid #4a3e75; border-radius: 8px; padding: 9px 10px; color: #f3ebd8; font-size: 13px; font-family: inherit; margin-bottom: 10px; outline: none; }
+    input { width: 100%; background: rgba(7, 10, 18, 0.95); border: 1px solid #4a3e75; border-radius: 8px; padding: 9px 10px; color: #f3ebd8; font-size: 13px; font-family: inherit; margin-bottom: 10px; outline: none; text-align: center; }
     input:focus { border-color: #f0cb69; }
     .date-grid { display: grid; grid-template-columns: 1fr 1fr 1.3fr 1fr; gap: 6px; }
     .btn { width: 100%; background: linear-gradient(135deg, #f0cb69, #b8860b); color: #05070e; border: none; border-radius: 8px; padding: 11px; font-size: 12px; font-weight: bold; font-family: inherit; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(240, 203, 105, 0.25); }
@@ -47,14 +46,26 @@ html = """<!DOCTYPE html>
 
     <div class="card screen active" id="inputScreen">
       <label for="userName">Ваше полное имя:</label>
-      <input type="text" id="userName" placeholder="Например: Александр">
+      <input type="text" id="userName" placeholder="Например: Александр" style="text-align: left;">
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div><label style="font-size:8px;">День (1-31)</label><input type="number" id="bDay" placeholder="ДД" min="1" max="31" maxlength="2"></div>
-        <div><label style="font-size:8px;">Месяц (1-12)</label><input type="number" id="bMonth" placeholder="ММ" min="1" max="12" maxlength="2"></div>
-        <div><label style="font-size:8px;">Год (1900+)</label><input type="number" id="bYear" placeholder="ГГГГ" min="1900" max="2026" maxlength="4"></div>
-        <div><label style="font-size:8px;">Час (1-12)</label><input type="number" id="bHour" placeholder="1-12" min="1" max="12" maxlength="2"></div>
+        <div>
+          <label style="font-size:8px;">День (1-31)</label>
+          <input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2); if(this.value.length>=2) document.getElementById('bMonth').focus();">
+        </div>
+        <div>
+          <label style="font-size:8px;">Месяц (1-12)</label>
+          <input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2); if(this.value.length>=2) document.getElementById('bYear').focus();">
+        </div>
+        <div>
+          <label style="font-size:8px;">Год (1900+)</label>
+          <input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4); if(this.value.length>=4) document.getElementById('bHour').focus();">
+        </div>
+        <div>
+          <label style="font-size:8px;">Час (1-12)</label>
+          <input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2);">
+        </div>
       </div>
 
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
@@ -64,10 +75,10 @@ html = """<!DOCTYPE html>
       <button class="btn btn-premium" onclick="openPremiumScreen()">⭐ Открыть Полный Развёрнутый Отчёт (Все 5 сфер + Имя)</button>
       <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовый обзор:</div>
       <div class="periods-bar">
-        <div class="period-tab active" onclick="selectFreeForecast(\x27life\x27, 0, this)">Общий</div>
-        <div class="period-tab" onclick="selectFreeForecast(\x27week\x27, 1, this)">Неделя</div>
-        <div class="period-tab" onclick="selectFreeForecast(\x27month\x27, 2, this)">Месяц</div>
-        <div class="period-tab" onclick="selectFreeForecast(\x27year\x27, 3, this)">Год</div>
+        <div class="period-tab active" onclick="selectFreeForecast('life', 0, this)">Общий</div>
+        <div class="period-tab" onclick="selectFreeForecast('week', 1, this)">Неделя</div>
+        <div class="period-tab" onclick="selectFreeForecast('month', 2, this)">Месяц</div>
+        <div class="period-tab" onclick="selectFreeForecast('year', 3, this)">Год</div>
       </div>
       <div class="number-circle" id="freeNumDisplay">7</div>
       <div class="forecast-title" id="freeForecastTitle">Заголовок</div>
@@ -79,59 +90,47 @@ html = """<!DOCTYPE html>
       <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">⬅️ Назад к базам прогнозов</button>
       <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Глубокий премиум-отчёт:</div>
       <div class="periods-bar">
-        <div class="period-tab premium-tab active" onclick="selectPremForecast(\x27life_prem\x27, 4, this)">⭐ Общий</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27week_prem\x27, 5, this)">⭐ Неделя</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27month_prem\x27, 6, this)">⭐ Месяц</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27year_prem\x27, 7, this)">⭐ Год</div>
+        <div class="period-tab premium-tab active" onclick="selectPremForecast('life_prem', 4, this)">⭐ Общий</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast('week_prem', 5, this)">⭐ Неделя</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast('month_prem', 6, this)">⭐ Месяц</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast('year_prem', 7, this)">⭐ Год</div>
       </div>
       <div class="number-circle" id="premNumDisplay">7</div>
       <div class="forecast-title" id="premForecastTitle">Премиум Заголовок</div>
       <div id="premSpheresContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v7.2</div>
+    <div class="version-footer">Оракул Звёзд v7.7</div>
   </div>
 
   <script>
     let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) { try { tg.expand(); } catch(e) {} }
 
-    let userData = { name: \x27\x27, day: 1, month: 1, year: 2000, hour: 12 };
-
-    document.addEventListener("DOMContentLoaded", function() {
-      const bDay = document.getElementById(\x27bDay\x27);
-      const bMonth = document.getElementById(\x27bMonth\x27);
-      const bYear = document.getElementById(\x27bYear\x27);
-      const bHour = document.getElementById(\x27bHour\x27);
-      if(bDay && bMonth && bYear && bHour) {
-        bDay.addEventListener(\x27input\x27, function() { if (this.value.length >= 2) bMonth.focus(); });
-        bMonth.addEventListener(\x27input\x27, function() { if (this.value.length >= 2) bYear.focus(); });
-        bYear.addEventListener(\x27input\x27, function() { if (this.value.length >= 4) bHour.focus(); });
-      }
-    });
+    let userData = { name: 'Игорь', day: 1, month: 1, year: 2000, hour: 12 };
 
     const letterMap = {
-      \x27а\x27: 1, \x27и\x27: 1, \x27с\x27: 1, \x27ъ\x27: 1,
-      \x27б\x27: 2, \x27й\x27: 2, \x27т\x27: 2, \x27ы\x27: 2,
-      \x27в\x27: 3, \x27к\x27: 3, \x27у\x27: 3, \x27ь\x27: 3,
-      \x27г\x27: 4, \x27л\x27: 4, \x27ф\x27: 4, \x27э\x27: 4,
-      \x27д\x27: 5, \x27м\x27: 5, \x27х\x27: 5, \x27ю\x27: 5,
-      \x27е\x27: 6, \x27н\x27: 6, \x27ц\x27: 6, \x27я\x27: 6,
-      \x27ё\x27: 7, \x27о\x27: 7, \x27ч\x27: 7,
-      \x27ж\x27: 8, \x27п\x27: 8, \x27ш\x27: 8,
-      \x27з\x27: 9, \x27р\x27: 9, \x27щ\x27: 9
+      'а': 1, 'и': 1, 'с': 1, 'ъ': 1,
+      'б': 2, 'й': 2, 'т': 2, 'ы': 2,
+      'в': 3, 'к': 3, 'у': 3, 'ь': 3,
+      'г': 4, 'л': 4, 'ф': 4, 'э': 4,
+      'д': 5, 'м': 5, 'х': 5, 'ю': 5,
+      'е': 6, 'н': 6, 'ц': 6, 'я': 6,
+      'ё': 7, 'о': 7, 'ч': 7,
+      'ж': 8, 'п': 8, 'ш': 8,
+      'з': 9, 'р': 9, 'щ': 9
     };
 
     function reduceToSingle(num) {
       while (num > 9 && num !== 11 && num !== 22) {
-        num = num.toString().split(\x27\x27).map(Number).reduce((a, b) => a + b, 0);
+        num = num.toString().split('').map(Number).reduce((a, b) => a + b, 0);
       }
       return num;
     }
 
     function calculateNameNumber(name) {
       let sum = 0;
-      name.toLowerCase().split(\x27\x27).forEach(char => {
+      name.toLowerCase().split('').forEach(char => {
         if (letterMap[char]) { sum += letterMap[char]; }
       });
       if (sum === 0) sum = 5;
@@ -139,155 +138,171 @@ html = """<!DOCTYPE html>
     }
 
     function showScreen(screenId) {
-      document.querySelectorAll(\x27.screen\x27).forEach(s => s.classList.remove(\x27active\x27));
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       let target = document.getElementById(screenId);
-      if (target) { target.classList.add(\x27active\x27); }
+      if (target) { target.classList.add('active'); }
     }
 
     function calculateAndOpenHome() {
-      const nameInput = document.getElementById(\x27userName\x27).value.trim();
-      const dayInput = parseInt(document.getElementById(\x27bDay\x27).value);
-      const monthInput = parseInt(document.getElementById(\x27bMonth\x27).value);
-      const yearInput = parseInt(document.getElementById(\x27bYear\x27).value);
-      const hourInput = parseInt(document.getElementById(\x27bHour\x27).value);
-
-      if (!nameInput || isNaN(dayInput) || isNaN(monthInput) || isNaN(yearInput)) {
-        alert("Пожалуйста, заполните имя, день, месяц и год рождения.");
-        return;
-      }
+      const nameInput = document.getElementById('userName').value.trim() || 'Игорь';
+      const dayInput = parseInt(document.getElementById('bDay').value) || 1;
+      const monthInput = parseInt(document.getElementById('bMonth').value) || 1;
+      const yearInput = parseInt(document.getElementById('bYear').value) || 2000;
+      const hourInput = parseInt(document.getElementById('bHour').value) || 12;
 
       userData = { 
         name: nameInput, 
         day: dayInput, 
         month: monthInput, 
         year: yearInput, 
-        hour: isNaN(hourInput) ? 12 : hourInput 
+        hour: hourInput 
       };
 
-      showScreen(\x27homeScreen\x27);
-      selectFreeForecast(\x27life\x27, 0, document.querySelector(\x27#homeScreen .periods-bar .period-tab\x27));
+      showScreen('homeScreen');
+      selectFreeForecast('life', 0, document.querySelector('#homeScreen .periods-bar .period-tab'));
     }
 
     function selectFreeForecast(type, offset, element) {
-      document.querySelectorAll(\x27#homeScreen .periods-bar .period-tab\x27).forEach(t => t.classList.remove(\x27active\x27));
-      if (element) element.classList.add(\x27active\x27);
+      document.querySelectorAll('#homeScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
+      if (element) element.classList.add('active');
 
       let dateSum = userData.day + userData.month + userData.year + userData.hour;
       let nameNum = calculateNameNumber(userData.name);
       let num = reduceToSingle(dateSum + nameNum + offset);
 
-      document.getElementById(\x27freeNumDisplay\x27).innerText = num;
+      document.getElementById('freeNumDisplay').innerText = num;
 
       let title = `Базовый обзор (${userData.name}, код ${num})`;
-      let text = `Ваш персональный нумерологический код (${num}) указывает на сильный потенциал самореализации. В этот период Вселенная акцентирует внимание на принятии важных решений, балансе между внутренним «Я» и внешним миром. Чтобы узнать подробный разбор по всем сферам (любовь, семья, работа, здоровье, карма) и глубокий анализ вашего имени, откройте полный премиум-отчёт выше.`;
+      let text = `Ваш персональный нумерологический код (${num}) указывает на глубокий потенциал самореализации. В этот период Вселенная акцентирует внимание на принятии ключевых решений, балансе между вашим внутренним «Я» и внешним миром. Чтобы узнать детальный разбор по всем сферам и глубокий анализ вашего имени, откройте полный премиум-отчёт выше.`;
 
-      document.getElementById(\x27freeForecastTitle\x27).innerText = title;
-      document.getElementById(\x27freeForecastText\x27).innerText = text;
+      document.getElementById('freeForecastTitle').innerText = title;
+      document.getElementById('freeForecastText').innerText = text;
     }
 
     function openPremiumScreen() {
-      showScreen(\x27premiumScreen\x27);
-      selectPremForecast(\x27life_prem\x27, 4, document.querySelector(\x27#premiumScreen .periods-bar .period-tab\x27));
+      showScreen('premiumScreen');
+      selectPremForecast('life_prem', 4, document.querySelector('#premiumScreen .periods-bar .period-tab'));
     }
 
-    function backToHome() { showScreen(\x27homeScreen\x27); }
-    function goToInput() { showScreen(\x27inputScreen\x27); }
+    function backToHome() { showScreen('homeScreen'); }
+    function goToInput() { showScreen('inputScreen'); }
 
     const detailedBanks = {
       love: {
-        1: "В сфере чувств вы проявляете лидерские качества. Вам необходим партнер, который уважает вашу независимость и разделяет амбиции. Кармически важно избегать давления на близкого человека.",
-        2: "Ваша личная жизнь пронизана нежностью и интуитивным пониманием. Вы тонко чувствуете эмоциональное состояние партнера. Главное — открыто говорить о своих потребностях.",
-        3: "Любовь для вас — это праздник, вдохновение и яркие совместные эмоции. Вы легко очаровываете людей своей харизмой и теплым общением.",
-        4: "В отношениях вы цените абсолютную надежность, верность и предсказуемость. Ваш союз строится на практической заботе и взаимном уважении.",
-        5: "Ваш союз требует постоянного динамичного развития и новых впечатлений. Совместные путешествия и свежие эмоции укрепляют вашу связь сильнее всего.",
-        6: "Семья и дом — центр вашей вселенной. Вы окружаете партнера колоссальной заботой. Урок здесь — не растворяться в любимом человеке полностью.",
-        7: "Ваша любовь носит глубокий, почти сакральный характер. Вам важна ментальная и духовная связь. Избегайте излишней закрытости и отстраненности.",
-        8: "В отношениях вы выступаете надежной опорой и стратегом. Вы поддерживаете карьерные и жизненные цели друг друга.",
-        9: "Вы обладаете даром безусловной любви и глубокого сострадания. Вы умеете прощать и создавать мощный кармический союз."
+        1: "В сфере чувств вы проявляете ярко выраженные лидерские качества. Вам необходим надежный партнер, который уважает вашу независимость и разделяет амбиции.",
+        2: "Ваша личная жизнь пронизана нежностью и интуитивным пониманием. Вы исключительно глубоко чувствуете эмоциональное состояние партнера.",
+        3: "Любовь для вас — это настоящий праздник, неисчерпаемый источник вдохновения и ярких совместных эмоций. Вы легко очаровываете людей своей харизмой.",
+        4: "В любовных отношениях вы превыше всего цените абсолютную надежность, преданность и предсказуемость. Союз строится на практической заботе.",
+        5: "Ваш союз требует постоянного динамичного развития, свежих впечатлений и ярких приключений. Путешествия укрепляют вашу связь сильнее всего.",
+        6: "Семья, уют и дом — центр вашей вселенной. Вы окружаете партнера заботой, важно лишь сохранять личную индивидуальность.",
+        7: "Ваша любовь носит глубокий и философский характер. Вам важна ментальная и духовная связь. Избегайте излишней закрытости.",
+        8: "В романтических отношениях вы выступаете надежной опорой и стратегом, поддерживая жизненные и карьерные цели друг друга.",
+        9: "Вы обладаете редким даром безусловной любви и вселенского сострадания. Вы умеете прощать и создавать мощные кармические союзы."
       },
       home: {
-        1: "Ваше жилище — личная штаб-квартира. Здесь вы устанавливаете правила и черпаете энергию для новых свершений.",
-        2: "В доме вы создаете уютную, тихую гавань, свободную от конфликтов и внешнего шума.",
-        3: "Ваш очаг открыт для друзей. Дом наполнен светом, музыкой, интересными беседами и творческим беспорядком.",
-        4: "Идеальный порядок, капитальный ремонт, надежные стены и четкий семейный уклад — основа вашей безопасности.",
-        5: "Вы легко меняете обстановку и даже города. Дом там, где вам комфортно прямо сейчас, цените простор и воздух.",
-        6: "Семейный очаг для вас священен. Красивая посуда, уютные вечера в кругу близких и традиции наполняют вас силами.",
-        7: "Ваш дом — это убежище философа. Вам жизненно необходим укромный уголок, где можно побыть в абсолютной тишине.",
-        8: "Вы стремитесь к респектабельному, надежному и стильному жилью, которое подчеркивает ваш успех.",
-        9: "В вашем доме царит атмосфера душевного тепла, гостеприимства, помощи и глубокого взаимопонимания."
+        1: "Ваше жилище — ваша личная штаб-квартира. Здесь вы устанавливаете правила и черпаете энергию для новых свершений.",
+        2: "В доме вы создаете уютную, тихую гавань, свободную от внешних конфликтов и суеты.",
+        3: "Ваш очаг открыт для друзей. Дом наполнен светом, музыкой, долгими интересными беседами и живой энергетикой.",
+        4: "Идеальный порядок, надежные стены и четкий семейный уклад — нерушимый фундамент вашей безопасности.",
+        5: "Вы легко меняете обстановку и города. Дом там, где вам комфортно прямо сейчас, вы цените пространство и воздух.",
+        6: "Семейный очаг священен. Уютные вечера в семейном кругу и давние традиции наполняют вас жизненными силами.",
+        7: "Ваш дом — надежное убежище философа. Вам необходим укромный уголок для отдыха в абсолютной тишине.",
+        8: "Вы стремитесь к респектабельному и стильному жилью, подчеркивающему ваш успех и статус.",
+        9: "В доме царит атмосфера душевного тепла, гостеприимства, взаимопомощи и глубокого понимания."
       },
       work: {
         1: "Вы рождены для руководства, масштабных проектов и предпринимательства. Финансовый поток зависит от вашей личной инициативы.",
         2: "Наибольших успехов вы добиваетесь в партнерстве, командной работе и дипломатии. Ваша способность сглаживать углы бесценна.",
-        3: "Ваш творческий потенциал и ораторский дар привлекают деньги из медиа, искусства или инноваций.",
+        3: "Творческий потенциал и ораторский дар привлекают финансовый поток из сферы медиа, искусства или инноваций.",
         4: "Дисциплина, упорный труд и системный подход гарантируют вам железобетонную финансовую безопасность.",
-        5: "Коммерческая жилка, гибкость и умение чувствовать тренды рынка приносят отличные доходы в динамичных сферах.",
+        5: "Коммерческая жилка, гибкость и умение чувствовать тренды рынка приносят высокие доходы в динамичных сферах.",
         6: "Вы создаете продукты высочайшего качества, вызывая абсолютное доверие. Успех через заботу, дизайн или психологию.",
-        7: "Ваш аналитический склад ума и глубина мышления выводят вас в ранг экспертов и консультантов.",
-        8: "У вас сильный денежный код. Вы умеете управлять крупными бюджетами, масштабировать бизнес и создавать капитал.",
-        9: "Ваша работа должна приносить пользу миру. Вы успешны в преподавании, медицине и социальных проектах."
+        7: "Аналитический склад ума и глубина мышления закономерно выводят вас в ранг экспертов и консультантов.",
+        8: "У вас мощный денежный код. Вы умеете управлять крупными бюджетами, масштабировать бизнес и создавать капитал.",
+        9: "Работа должна приносить пользу миру. Вы успешны в преподавании, медицине и социальных проектах."
       },
       health: {
-        1: "Энергия бьет ключом, но из-за перенапряжения возможны головные боли. Важно чередовать работу с полноценным сном.",
-        2: "Ваш организм чутко реагирует на стрессы. Полезны йога, плавание и прогулки на природе для восстановления нервной системы.",
-        3: "Источник вашего здоровья — позитивные эмоции и творчество. Полезны активные виды спорта и танцы.",
-        4: "Вашему телу необходим строгий режим дня, качественное питание и стабильная физическая нагрузка на позвоночник.",
-        5: "Энергия нестабильна: вспышки активности сменяются усталостью. Противопоказана рутина, нужны поездки и воздух.",
-        6: "Здоровье напрямую связано с душевным спокойствием в семье. Полезны пешие прогулки и домашний комфорт.",
-        7: "Вам жизненно необходимо уединение для восстановления ментальных сил и сон в абсолютной тишине.",
-        8: "Выносливость высока, но трудоголизм может подорвать силы. Следите за сердцем и давлением.",
-        9: "Хорошая природная регенерация, но берегите эмоции. Полезны духовные практики и помощь другим."
+        1: "Энергия бьет ключом, но из-за перенапряжения возможны головные боли. Чередуйте работу с полноценным сном.",
+        2: "Организм чутко реагирует на стрессы. Полезны йога, плавание и спокойные прогулки на природе.",
+        3: "Источник здоровья — позитивные эмоции и творчество. Полезны активные виды спорта и танцы.",
+        4: "Телу необходим строгий режим дня, качественное питание и стабильная физическая нагрузка.",
+        5: "Энергетика переменчива: вспышки активности сменяются спадом. Противопоказана рутина, нужны поездки и воздух.",
+        6: "Здоровье напрямую связано с душевным спокойствием в семье. Полезны пешие прогулки и уют.",
+        7: "Вам жизненно необходимо уединение для восстановления сил и сон в абсолютной тишине.",
+        8: "Выносливость высока, но трудоголизм может подорвать силы. Следите за давлением и сердцем.",
+        9: "Хорошая природная регенерация. Большую пользу принесут духовные практики и помощь другим."
       },
       karma: {
-        1: "Главный урок — укротить гордыню, научиться слушать советы со стороны и работать в команде.",
-        2: "Избегайте излишней застенчивости и страха высказать мнение. Перестаньте угождать всем подряд.",
-        3: "Не распыляйте свой талант на сотню дел. Фокус на одной главной цели принесет вам успех.",
-        4: "Учитесь принимать неизбежные перемены в жизни без сопротивления и паники.",
-        5: "Избегайте импульсивных авантюр и направляйте жажду свободы в созидательное русло.",
-        6: "Не берите на себя ответственность за чужие ошибки, берегите свой ресурс.",
+        1: "Главный урок — укротить гордыню, научиться слушать советы и продуктивно работать в команде.",
+        2: "Избегайте застенчивости и страха высказать мнение. Перестаньте пытаться угодить всем подряд.",
+        3: "Не распыляйте талант на сотню дел. Фокус на главной созидательной цели принесет успех.",
+        4: "Учитесь смиренно принимать неизбежные перемены в жизни без сопротивления и паники.",
+        5: "Откажитесь от импульсивных авантюр и направляйте жажду свободы в конструктивное русло.",
+        6: "Не берите на себя избыточную ответственность за чужие ошибки, берегите свой ресурс.",
         7: "Не замыкайтесь в себе. Ваша мудрость должна находить отклик у близких людей.",
         8: "Соблюдайте баланс между материальным накоплением и духовным ростом.",
         9: "Умейте вовремя отпускать людей и ситуации, которые уже изжили себя."
       },
       nameMeaning: {
-        1: "Имя несет вибрацию лидера и первопроходца. Сильная воля и независимость.",
-        2: "Имя отражает мягкость, миротворчество и талант дипломатии.",
-        3: "Имя заряжено энергией радости, творчества и высокой притягательности.",
-        4: "Имя символизирует основательность, порядок, честность и надежность.",
-        5: "Имя пропитано духом свободы, харизмы и ярких перемен.",
-        6: "Имя несет вибрацию любви, преданности и создания уютного очага.",
+        1: "Имя несет вибрацию лидера и первопроходца. Сильная воля, амбиции и независимость.",
+        2: "Имя отражает душевную мягкость, миротворчество и талант эффективной дипломатии.",
+        3: "Имя заряжено энергией радости, оптимизма и созидательного творчества.",
+        4: "Имя символизирует фундаментальную основательность, порядок и абсолютную надежность.",
+        5: "Имя пропитано духом свободы, яркой харизмы и готовности к переменам.",
+        6: "Имя несет вибрацию любви, преданности и создания гармоничного очага.",
         7: "Имя наделено печатью тайны, глубокого интеллекта и сильной интуиции.",
-        8: "Имя магнитит материальный успех, авторитет и масштабные цели.",
-        9: "Имя связано с гуманизмом, глубоким состраданием и мудростью."
+        8: "Имя мощно притягивает материальный успех, авторитет и масштабные цели.",
+        9: "Имя связано с гуманизмом, безусловным состраданием и душевной мудростью."
       }
     };
 
     function selectPremForecast(type, offset, element) {
-      document.querySelectorAll(\x27#premiumScreen .periods-bar .period-tab\x27).forEach(t => t.classList.remove(\x27active\x27));
-      if (element) element.classList.add(\x27active\x27);
+      document.querySelectorAll('#premiumScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
+      if (element) element.classList.add('active');
 
       let dateSum = userData.day + userData.month + userData.year + userData.hour;
       let nameNum = calculateNameNumber(userData.name);
       let num = reduceToSingle(dateSum + nameNum + offset);
 
-      document.getElementById(\x27premNumDisplay\x27).innerText = num;
+      document.getElementById('premNumDisplay').innerText = num;
       let textIndex = ((num - 1) % 9) + 1;
 
       let title = "";
       let periodDesc = "";
 
-      if (type === \x27life_prem\x27) {
+      if (type === 'life_prem') {
         title = `⭐ Глубокий разбор Судьбы (${userData.name})`;
         periodDesc = "на весь жизненный путь";
-      } else if (type === \x27week_prem\x27) {
+      } else if (type === 'week_prem') {
         title = `⭐ Детальный отчёт на Неделю`;
         periodDesc = "на текущую неделю";
-      } else if (type === \x27month_prem\x27) {
+      } else if (type === 'month_prem') {
         title = `⭐ Стратегический прогноз на Месяц`;
         periodDesc = "на текущий месяц";
-      } else if (type === \x27year_prem\x27) {
+      } else if (type === 'year_prem') {
         title = `⭐ Масштабный путеводитель на Год`;
         periodDesc = "на текущий год";
       }
 
-      document.getElementById(\x27premForecastTitl
+      document.getElementById('premForecastTitle').innerText = title;
+
+      document.getElementById('premSpheresContainer').innerHTML = `
+        <div class="sphere-section">
+          <h4>❤️ Любовь и Отношения (${periodDesc})</h4>
+          <p>${detailedBanks.love[textIndex]}</p>
+        </div>
+        <div class="sphere-section">
+          <h4>🏡 Дом, Семья и Очаг</h4>
+          <p>${detailedBanks.home[textIndex]}</p>
+        </div>
+        <div class="sphere-section">
+          <h4>💰 Работа, Карьера и Финансы</h4>
+          <p>${detailedBanks.work[textIndex]}</p>
+        </div>
+        <div class="sphere-section">
+          <h4>🍏 Здоровье и Энергетический Баланс</h4>
+          <p>${detailedBanks.health[textIndex]}</p>
+        </div>
+        <div class="sphere-section">
+          <h4>🔮 Карма и Скрытые Таланты</h4>
+          <p>${detaile
