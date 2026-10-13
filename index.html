@@ -1,40 +1,34 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang='ru'>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Оракул Звёзд: Глубокая Нумерология</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+  <title>Оракул Звёзд v8.0</title>
+  <script src='https://telegram.org/js/telegram-web-app.js'></script>
   <style>
     * { box-sizing: border-box; }
-    body { background: linear-gradient(135deg, #05070e 0%, #0e1326 50%, #060812 100%); color: #f3ebd8; font-family: Georgia, serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; position: relative; }
-    body::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(white 1px, transparent 0); background-size: 30px 30px; opacity: 0.1; pointer-events: none; }
-    .container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; z-index: 1; }
+    body { background: linear-gradient(135deg, #05070e 0%, #0e1326 50%, #060812 100%); color: #f3ebd8; font-family: Georgia, serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; user-select: none; }
+    .container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; }
     header { text-align: center; padding: 8px 4px; border-bottom: 1px solid rgba(212, 175, 55, 0.25); }
-    h1 { margin: 0; font-size: 18px; color: #f0cb69; letter-spacing: 1px; text-transform: uppercase; }
-    .subtitle { font-size: 10px; color: #a89bb8; margin-top: 2px; font-style: italic; }
-    .card { background: rgba(15, 20, 36, 0.92); backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 14px; box-shadow: 0 6px 25px rgba(0,0,0,0.6); }
+    h1 { margin: 0; font-size: 18px; color: #f0cb69; text-transform: uppercase; }
+    .card { background: rgba(15, 20, 36, 0.95); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; padding: 14px; box-shadow: 0 6px 25px rgba(0,0,0,0.6); }
     label { font-size: 11px; color: #d1c4a8; display: block; margin-bottom: 4px; }
-    input { width: 100%; background: rgba(7, 10, 18, 0.95); border: 1px solid #4a3e75; border-radius: 8px; padding: 9px 10px; color: #f3ebd8; font-size: 13px; font-family: inherit; margin-bottom: 10px; outline: none; text-align: center; }
-    input:focus { border-color: #f0cb69; }
+    input { width: 100%; background: rgba(7, 10, 18, 0.95); border: 1px solid #4a3e75; border-radius: 8px; padding: 9px 10px; color: #f3ebd8; font-size: 13px; margin-bottom: 10px; text-align: center; outline: none; }
     .date-grid { display: grid; grid-template-columns: 1fr 1fr 1.3fr 1fr; gap: 6px; }
-    .btn { width: 100%; background: linear-gradient(135deg, #f0cb69, #b8860b); color: #05070e; border: none; border-radius: 8px; padding: 11px; font-size: 12px; font-weight: bold; font-family: inherit; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(240, 203, 105, 0.25); }
-    .btn:active { transform: scale(0.97); }
-    .btn-premium { background: linear-gradient(135deg, #b8860b, #4a3e75); color: #f3ebd8; border: 1px solid #f0cb69; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn { width: 100%; background: linear-gradient(135deg, #f0cb69, #b8860b); color: #05070e; border: none; border-radius: 8px; padding: 11px; font-size: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+    .btn-premium { background: linear-gradient(135deg, #b8860b, #4a3e75); color: #f3ebd8; border: 1px solid #f0cb69; margin-bottom: 10px; }
     .screen { display: none; }
     .screen.active { display: block; }
     .periods-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 10px; }
     .period-tab { background: rgba(8, 11, 20, 0.85); border: 1px solid #3c325c; border-radius: 7px; padding: 7px 2px; font-size: 10px; color: #d1c4a8; text-align: center; cursor: pointer; }
-    .period-tab.active { background: #f0cb69; color: #05070e; font-weight: bold; border-color: #f0cb69; }
-    .period-tab.premium-tab { border-color: #f0cb69; background: rgba(240, 203, 105, 0.15); color: #f0cb69; }
-    .period-tab.premium-tab.active { background: linear-gradient(135deg, #f0cb69, #b8860b); color: #05070e; }
-    .number-circle { width: 50px; height: 50px; background: radial-gradient(circle, #222a4a, #0d1222); border: 2px solid #f0cb69; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #f0cb69; font-weight: bold; margin: 0 auto 8px auto; box-shadow: 0 0 15px rgba(240, 203, 105, 0.2); }
+    .period-tab.active { background: #f0cb69; color: #05070e; font-weight: bold; }
+    .number-circle { width: 50px; height: 50px; background: radial-gradient(circle, #222a4a, #0d1222); border: 2px solid #f0cb69; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #f0cb69; font-weight: bold; margin: 0 auto 8px auto; }
     .forecast-title { font-size: 13px; color: #f0cb69; text-align: center; margin-bottom: 6px; font-weight: bold; }
     .forecast-text { font-size: 12px; line-height: 1.5; color: #e6ded1; margin-bottom: 8px; background: rgba(8, 11, 20, 0.85); padding: 12px; border-radius: 8px; border-left: 3px solid #f0cb69; }
     .sphere-section { background: rgba(8, 11, 20, 0.85); border: 1px solid #3c325c; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
     .sphere-section h4 { margin: 0 0 6px 0; font-size: 12px; color: #f0cb69; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 4px; }
     .sphere-section p { margin: 0; font-size: 11.5px; color: #d8cebc; line-height: 1.5; }
-    .version-footer { text-align: center; font-size: 15px; color: #f0cb69; margin-top: 10px; font-weight: bold; letter-spacing: 1px; }
+    .version-footer { text-align: center; font-size: 14px; color: #f0cb69; margin-top: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -46,262 +40,143 @@
 
     <div class="card screen active" id="inputScreen">
       <label for="userName">Ваше полное имя:</label>
-      <input type="text" id="userName" placeholder="Например: Александр" style="text-align: left;">
-
+      <input type="text" id="userName" value="Игорь" style="text-align: left;">
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bMonth\x27).focus();"></div>
-        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bYear\x27).focus();"></div>
-        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,4); if(this.value.length>=4) document.getElementById(\x27bHour\x27).focus();"></div>
-        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2);"></div>
+        <div><label style="font-size:8px;">День</label><input type="text" id="bDay" value="10"></div>
+        <div><label style="font-size:8px;">Месяц</label><input type="text" id="bMonth" value="2"></div>
+        <div><label style="font-size:8px;">Год</label><input type="text" id="bYear" value="1975"></div>
+        <div><label style="font-size:8px;">Час</label><input type="text" id="bHour" value="12"></div>
       </div>
-      <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
+      <button class="btn" onclick="calculateAndOpenHome()">Рассчитать карту</button>
     </div>
 
     <div class="card screen" id="homeScreen">
       <button class="btn btn-premium" onclick="openPremiumScreen()">⭐ Открыть Полный Отчёт (5 сфер + Имя)</button>
       <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовый обзор:</div>
       <div class="periods-bar">
-        <div class="period-tab active" onclick="selectFreeForecast(\x27life\x27, 0, this)">Общий</div>
-        <div class="period-tab" onclick="selectFreeForecast(\x27week\x27, 1, this)">Неделя</div>
-        <div class="period-tab" onclick="selectFreeForecast(\x27month\x27, 2, this)">Месяц</div>
-        <div class="period-tab" onclick="selectFreeForecast(\x27year\x27, 3, this)">Год</div>
+        <div class="period-tab active" onclick="selectFree('life', 0, this)">Общий</div>
+        <div class="period-tab" onclick="selectFree('week', 1, this)">Неделя</div>
+        <div class="period-tab" onclick="selectFree('month', 2, this)">Месяц</div>
+        <div class="period-tab" onclick="selectFree('year', 3, this)">Год</div>
       </div>
-      <div class="number-circle" id="freeNumDisplay">7</div>
-      <div class="forecast-title" id="freeForecastTitle">Заголовок</div>
-      <div class="forecast-text" id="freeForecastText">Текст...</div>
-      <button class="btn" onclick="goToInput()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 6px; font-size: 11px; padding: 8px;">Изменить данные</button>
+      <div class="number-circle" id="freeNum">7</div>
+      <div class="forecast-title" id="freeTitle">Заголовок</div>
+      <div class="forecast-text" id="freeText">Текст...</div>
+      <button class="btn" onclick="showScreen('inputScreen')" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; font-size: 11px; padding: 8px;">Изменить данные</button>
     </div>
 
     <div class="card screen" id="premiumScreen">
-      <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">⬅️ Назад</button>
+      <button class="btn" onclick="showScreen('homeScreen')" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">⬅️ Назад</button>
       <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Премиум-отчёт:</div>
       <div class="periods-bar">
-        <div class="period-tab premium-tab active" onclick="selectPremForecast(\x27life_prem\x27, 4, this)">⭐ Общий</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27week_prem\x27, 5, this)">⭐ Неделя</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27month_prem\x27, 6, this)">⭐ Месяц</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27year_prem\x27, 7, this)">⭐ Год</div>
+        <div class="period-tab active" onclick="selectPrem('life_prem', 4, this)" style="border-color:#f0cb69; background:rgba(240,203,105,0.15); color:#f0cb69;">⭐ Общий</div>
+        <div class="period-tab" onclick="selectPrem('week_prem', 5, this)" style="border-color:#f0cb69; background:rgba(240,203,105,0.15); color:#f0cb69;">⭐ Неделя</div>
+        <div class="period-tab" onclick="selectPrem('month_prem', 6, this)" style="border-color:#f0cb69; background:rgba(240,203,105,0.15); color:#f0cb69;">⭐ Месяц</div>
+        <div class="period-tab" onclick="selectPrem('year_prem', 7, this)" style="border-color:#f0cb69; background:rgba(240,203,105,0.15); color:#f0cb69;">⭐ Год</div>
       </div>
-      <div class="number-circle" id="premNumDisplay">7</div>
-      <div class="forecast-title" id="premForecastTitle">Премиум Заголовок</div>
-      <div id="premSpheresContainer"></div>
+      <div class="number-circle" id="premNum">7</div>
+      <div class="forecast-title" id="premTitle">Премиум Заголовок</div>
+      <div id="premContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v7.9</div>
+    <div class="version-footer">Оракул Звёзд v8.0</div>
   </div>
 
   <script>
     let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) { try { tg.expand(); } catch(e) {} }
 
-    let userData = { name: \x27Игорь\x27, day: 1, month: 1, year: 2000, hour: 12 };
+    let uData = { name: 'Игорь', d: 10, m: 2, y: 1975, h: 12 };
 
-    const letterMap = {
-      \x27а\x27: 1, \x27и\x27: 1, \x27с\x27: 1, \x27ъ\x27: 1,
-      \x27б\x27: 2, \x27й\x27: 2, \x27т\x27: 2, \x27ы\x27: 2,
-      \x27в\x27: 3, \x27к\x27: 3, \x27у\x27: 3, \x27ь\x27: 3,
-      \x27г\x27: 4, \x27л\x27: 4, \x27ф\x27: 4, \x27э\x27: 4,
-      \x27д\x27: 5, \x27м\x27: 5, \x27х\x27: 5, \x27ю\x27: 5,
-      \x27е\x27: 6, \x27н\x27: 6, \x27ц\x27: 6, \x27я\x27: 6,
-      \x27ё\x27: 7, \x27о\x27: 7, \x27ч\x27: 7,
-      \x27ж\x27: 8, \x27п\x27: 8, \x27ш\x27: 8,
-      \x27з\x27: 9, \x27р\x27: 9, \x27щ\x27: 9
+    const letters = {
+      'а':1,'и':1,'с':1,'ъ':1, 'б':2,'й':2,'т':2,'ы':2,
+      'в':3,'к':3,'у':3,'ь':3, 'г':4,'ль':4,'ф':4,'э':4,'л':4,
+      'д':5,'м':5,'х':5,'ю':5, 'е':6,'н':6,'ц':6,'я':6,
+      'ё':7,'о':7,'ч':7, 'ж':8,'п':8,'ш':8, 'з':9,'р':9,'щ':9
     };
 
-    const freeTextBank = {
-      1: "Энергия Лидера и Первопроходца. Время брать инициативу в свои руки, принимать смелые решения и закладывать фундамент будущих побед.",
-      2: "Энергия Дипломатии и Интуиции. Успех приходит через партнерство, мягкое преодоление преград и глубокое понимание окружающих.",
-      3: "Энергия Творчества и Радости. Период вдохновения, самовыражения, ярких коммуникаций и реализации творческих идей.",
-      4: "Энергия Системы и Труда. Время наведения порядка, упорной работы, укрепления материальной базы и стабильности.",
-      5: "Энергия Перемен и Свободы. Благоприятный момент для поездок, расширения кругозора, новых знакомств и гибких решений.",
-      6: "Энергия Гармонии и Семьи. Фокус на доме, близких людях, создании уютной атмосферы и заботе об окружающих.",
-      7: "Энергия Мудрости и Анализа. Время для глубокого самопознания, обучения, планирования и работы в уединении.",
-      8: "Энергия Успеха и Масштаба. Период финансовых возможностей, карьерного роста, управления ресурсами и реализации амбиций.",
-      9: "Энергия Завершения и Мудрости. Время подводить итоги, избавляться от лишнего, проявлять сострадание и духовный рост."
-    };
-
-    const detailedBanks = {
-      love: {
-        1: "В сфере чувств вы проявляете ярко выраженные лидерские качества. Вам необходим надежный партнер, который уважает вашу независимость и разделяет амбиции.",
-        2: "Ваша личная жизнь пронизана нежностью и интуитивным пониманием. Вы исключительно глубоко чувствуете эмоциональное состояние партнера.",
-        3: "Любовь для вас — это настоящий праздник, неисчерпаемый источник вдохновения и ярких совместных эмоций. Вы легко очаровываете людей своей харизмой.",
-        4: "В любовных отношениях вы превыше всего цените абсолютную надежность, преданность и предсказуемость. Союз строится на практической заботе.",
-        5: "Ваш союз требует постоянного динамичного развития, свежих впечатлений и ярких приключений. Путешествия укрепляют вашу связь сильнее всего.",
-        6: "Семья, уют и дом — центр вашей вселенной. Вы окружаете партнера заботой, важно лишь сохранять личную индивидуальность.",
-        7: "Ваша любовь носит глубокий и философский характер. Вам важна ментальная и духовная связь. Избегайте излишней закрытости.",
-        8: "В романтических отношениях вы выступаете надежной опорой и стратегом, поддерживая жизненные и карьерные цели друг друга.",
-        9: "Вы обладаете редким даром безусловной любви и вселенского сострадания. Вы умеете прощать и создавать мощные кармические союзы."
-      },
-      home: {
-        1: "Ваше жилище — ваша личная штаб-квартира. Здесь вы устанавливаете правила и черпаете энергию для новых свершений.",
-        2: "В доме вы создаете уютную, тихую гавань, свободную от внешних конфликтов и суеты.",
-        3: "Ваш очаг открыт для друзей. Дом наполнен светом, музыкой, долгими интересными беседами и живой энергетикой.",
-        4: "Идеальный порядок, надежные стены и четкий семейный уклад — нерушимый фундамент вашей безопасности.",
-        5: "Вы легко меняете обстановку и города. Дом там, где вам комфортно прямо сейчас, вы цените пространство и воздух.",
-        6: "Семейный очаг священен. Уютные вечера в семейном кругу и давние традиции наполняют вас жизненными силами.",
-        7: "Ваш дом — надежное убежище философа. Вам необходим укромный уголок для отдыха в абсолютной тишине.",
-        8: "Вы стремитесь к респектабельному и стильному жилью, подчеркивающему ваш успех и статус.",
-        9: "В доме царит атмосфера душевного тепла, гостеприимства, взаимопомощи и глубокого понимания."
-      },
-      work: {
-        1: "Вы рождены для руководства, масштабных проектов и предпринимательства. Финансовый поток зависит от вашей личной инициативы.",
-        2: "Наибольших успехов вы добиваетесь в партнерстве, командной работе и дипломатии. Ваша способность сглаживать углы бесценна.",
-        3: "Творческий потенциал и ораторский дар привлекают финансовый поток из сферы медиа, искусства или инноваций.",
-        4: "Дисциплина, упорный труд и системный подход гарантируют вам железобетонную финансовую безопасность.",
-        5: "Коммерческая жилка, гибкость и умение чувствовать тренды рынка приносят высокие доходы в динамичных сферах.",
-        6: "Вы создаете продукты высочайшего качества, вызывая абсолютное доверие. Успех через заботу, дизайн или психологию.",
-        7: "Аналитический склад ума и глубина мышления закономерно выводят вас в ранг экспертов и консультантов.",
-        8: "У вас мощный денежный код. Вы умеете управлять крупными бюджетами, масштабировать бизнес и создавать капитал.",
-        9: "Работа должна приносить пользу миру. Вы успешны в преподавании, медицине и социальных проектах."
-      },
-      health: {
-        1: "Энергия бьет ключом, но из-за перенапряжения возможны головные боли. Чередуйте работу с полноценным сном.",
-        2: "Организм чутко реагирует на стрессы. Полезны йога, плавание и спокойные прогулки на природе.",
-        3: "Источник здоровья — позитивные эмоции и творчество. Полезны активные виды спорта и танцы.",
-        4: "Телу необходим строгий режим дня, качественное питание и стабильная физическая нагрузка.",
-        5: "Энергетика переменчива: вспышки активности сменяются спадом. Противопоказана рутина, нужны поездки и воздух.",
-        6: "Здоровье напрямую связано с душевным спокойствием в семье. Полезны пешие прогулки и уют.",
-        7: "Вам жизненно необходимо уединение для восстановления сил и сон в абсолютной тишине.",
-        8: "Выносливость высока, но трудоголизм может подорвать силы. Следите за давлением и сердцем.",
-        9: "Хорошая природная регенерация. Большую пользу принесут духовные практики и помощь другим."
-      },
-      karma: {
-        1: "Главный урок — укротить гордыню, научиться слушать советы и продуктивно работать в команде.",
-        2: "Избегайте застенчивости и страха высказать мнение. Перестаньте пытаться угодить всем подряд.",
-        3: "Не распыляйте талант на сотню дел. Фокус на главной созидательной цели принесет успех.",
-        4: "Учитесь смиренно принимать неизбежные перемены в жизни без сопротивления и паники.",
-        5: "Откажитесь от импульсивных авантюр и направляйте жажду свободы в конструктивное русло.",
-        6: "Не берите на себя избыточную ответственность за чужие ошибки, берегите свой ресурс.",
-        7: "Не замыкайтесь в себе. Ваша мудрость должна находить отклик у близких людей.",
-        8: "Соблюдайте баланс между материальным накоплением и духовным ростом.",
-        9: "Умейте вовремя отпускать людей и ситуации, которые уже изжили себя."
-      },
-      nameMeaning: {
-        1: "Имя несет вибрацию лидера и первопроходца. Сильная воля, амбиции и независимость.",
-        2: "Имя отражает душевную мягкость, миротворчество и талант эффективной дипломатии.",
-        3: "Имя заряжено энергией радости, оптимизма и созидательного творчества.",
-        4: "Имя символизирует фундаментальную основательность, порядок и абсолютную надежность.",
-        5: "Имя пропитано духом свободы, яркой харизмы и готовности к переменам.",
-        6: "Имя несет вибрацию любви, преданности и создания гармоничного очага.",
-        7: "Имя наделено печатью тайны, глубокого интеллекта и сильной интуиции.",
-        8: "Имя мощно притягивает материальный успех, авторитет и масштабные цели.",
-        9: "Имя связано с гуманизмом, безусловным состраданием и душевной мудростью."
+    function red(n) {
+      while (n > 9 && n !== 11 && n !== 22) {
+        n = n.toString().split('').reduce((a,b)=>a+parseInt(b),0);
       }
-    };
-
-    function reduceToSingle(num) {
-      while (num > 9 && num !== 11 && num !== 22) {
-        num = num.toString().split("").map(Number).reduce((a, b) => a + b, 0);
-      }
-      return num;
+      return n;
     }
 
-    function calculateNameNumber(name) {
+    function getNameNum(name) {
       let sum = 0;
-      name.toLowerCase().split("").forEach(char => {
-        if (letterMap[char]) { sum += letterMap[char]; }
-      });
-      if (sum === 0) sum = 5;
-      return reduceToSingle(sum);
+      name.toLowerCase().split('').forEach(c => { if(letters[c]) sum += letters[c]; });
+      return red(sum || 5);
     }
 
-    function showScreen(screenId) {
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      let target = document.getElementById(screenId);
-      if (target) { target.classList.add("active"); }
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
 
     function calculateAndOpenHome() {
-      const nameInput = document.getElementById("userName").value.trim() || "Игорь";
-      const dayInput = parseInt(document.getElementById("bDay").value) || 1;
-      const monthInput = parseInt(document.getElementById("bMonth").value) || 1;
-      const yearInput = parseInt(document.getElementById("bYear").value) || 2000;
-      const hourInput = parseInt(document.getElementById("bHour").value) || 12;
+      uData.name = document.getElementById('userName').value.trim() || 'Игорь';
+      uData.d = parseInt(document.getElementById('bDay').value) || 10;
+      uData.m = parseInt(document.getElementById('bMonth').value) || 2;
+      uData.y = parseInt(document.getElementById('bYear').value) || 1975;
+      uData.h = parseInt(document.getElementById('bHour').value) || 12;
 
-      userData = { name: nameInput, day: dayInput, month: monthInput, year: yearInput, hour: hourInput };
-      showScreen("homeScreen");
-      selectFreeForecast("life", 0, document.querySelector("#homeScreen .periods-bar .period-tab"));
+      showScreen('homeScreen');
+      selectFree('life', 0, document.querySelector('#homeScreen .periods-bar .period-tab'));
     }
 
-    function selectFreeForecast(type, offset, element) {
-      document.querySelectorAll("#homeScreen .periods-bar .period-tab").forEach(t => t.classList.remove("active"));
-      if (element) element.classList.add("active");
+    const fTexts = {
+      1: "Энергия Лидера: время брать инициативу и принимать смелые решения.",
+      2: "Энергия Дипломатии: успех через партнерство и интуицию.",
+      3: "Энергия Творчества: период вдохновения и ярких коммуникаций.",
+      4: "Энергия Системы: время упорного труда и укрепления базы.",
+      5: "Энергия Свободы: благоприятный момент для поездок и перемен.",
+      6: "Энергия Гармонии: фокус на доме, семье и заботе о близких.",
+      7: "Энергия Анализа: время для самопознания и обучения.",
+      8: "Энергия Успеха: период финансовых возможностей и масштаба.",
+      9: "Энергия Завершения: подведение итогов и духовный рост."
+    };
 
-      let dateSum = userData.day + userData.month + userData.year + userData.hour;
-      let nameNum = calculateNameNumber(userData.name);
-      let num = reduceToSingle(dateSum + nameNum + offset);
+    function selectFree(type, offset, el) {
+      document.querySelectorAll('#homeScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
+      if(el) el.classList.add('active');
 
-      document.getElementById("freeNumDisplay").innerText = num;
-      let textIndex = ((num - 1) % 9) + 1;
-
-      let title = "Базовый обзор (" + userData.name + ", код " + num + ")";
-      document.getElementById("freeForecastTitle").innerText = title;
-      document.getElementById("freeForecastText").innerText = freeTextBank[textIndex];
+      let num = red(uData.d + uData.m + uData.y + uData.h + getNameNum(uData.name) + offset);
+      document.getElementById('freeNum').innerText = num;
+      document.getElementById('freeTitle').innerText = 'Обзор для ' + uData.name + ' (код ' + num + ')';
+      document.getElementById('freeText').innerText = fTexts[((num-1)%9)+1];
     }
 
     function openPremiumScreen() {
-      showScreen("premiumScreen");
-      selectPremForecast("life_prem", 4, document.querySelector("#premiumScreen .periods-bar .period-tab"));
+      showScreen('premiumScreen');
+      selectPrem('life_prem', 4, document.querySelector('#premiumScreen .periods-bar .period-tab'));
     }
 
-    function backToHome() { showScreen("homeScreen"); }
-    function goToInput() { showScreen("inputScreen"); }
+    const pBanks = {
+      love: ["", "Лидерство в чувствах, нужен независимый партнер.", "Глубокая нежность и интуитивное понимание.", "Любовь как праздник и источник вдохновения.", "Ценность надежности и предсказуемости.", "Динамика, свежие впечатления и приключения.", "Семья и уют — центр вашей вселенной.", "Глубокая философская и ментальная связь.", "Надежная опора и поддержка целей партнера.", "Безусловная любовь и вселенское сострадание."],
+      home: ["", "Ваш дом — ваша личная штаб-квартира.", "Уютная и тихая гавань без конфликтов.", "Очаг полон света, музыки и друзей.", "Идеальный порядок и надежные стены.", "Свобода передвижения, дом там, где вы.", "Семейные традиции и душевное тепло.", "Укромный уголок для отдыха в тишине.", "Респектабельное и стильное жилье.", "Атмосфера гостеприимства и взаимопомощи."],
+      work: ["", "Масштабные проекты и предпринимательство.", "Успех в партнерстве и дипломатии.", "Творчество, медиа и инновации.", "Дисциплина и системный подход.", "Динамичные сферы и высокие доходы.", "Качество, забота и дизайн.", "Экспертность и глубокий анализ.", "Управление бюджетами и капиталом.", "Преподавание и социальные проекты."],
+      health: ["", "Энергия есть, но берегите голову.", "Организм реагирует на стресс, полезна йога.", "Здоровье через позитив и творчество.", "Строгий режим и стабильная нагрузка.", "Избегайте рутины, нужны поездки.", "Здоровье связано с уютом в семье.", "Необходимо уединение и тишина.", "Следите за давлением и сердцем.", "Хорошая регенерация и практики."],
+      karma: ["", "Укротите гордыню, учитесь слушать.", "Избегайте страха высказать мнение.", "Фокус на главной созидательной цели.", "Принимайте перемены без паники.", "Направляйте жажду свободы в дело.", "Не берите чужую ответственность.", "Не замыкайтесь в себе.", "Баланс материального и духовного.", "Умейте вовремя отпускать прошлое."]
+    };
 
-    function selectPremForecast(type, offset, element) {
-      document.querySelectorAll("#premiumScreen .periods-bar .period-tab").forEach(t => t.classList.remove("active"));
-      if (element) element.classList.add("active");
+    function selectPrem(type, offset, el) {
+      document.querySelectorAll('#premiumScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
+      if(el) el.classList.add('active');
 
-      let dateSum = userData.day + userData.month + userData.year + userData.hour;
-      let nameNum = calculateNameNumber(userData.name);
-      let num = reduceToSingle(dateSum + nameNum + offset);
+      let num = red(uData.d + uData.m + uData.y + uData.h + getNameNum(uData.name) + offset);
+      document.getElementById('premNum').innerText = num;
+      let idx = ((num - 1) % 9) + 1;
 
-      document.getElementById("premNumDisplay").innerText = num;
-      let textIndex = ((num - 1) % 9) + 1;
+      let title = type === 'life_prem' ? "⭐ Разбор Судьбы (" + uData.name + ")" : "⭐ Прогноз периода";
+      document.getElementById('premTitle').innerText = title;
 
-      let title = "";
-      let periodDesc = "";
-
-      if (type === "life_prem") {
-        title = "⭐ Глубокий разбор Судьбы (" + userData.name + ")";
-        periodDesc = "на весь жизненный путь";
-      } else if (type === "week_prem") {
-        title = "⭐ Детальный отчёт на Неделю";
-        periodDesc = "на текущую неделю";
-      } else if (type === "month_prem") {
-        title = "⭐ Стратегический прогноз на Месяц";
-        periodDesc = "на текущий месяц";
-      } else if (type === "year_prem") {
-        title = "⭐ Масштабный путеводитель на Год";
-        periodDesc = "на текущий год";
-      }
-
-      document.getElementById("premForecastTitle").innerText = title;
-
-      document.getElementById("premSpheresContainer").innerHTML = `
-        <div class="sphere-section">
-          <h4>❤️ Любовь и Отношения (${periodDesc})</h4>
-          <p>${detailedBanks.love[textIndex]}</p>
-        </div>
-        <div class="sphere-section">
-          <h4>🏡 Дом, Семья и Очаг</h4>
-          <p>${detailedBanks.home[textIndex]}</p>
-        </div>
-        <div class="sphere-section">
-          <h4>💰 Работа, Карьера и Финансы</h4>
-          <p>${detailedBanks.work[textIndex]}</p>
-        </div>
-        <div class="sphere-section">
-          <h4>🍏 Здоровье и Энергетический Баланс</h4>
-          <p>${detailedBanks.health[textIndex]}</p>
-        </div>
-        <div class="sphere-section">
-          <h4>🔮 Карма и Скрытые Таланты</h4>
-          <p>${detailedBanks.karma[textIndex]}</p>
-        </div>
-        <div class="sphere-section" style="border: 1px solid #f0cb69; background: rgba(240,203,105,0.08);">
-          <h4>✨ Тайное Значение Вашего Имени (${userData.name})</h4>
-          <p>${detailedBanks.nameMeaning[textIndex]}</p>
-        </div>
+      document.getElementById('premContainer').innerHTML = `
+        <div class="sphere-section"><h4>❤️ Любовь и Отношения</h4><p>${pBanks.love[idx]}</p></div>
+        <div class="sphere-section"><h4>🏡 Дом и Семья</h4><p>${pBanks.home[idx]}</p></div>
+        <div class="sphere-section"><h4>💰 Работа и Финансы</h4><p>${pBanks.work[idx]}</p></div>
+        <div class="sphere-section"><h4>🍏 Здоровье</h4><p>${pBanks.health[idx]}</p></div>
+        <div class="sphere-section"><h4>🔮 Карма и Таланты</h4><p>${pBanks.karma[idx]}</p></div>
       `;
     }
   </script>
