@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Оракул Звёзд v8.6</title>
+  <title>Оракул Звёзд v8.7</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
@@ -50,10 +50,10 @@
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div><label style="font-size:8px;">День</label><input type="tel" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2"></div>
-        <div><label style="font-size:8px;">Месяц</label><input type="tel" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2"></div>
-        <div><label style="font-size:8px;">Год</label><input type="tel" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4"></div>
-        <div><label style="font-size:8px;">Час</label><input type="tel" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2"></div>
+        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2"></div>
+        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2"></div>
+        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4"></div>
+        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2"></div>
       </div>
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
@@ -62,102 +62,96 @@
       <button class="btn btn-premium" onclick="openPremiumScreen()">⭐ Открыть Полный Отчёт (5 сфер + Имя)</button>
       <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовый обзор:</div>
       <div class="periods-bar">
-        <div class="period-tab active" onclick="selectFree(\x27life\x27, 0, this)">Общий</div>
-        <div class="period-tab" onclick="selectFree(\x27week\x27, 1, this)">Неделя</div>
-        <div class="period-tab" onclick="selectFree(\x27month\x27, 2, this)">Месяц</div>
-        <div class="period-tab" onclick="selectFree(\x27year\x27, 3, this)">Год</div>
+        <div class="period-tab active" onclick="selectFree('life', 0, this)">Общий</div>
+        <div class="period-tab" onclick="selectFree('week', 1, this)">Неделя</div>
+        <div class="period-tab" onclick="selectFree('month', 2, this)">Месяц</div>
+        <div class="period-tab" onclick="selectFree('year', 3, this)">Год</div>
       </div>
       <div class="number-circle" id="freeNum">7</div>
       <div class="forecast-title" id="freeTitle">Заголовок</div>
       <div class="forecast-text" id="freeText">Текст...</div>
-      <button class="btn" onclick="showScreen(\x27inputScreen\x27)" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 6px; font-size: 11px; padding: 8px;">Изменить данные</button>
+      <button class="btn" onclick="showScreen('inputScreen')" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-top: 6px; font-size: 11px; padding: 8px;">Изменить данные</button>
     </div>
 
     <div class="card screen" id="premiumScreen">
-      <button class="btn" onclick="showScreen(\x27homeScreen\x27)" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">⬅️ Назад</button>
+      <button class="btn" onclick="showScreen('homeScreen')" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">⬅️ Назад</button>
       <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Премиум-отчёт:</div>
       <div class="periods-bar">
-        <div class="period-tab premium-tab active" onclick="selectPrem(\x27life_prem\x27, 4, this)">⭐ Общий</div>
-        <div class="period-tab premium-tab" onclick="selectPrem(\x27week_prem\x27, 5, this)">⭐ Неделя</div>
-        <div class="period-tab premium-tab" onclick="selectPrem(\x27month_prem\x27, 6, this)">⭐ Месяц</div>
-        <div class="period-tab premium-tab" onclick="selectPrem(\x27year_prem\x27, 7, this)">⭐ Год</div>
+        <div class="period-tab premium-tab active" onclick="selectPrem('life_prem', 4, this)">⭐ Общий</div>
+        <div class="period-tab premium-tab" onclick="selectPrem('week_prem', 5, this)">⭐ Неделя</div>
+        <div class="period-tab premium-tab" onclick="selectPrem('month_prem', 6, this)">⭐ Месяц</div>
+        <div class="period-tab premium-tab" onclick="selectPrem('year_prem', 7, this)">⭐ Год</div>
       </div>
       <div class="number-circle" id="premNum">7</div>
       <div class="forecast-title" id="premTitle">Премиум Заголовок</div>
       <div id="premContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v8.6</div>
+    <div class="version-footer">Оракул Звёзд v8.7</div>
   </div>
 
   <script>
     let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) { try { tg.expand(); } catch(e) {} }
 
-    let uData = { name: \x27Игорь\x27, d: 10, m: 2, y: 1975, h: 12 };
+    let uData = { name: "Игорь", d: 10, m: 2, y: 1975, h: 12 };
 
-    // Мгновенный автопереход фокуса по количеству символов без отрыва
+    // Автопереход фокуса
     document.addEventListener("DOMContentLoaded", () => {
-      const inputs = [
-        { id: \x27bDay\x27, max: 2, next: \x27bMonth\x27 },
-        { id: \x27bMonth\x27, max: 2, next: \x27bYear\x27 },
-        { id: \x27bYear\x27, max: 4, next: \x27bHour\x27 },
-        { id: \x27bHour\x27, max: 2, next: null }
-      ];
-
-      inputs.forEach(item => {
-        const el = document.getElementById(item.id);
+      const ids = ["bDay", "bMonth", "bYear", "bHour"];
+      const maxs = [2, 2, 4, 2];
+      ids.forEach((id, idx) => {
+        const el = document.getElementById(id);
         if(!el) return;
-        el.addEventListener(\x27input\x27, () => {
-          el.value = el.value.replace(/\\D/g, \x27\x27);
-          if (el.value.length >= item.max && item.next) {
-            const nextEl = document.getElementById(item.next);
-            if (nextEl) nextEl.focus();
+        el.addEventListener("input", () => {
+          el.value = el.value.replace(/\D/g, "");
+          if (el.value.length >= maxs[idx] && idx < ids.length - 1) {
+            document.getElementById(ids[idx + 1]).focus();
           }
         });
       });
     });
 
     const letters = {
-      \x27а\x27:1,\x27и\x27:1,\x27с\x27:1,\x27ъ\x27:1, \x27б\x27:2,\x27й\x27:2,\x27т\x27:2,\x27ы\x27:2,
-      \x27в\x27:3,\x27к\x27:3,\x27у\x27:3,\x27ь\x27:3, \x27г\x27:4,\x27л\x27:4,\x27ф\x27:4,\x27э\x27:4,
-      \x27д\x27:5,\x27м\x27:5,\x27х\x27:5,\x27ю\x27:5, \x27е\x27:6,\x27н\x27:6,\x27ц\x27:6,\x27я\x27:6,
-      \x27ё\x27:7,\x27о\x27:7,\x27ч\x27:7, \x27ж\x27:8,\x27п\x27:8,\x27ш\x27:8, \x27з\x27:9,\x27р\x27:9,\x27щ\x27:9
+      "а":1,"и":1,"с":1,"ъ":1, "б":2,"й":2,"т":2,"ы":2,
+      "в":3,"к":3,"у":3,"ь":3, "г":4,"л":4,"ф":4,"э":4,
+      "д":5,"м":5,"х":5,"ю":5, "е":6,"н":6,"ц":6,"я":6,
+      "ё":7,"о":7,"ч":7, "ж":8,"п":8,"ш":8, "з":9,"р":9,"щ":9
     };
 
     function red(n) {
       while (n > 9 && n !== 11 && n !== 22) {
-        n = n.toString().split(\x27\x27).reduce((a,b)=>a+parseInt(b),0);
+        n = n.toString().split("").reduce((a,b)=>a+parseInt(b),0);
       }
       return n;
     }
 
     function getNameNum(name) {
       let sum = 0;
-      name.toLowerCase().split(\x27\x27).forEach(c => { if(letters[c]) sum += letters[c]; });
+      name.toLowerCase().split("").forEach(c => { if(letters[c]) sum += letters[c]; });
       return red(sum || 5);
     }
 
     function showScreen(id) {
-      document.querySelectorAll(\x27.screen\x27).forEach(s => s.classList.remove(\x27active\x27));
-      document.getElementById(id).classList.add(\x27active\x27);
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
     }
 
     function calculateAndOpenHome() {
-      const nameVal = document.getElementById(\x27userName\x27).value.trim();
-      const dayVal = document.getElementById(\x27bDay\x27).value.trim();
-      const monthVal = document.getElementById(\x27bMonth\x27).value.trim();
-      const yearVal = document.getElementById(\x27bYear\x27).value.trim();
-      const hourVal = document.getElementById(\x27bHour\x27).value.trim();
+      const nameVal = document.getElementById("userName").value.trim();
+      const dayVal = document.getElementById("bDay").value.trim();
+      const monthVal = document.getElementById("bMonth").value.trim();
+      const yearVal = document.getElementById("bYear").value.trim();
+      const hourVal = document.getElementById("bHour").value.trim();
 
-      uData.name = nameVal || \x27Игорь\x27;
+      uData.name = nameVal || "Игорь";
       uData.d = dayVal ? parseInt(dayVal) : 10;
       uData.m = monthVal ? parseInt(monthVal) : 2;
       uData.y = yearVal ? parseInt(yearVal) : 1975;
       uData.h = hourVal ? parseInt(hourVal) : 12;
 
-      showScreen(\x27homeScreen\x27);
-      selectFree(\x27life\x27, 0, document.querySelector(\x27#homeScreen .periods-bar .period-tab\x27));
+      showScreen("homeScreen");
+      selectFree("life", 0, document.querySelector("#homeScreen .periods-bar .period-tab"));
     }
 
     const freeTextBank = {
@@ -171,8 +165,7 @@
       8: "Число (8) — это мощный денежный код, энергия успеха, масштаба и управления ресурсами. Период благоприятен для реализации бизнес-проектов и карьеры.",
       9: "Вибрация числа (9) знаменует этап завершения циклов, подведения итогов и глубокой мудрости. Время отпустить то, что изжило себя, и подготовиться к новому витку."
     };
-
-    const detailedBanks = {
+const detailedBanks = {
       love: {
         1: "В сфере чувств вы проявляете ярко выраженные лидерские качества. Вам необходим надежный партнер, который уважает вашу независимость и разделяет амбиции.",
         2: "Ваша личная жизнь пронизана нежностью и интуитивным пониманием. Вы исключительно глубоко чувствуете эмоциональное состояние партнера.",
@@ -242,73 +235,73 @@
     };
 
     function selectFree(type, offset, el) {
-      document.querySelectorAll(\x27#homeScreen .periods-bar .period-tab\x27).forEach(t => t.classList.remove(\x27active\x27));
-      if(el) el.classList.add(\x27active\x27);
+      document.querySelectorAll("#homeScreen .periods-bar .period-tab").forEach(t => t.classList.remove("active"));
+      if(el) el.classList.add("active");
 
       let num = red(uData.d + uData.m + uData.y + uData.h + getNameNum(uData.name) + offset);
-      document.getElementById(\x27freeNum\x27).innerText = num;
-      document.getElementById(\x27freeTitle\x27).innerText = \x27Базовый обзор (\x27 + uData.name + \x27, код \x27 + num + \x27)\x27;
-      document.getElementById(\x27freeText\x27).innerText = freeTextBank[((num-1)%9)+1];
+      document.getElementById("freeNum").innerText = num;
+      document.getElementById("freeTitle").innerText = "Базовый обзор (" + uData.name + ", код " + num + ")";
+      document.getElementById("freeText").innerText = freeTextBank[((num-1)%9)+1];
     }
 
     function openPremiumScreen() {
-      showScreen(\x27premiumScreen\x27);
-      selectPrem(\x27life_prem\x27, 4, document.querySelector(\x27#premiumScreen .periods-bar .period-tab\x27));
+      showScreen("premiumScreen");
+      selectPrem("life_prem", 4, document.querySelector("#premiumScreen .periods-bar .period-tab"));
     }
 
     function selectPrem(type, offset, el) {
-      document.querySelectorAll(\x27#premiumScreen .periods-bar .period-tab\x27).forEach(t => t.classList.remove(\x27active\x27));
-      if(el) el.classList.add(\x27active\x27);
+      document.querySelectorAll("#premiumScreen .periods-bar .period-tab").forEach(t => t.classList.remove("active"));
+      if(el) el.classList.add("active");
 
       let num = red(uData.d + uData.m + uData.y + uData.h + getNameNum(uData.name) + offset);
-      document.getElementById(\x27premNum\x27).innerText = num;
+      document.getElementById("premNum").innerText = num;
       let idx = ((num - 1) % 9) + 1;
 
       let title = "";
       let periodDesc = "";
 
-      if (type === \x27life_prem\x27) {
+      if (type === "life_prem") {
         title = "⭐ Глубокий разбор Судьбы (" + uData.name + ")";
         periodDesc = "на весь жизненный путь";
-      } else if (type === \x27week_prem\x27) {
+      } else if (type === "week_prem") {
         title = "⭐ Детальный отчёт на Неделю";
         periodDesc = "на текущую неделю";
-      } else if (type === \x27month_prem\x27) {
+      } else if (type === "month_prem") {
         title = "⭐ Стратегический прогноз на Месяц";
         periodDesc = "на текущий месяц";
-      } else if (type === \x27year_prem\x27) {
+      } else if (type === "year_prem") {
         title = "⭐ Масштабный путеводитель на Год";
         periodDesc = "на текущий год";
       }
 
-      document.getElementById(\x27premTitle\x27).innerText = title;
+      document.getElementById("premTitle").innerText = title;
 
-      document.getElementById(\x27premContainer\x27).innerHTML = \x60
+      document.getElementById("premContainer").innerHTML = `
         <div class="sphere-section">
-          <h4>❤️ Любовь и Отношения (\x24{periodDesc})</h4>
-          <p>\x24{detailedBanks.love[idx]}</p>
+          <h4>❤️ Любовь и Отношения (${periodDesc})</h4>
+          <p>${detailedBanks.love[idx]}</p>
         </div>
         <div class="sphere-section">
           <h4>🏡 Дом, Семья и Очаг</h4>
-          <p>\x24{detailedBanks.home[idx]}</p>
+          <p>${detailedBanks.home[idx]}</p>
         </div>
         <div class="sphere-section">
           <h4>💰 Работа, Карьера и Финансы</h4>
-          <p>\x24{detailedBanks.work[idx]}</p>
+          <p>${detailedBanks.work[idx]}</p>
         </div>
         <div class="sphere-section">
           <h4>🍏 Здоровье и Энергетический Баланс</h4>
-          <p>\x24{detailedBanks.health[idx]}</p>
+          <p>${detailedBanks.health[idx]}</p>
         </div>
         <div class="sphere-section">
           <h4>🔮 Карма и Скрытые Таланты</h4>
-          <p>\x24{detailedBanks.karma[idx]}</p>
+          <p>${detailedBanks.karma[idx]}</p>
         </div>
         <div class="sphere-section" style="border: 1px solid #f0cb69; background: rgba(240,203,105,0.08);">
-          <h4>✨ Тайное Значение Вашего Имени (\x24{uData.name})</h4>
-          <p>\x24{detailedBanks.nameMeaning[idx]}</p>
+          <h4>✨ Тайное Значение Вашего Имени (${uData.name})</h4>
+          <p>${detailedBanks.nameMeaning[idx]}</p>
         </div>
-      \x60;
+      `;
     }
   </script>
 </html>
