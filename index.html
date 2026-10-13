@@ -1,530 +1,345 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Оракул Звёзд — Матрица Судьбы</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-    try {
-      tg.setBackgroundColor('#05070e');
-      tg.setHeaderColor('#05070e');
-    } catch(e) {}
-  </script>
-  <style>
-    body { margin: 0; padding: 0; background: #05070e !important; font-family: 'Arial', sans-serif; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 50px; }
-    .header { text-align: center; padding: 20px 20px 10px; }
-    .star-icon { font-size: 42px; filter: drop-shadow(0 0 15px #f0cb69); }
-    .brand-title { font-family: "Georgia", serif; font-size: 26px; color: #f0cb69; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 15px rgba(240, 203, 105, 0.8); margin-top: 5px; }
-    .brand-sub { font-size: 10px; color: #a0aab8; letter-spacing: 4px; text-transform: uppercase; margin-top: 4px; }
-    
-    .container { width: 90%; max-width: 400px; background: #0c101d; border: 1px solid rgba(240, 203, 105, 0.3); border-radius: 20px; padding: 18px; margin-top: 10px; box-shadow: 0 0 30px rgba(240, 203, 105, 0.15); box-sizing: border-box; }
-    .input-group { margin-bottom: 12px; }
-    label { display: block; font-size: 12px; color: #f0cb69; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
-    
-    .date-selects { display: flex; gap: 8px; justify-content: space-between; position: relative; }
-    .custom-select-wrapper { flex: 1; position: relative; user-select: none; }
-    .custom-select-trigger { padding: 10px 4px; background: #070a12; border: 1px solid rgba(240, 203, 105, 0.4); border-radius: 10px; color: #f0cb69; font-size: 13px; text-align: center; cursor: pointer; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .custom-select-trigger:after { content: ' ▼'; font-size: 8px; opacity: 0.7; }
-    
-    .custom-options { position: absolute; top: 105%; left: 0; right: 0; background: #070a12; border: 1px solid rgba(240, 203, 105, 0.6); border-radius: 10px; max-height: 160px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 8px 25px rgba(0,0,0,0.9); }
-    .custom-options.open { display: block; }
-    .custom-option { padding: 8px 4px; text-align: center; color: #fff; cursor: pointer; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .custom-option:hover, .custom-option.selected { background: rgba(240, 203, 105, 0.2); color: #f0cb69; font-weight: bold; }
-
-    .btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #f0cb69, #b8860b); border: none; border-radius: 10px; color: #05070e; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 8px; box-shadow: 0 0 15px rgba(240, 203, 105, 0.4); }
-    
-    .result-box { margin-top: 15px; padding: 15px; background: #070a12; border-radius: 10px; border: 1px solid rgba(240, 203, 105, 0.3); font-size: 13px; line-height: 1.6; color: #d0d7de; display: none; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
-    .result-title { color: #f0cb69; font-family: "Georgia", serif; font-size: 15px; margin-bottom: 12px; font-weight: bold; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
-
-    /* Таб-панель (4 основных раздела) */
-    .tab-nav { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid rgba(240,203,105,0.2); padding-bottom: 8px; justify-content: space-between; }
-    .tab-btn { background: rgba(240,203,105,0.1); border: 1px solid rgba(240,203,105,0.3); color: #f0cb69; padding: 7px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: bold; flex: 1; text-align: center; }
-    .tab-btn.active { background: #f0cb69; color: #05070e; }
-    
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    .text-block { margin-bottom: 12px; padding: 10px; background: rgba(240,203,105,0.03); border-radius: 8px; border-left: 3px solid #f0cb69; }
-    .text-block strong { color: #f0cb69; display: block; margin-bottom: 5px; font-size: 13px; }
-
-    /* Замануха */
-    .teaser-lock { margin-top: 15px; padding: 15px; background: rgba(240, 203, 105, 0.05); border: 1px dashed #f0cb69; border-radius: 12px; text-align: center; }
-    .teaser-lock p { font-size: 12px; color: #f0cb69; margin: 0 0 10px; line-height: 1.4; }
-
-    /* Модальное окно рекламы */
-    #ad-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,7,14,0.95); z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
-    .ad-card { background: #0c101d; border: 1px solid #f0cb69; border-radius: 20px; padding: 25px; width: 100%; max-width: 320px; box-shadow: 0 0 40px rgba(240,203,105,0.3); }
-    .ad-timer { font-size: 32px; color: #f0cb69; font-weight: bold; margin: 15px 0; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Оракул Звёзд — Портал Судьбы</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(18, 24, 38, 0.85);
+            --border-color: rgba(212, 175, 55, 0.3);
+            --accent-gold: #d4af37;
+            --accent-glow: rgba(212, 175, 55, 0.15);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(30, 58, 138, 0.15) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container { width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+        header { text-align: center; padding: 10px 0; }
+        .logo-icon { font-size: 32px; margin-bottom: 4px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+        h1 { font-size: 22px; color: var(--accent-gold); letter-spacing: 1px; margin-bottom: 4px; }
+        p.subtitle { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        .input-group { display: flex; flex-direction: column; gap: 10px; }
+        label { font-size: 12px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .date-selectors { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; }
+        .time-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        select {
+            background: rgba(11, 15, 25, 0.9);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            width: 100%;
+        }
+        select:focus { border-color: var(--accent-gold); box-shadow: 0 0 8px var(--accent-glow); }
+        .btn {
+            background: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #aa771c 100%);
+            color: #0b0f19;
+            border: none;
+            padding: 13px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            margin-top: 4px;
+        }
+        .hidden { display: none !important; }
+        .tabs-header { display: flex; gap: 4px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; }
+        .tab-btn {
+            flex: 1;
+            background: rgba(11, 15, 25, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: var(--text-muted);
+            padding: 8px 6px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: var(--accent-glow);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .report-section { margin-bottom: 14px; }
+        .report-section h3 { font-size: 14px; color: var(--accent-gold); margin-bottom: 6px; }
+        .report-section p { font-size: 12px; line-height: 1.5; color: var(--text-main); margin-bottom: 8px; }
+        .teaser-container { position: relative; }
+        .blurred { filter: blur(5px); user-select: none; pointer-events: none; opacity: 0.4; }
+        .paywall-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(11, 15, 25, 0.75);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            z-index: 10;
+        }
+        .paywall-overlay p { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+        .btn-ad { background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); color: white; box-shadow: 0 4px 15px rgba(124, 58, 237,.4); }
+        footer { text-align: center; font-size: 10px; color: var(--text-muted); padding: 8px 0; margin-top: auto; }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <div class="logo-icon">🔮</div>
+            <h1>Оракул Звёзд</h1>
+            <p class="subtitle">Глубокий астро-нумерологический анализ судьбы</p>
+        </header>
 
-  <!-- Модальное окно рекламы -->
-  <div id="ad-modal">
-    <div class="ad-card">
-      <div style="font-size: 28px;">📺</div>
-      <div style="font-size: 15px; color: #f0cb69; font-weight: bold; margin-top: 10px;">Бонусный рекламный ролик</div>
-      <div style="font-size: 11px; color: #a0aab8; margin-top: 5px;">Смотрите видео до конца, чтобы звёзды открыли тайный портал знаний...</div>
-      <div class="ad-timer" id="ad-countdown">3</div>
-      <div style="font-size: 10px; color: #666;">Тестовый рекламный поток Adsgram</div>
+        <div id="input-card" class="card">
+            <div class="input-group">
+                <label>Дата рождения</label>
+                <div class="date-selectors">
+                    <select id="day"></select>
+                    <select id="month">
+                        <option value="1">Январь</option>
+                        <option value="2">Февраль</option>
+                        <option value="3">Март</option>
+                        <option value="4">Апрель</option>
+                        <option value="5">Май</option>
+                        <option value="6">Июнь</option>
+                        <option value="7">Июль</option>
+                        <option value="8">Август</option>
+                        <option value="9">Сентябрь</option>
+                        <option value="10">Октябрь</option>
+                        <option value="11">Ноябрь</option>
+                        <option value="12">Декабрь</option>
+                    </select>
+                    <select id="year"></select>
+                </div>
+
+                <label style="margin-top: 4px;">Время рождения (для точных циклов)</label>
+                <div class="time-selector">
+                    <select id="birth-hour">
+                        <option value="-1">Точно не знаю</option>
+                        <option value="0">00:00 - 03:00 (Ночь)</option>
+                        <option value="3">03:00 - 06:00 (Рассвет)</option>
+                        <option value="6">06:00 - 09:00 (Утро)</option>
+                        <option value="9">09:00 - 12:00 (Полдень)</option>
+                        <option value="12">12:00 - 15:00 (День)</option>
+                        <option value="15">15:00 - 18:00 (Закат)</option>
+                        <option value="18">18:00 - 21:00 (Вечер)</option>
+                        <option value="21">21:00 - 24:00 (Полночь)</option>
+                    </select>
+                    <select id="birth-minute">
+                        <option value="0">Минуты (~00)</option>
+                        <option value="15">~15 мин</option>
+                        <option value="30">~30 мин</option>
+                        <option value="45">~45 мин</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="generateForecast()">Узнать прогноз судьбы</button>
+            </div>
+        </div>
+
+        <div id="result-card" class="card hidden">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('general')">🌟 Общий</button>
+                <button class="tab-btn" onclick="switchTab('year')">📅 Год</button>
+                <button class="tab-btn" onclick="switchTab('month')">🌙 Месяц</button>
+                <button class="tab-btn" onclick="switchTab('week')">⏳ Неделя</button>
+            </div>
+
+            <div id="tab-general" class="tab-content active">
+                <div class="report-section">
+                    <h3>🧿 Базовый код судьбы</h3>
+                    <p id="general-teaser-text">Загрузка...</p>
+                </div>
+                <div class="teaser-container">
+                    <div id="general-deep-block">
+                        <div class="report-section blurred">
+                           <h3>💫 Кармический потенциал и скрытые таланты</h3>
+                           <p>В вашей матрице заложен мощный энергетический поток, который долгое время находился в состоянии спячки. Нумерологические аспекты указывают на скрытый дар убеждения и тонкую интуицию...</p>
+                           <h3>❤️ Личная жизнь и сокровенные союзы</h3>
+                           <p>На эмоциональном фронте вас ждет период глубокой трансформации. Одинокие сердца смогут встретить человека, резонирующего на той же частоте...</p>
+                           <h3>💰 Финансовый код и материальный успех</h3>
+                           <p>Звезды выстраиваются в уникальную денежную комбинацию. Период нестабильности окончательно сменяется устойчивым ростом...</p>
+                        </div>
+                        <div id="paywall-general" class="paywall-overlay">
+                            <p>🔒 Полный разбор скрыт звёздами. Посмотрите видео, чтобы открыть всю правду.</p>
+                            <button class="btn btn-ad" onclick="watchAd('general')">🎁 Открыть весь прогноз</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-year" class="tab-content">
+                <div class="teaser-container">
+                    <div id="year-deep-block">
+                        <div class="report-section blurred">
+                            <h3>🚀 Макро-цикл текущего года</h3>
+                            <p>Этот год станет поворотным пунктом вашего двенадцатилетнего цикла. Судьба предоставляет уникальные шансы для кардинальной смены деятельности...</p>
+                            <h3>⚡ Ключевые точки и испытания года</h3>
+                            <p>В середине года возможны временные турбулентности в сфере деловых партнерств, которые закалят ваш характер...</p>
+                        </div>
+                        <div id="paywall-year" class="paywall-overlay">
+                            <p>🔒 Годовой астрологический прогноз доступен после просмотра видео.</p>
+                            <button class="btn btn-ad" onclick="watchAd('year')">🎁 Разблокировать год</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-month" class="tab-content">
+                <div class="report-section">
+                    <h3>🌙 Энергетика текущего месяца</h3>
+                    <p>Текущий лунный месяц требует сосредоточения на внутренних ресурсах и завершении старых обязательств.</p>
+                </div>
+                <div class="teaser-container">
+                    <div id="month-deep-block">
+                        <div class="report-section blurred">
+                            <h3>💼 Карьера и финансовые потоки месяца</h3>
+                            <p>Благоприятное время для переговоров, подписания долгосрочных контрактов и монетизации давних хобби...</p>
+                        </div>
+                        <div id="paywall-month" class="paywall-overlay">
+                            <p>🔒 Полный расклад на месяц с точными датами.</p>
+                            <button class="btn btn-ad" onclick="watchAd('month')">🎁 Разблокировать месяц</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-week" class="tab-content">
+                <div class="report-section">
+                    <h3>⏳ Краткосрочные вибрации недели</h3>
+                    <p>Ближайшие семь дней пройдут под знаком активного взаимодействия с окружением. Будьте внимательны к знакам.</p>
+                </div>
+                <div class="teaser-container">
+                    <div id="week-deep-block">
+                        <div class="report-section blurred">
+                            <h3>🎯 Совет оракула на каждый день недели</h3>
+                            <p>Понедельник и вторник посвятите планированию. Среда и четверг идеальны для решения финансовых вопросов...</p>
+                        </div>
+                        <div id="paywall-week" class="paywall-overlay">
+                            <p>🔒 Узнайте точный совет на каждый день недели.</p>
+                            <button class="btn btn-ad" onclick="watchAd('week')">🎁 Разблокировать неделю</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" style="background: transparent; border: 1px solid var(--border-color); color: var(--accent-gold); margin-top: 14px;" onclick="resetForm()">🔄 Ввести другую дату</button>
+        </div>
+
+        <footer>
+            <p>Оракул Звёзд © 2026 • Все права защищены</p>
+        </footer>
     </div>
-  </div>
 
-  <div class="header">
-    <div class="star-icon">✨</div>
-    <div class="brand-title" id="t-brand">Оракул Звёзд</div>
-    <div class="brand-sub" id="t-sub">Портал Судьбы</div>
-  </div>
+    <script>
+        let tg = window.Telegram.WebApp;
+        if (tg) { tg.expand(); }
 
-  <div class="container">
-    <div class="input-group">
-      <label id="t-label">Дата вашего рождения:</label>
-      <div class="date-selects">
-        <!-- День -->
-        <div class="custom-select-wrapper" id="select-day">
-          <div class="custom-select-trigger" id="trigger-day">День</div>
-          <div class="custom-options" id="options-day"></div>
-        </div>
-        <!-- Месяц -->
-        <div class="custom-select-wrapper" id="select-month">
-          <div class="custom-select-trigger" id="trigger-month">Месяц</div>
-          <div class="custom-options" id="options-month"></div>
-        </div>
-        <!-- Год -->
-        <div class="custom-select-wrapper" id="select-year">
-          <div class="custom-select-trigger" id="trigger-year">Год</div>
-          <div class="custom-options" id="options-year"></div>
-        </div>
-      </div>
-    </div>
+        window.onload = function() {
+            const daySelect = document.getElementById('day');
+            const yearSelect = document.getElementById('year');
+            for (let i = 1; i <= 31; i++) {
+                let opt = document.createElement('option');
+                opt.value = i; opt.textContent = i;
+                if (i === 15) opt.selected = true;
+                daySelect.appendChild(opt);
+            }
+            const currentYear = new Date().getFullYear();
+            for (let i = currentYear; i >= 1940; i--) {
+                let opt = document.createElement('option');
+                opt.value = i; opt.textContent = i;
+                if (i === 1995) opt.selected = true;
+                yearSelect.appendChild(opt);
+            }
+        };
 
-    <button class="btn" id="t-btn-calc" onclick="calculateBasicForecast()">Узнать прогноз дня</button>
-    
-    <div id="result" class="result-box">
-      <div class="result-title" id="res-title">⚡ Число судьбы: 9</div>
-      
-      <!-- Энергия дня -->
-      <div class="text-block">
-        <strong id="t-energy">🌟 Энергетика и совет на сегодня:</strong>
-        <span id="res-energy">...</span>
-      </div>
+        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "bot-53766" }) : null;
 
-      <!-- ЗАМАНУХА -->
-      <div id="teaser-block" class="teaser-lock">
-        <p>🔒 <b>Глобальный разбор заблокирован:</b> Получите глубокий многостраничный анализ вашей судьбы (Общий портрет, Карьера, Семья, Финансы, Год, Месяц и Неделя).</p>
-        <button class="btn" onclick="watchAdForGlobalReport()">🎁 Открыть весь прогноз (Реклама)</button>
-      </div>
-      <!-- Глобальный блок с 4 объемными вкладками -->
-      <div id="global-forecast" style="display: none; margin-top: 15px;">
-        <div class="tab-nav">
-          <button class="tab-btn active" onclick="switchTab('general', event)">🔮 Общий</button>
-          <button class="tab-btn" onclick="switchTab('year', event)">🌍 Год</button>
-          <button class="tab-btn" onclick="switchTab('month', event)">🌙 Месяц</button>
-          <button class="tab-btn" onclick="switchTab('week', event)">📅 Неделя</button>
-        </div>
+        function generateForecast() {
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').options[document.getElementById('month').selectedIndex].text;
+            const year = document.getElementById('year').value;
+            const hour = document.getElementById('birth-hour').value;
 
-        <!-- Таб: ОБЩИЙ (Работа, Семья, Финансы, Личность) -->
-        <div id="tab-general" class="tab-content active">
-          <div class="text-block"><strong>✨ Ваш сакральный код личности:</strong><span id="res-gen-1">...</span></div>
-          <div class="text-block"><strong>💼 Работа, бизнес и амбиции:</strong><span id="res-gen-2">...</span></div>
-          <div class="text-block"><strong>🏡 Семья, род и близкие люди:</strong><span id="res-gen-3">...</span></div>
-          <div class="text-block"><strong>💰 Денежный поток и изобилие:</strong><span id="res-gen-4">...</span></div>
-        </div>
+            let timeVibe = "Время рождения не указано, расчет ведется по чистым солнечным суткам.";
+            if (hour !== "-1") {
+                const hNum = parseInt(hour);
+                if (hNum >= 0 && hNum < 6) timeVibe = "Ночной час рождения наделяет вас глубокой интуицией и даром предвидения.";
+                else if (hNum >= 6 && hNum < 12) timeVibe = "Утренний час рождения дарует мощный заряд созидательной энергии и лидерства.";
+                else if (hNum >= 12 && hNum < 18) timeVibe = "Дневной час рождения усиливает ваш социальный потенциал и денежные потоки.";
+                else timeVibe = "Вечерний час рождения открывает доступ к тайным знаниям и мудрости.";
+            }
 
-        <!-- Таб: ГОД (Работа, Семья, Финансы, Вектор) -->
-        <div id="tab-year" class="tab-content">
-          <div class="text-block"><strong>🌍 Глобальный вектор и задачи года:</strong><span id="res-year-1">...</span></div>
-          <div class="text-block"><strong>📈 Карьерный прорыв и проекты:</strong><span id="res-year-2">...</span></div>
-          <div class="text-block"><strong>❤️ Семья, брак и отношения:</strong><span id="res-year-3">...</span></div>
-          <div class="text-block"><strong>💎 Финансовая стратегия года:</strong><span id="res-year-4">...</span></div>
-        </div>
+            document.getElementById('general-teaser-text').innerHTML = 
+                `Дата рождения: <b>${day} ${month} ${year} г.</b><br>${timeVibe}<br><br>` +
+                `Базовый нумерологический код указывает на гармоничное сочетание внутренней силы и творческого начала. Вы находитесь на пороге важного цикла обновления.`;
 
-        <!-- Таб: МЕСЯЦ (Работа, Семья, Финансы, Цикл) -->
-        <div id="tab-month" class="tab-content">
-          <div class="text-block"><strong>🌙 Лунный и событийный цикл месяца:</strong><span id="res-mon-1">...</span></div>
-          <div class="text-block"><strong>🛠️ Деловой потенциал и работа:</strong><span id="res-mon-2">...</span></div>
-          <div class="text-block"><strong>👨‍👩‍👧 Домашний очаг и близкие:</strong><span id="res-mon-3">...</span></div>
-          <div class="text-block"><strong>💵 Денежные поступления месяца:</strong><span id="res-mon-4">...</span></div>
-        </div>
-
-        <!-- Таб: НЕДЕЛЯ (Работа, Семья, Финансы, Совет) -->
-        <div id="tab-week" class="tab-content">
-          <div class="text-block"><strong>📅 Энергетический поток недели:</strong><span id="res-week-1">...</span></div>
-          <div class="text-block"><strong>⚡ Профессиональные задачи:</strong><span id="res-week-2">...</span></div>
-          <div class="text-block"><strong>🧸 Атмосфера в семье и доме:</strong><span id="res-week-3">...</span></div>
-          <div class="text-block"><strong>💡 Финансовый совет на дни:</strong><span id="res-week-4">...</span></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <script>
-    const i18n = {
-      ru: {
-        brand: "Оракул Звёзд", sub: "Портал Судьбы", label: "Дата вашего рождения:",
-        day: "День", month: "Месяц", year: "Год",
-        calcBtn: "Узнать прогноз дня",
-        months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-        resTitle: "⚡ Ваша матрица судьбы: ",
-        energy: "🌟 Энергетика и совет на сегодня:",
-        alertDate: "Пожалуйста, выберите день, месяц и год рождения!",
-        bonusUnlocked: "🎁 Глобальный разбор успешно разблокирован звёздами!"
-      }
-    };
-
-    // Обширные, многоабзацные глубокие тексты для каждой цифры (1-9)
-    const numerologyData = {
-      1: {
-        energy: "Сегодня Вселенная открывает для вас портал чистой энергии творения. Ваша харизма на пике, а слова способны менять реальность. Не бойтесь заявлять о себе громко — звезды поддерживают любые ваши начинания.",
-        gen1: "Единица — символ первородного огня, лидерства и независимости. Вы обладаете несгибаемым внутренним стержнем и редким даром вести за собой людей. Ваша душа жаждет первооткрывательства и побед.",
-        gen2: "В работе и бизнесе вы прирожденный руководитель. Вам тесно в роли простого исполнителя. Вы генерируете масштабные идеи и берете на себя ответственность в самые кризисные моменты.",
-        gen3: "В семье вы стремитесь занимать главенствующую позицию, однако звезды советуют проявлять больше мягкости к близким. Родные ценят вашу надежность, но нуждаются в вашем тепле, а не только в опеке.",
-        gen4: "Ваш денежный поток напрямую зависит от личной инициативы. Деньги приходят тогда, когда вы берете штурмом новые проекты и не боитесь здорового финансового риска.",
-        year1: "Этот год станет периодом грандиозных личных прорывов, смены парадигмы и закладки фундамента на целое десятилетие вперед. Время заявлять о своих амбициях во весь голос.",
-        year2: "На профессиональном поприще вас ждет триумф: возможно открытие собственного дела, повышение до топ-менеджера или запуск проекта, который принесет признание.",
-        year3: "В семейных отношениях предстоит проверка на гибкость. Учитесь слышать мнение партнера, чтобы избежать бурных споров за лидерство в доме.",
-        year4: "Финансовая стратегия года — инвестиции в собственные навыки, независимые активы и расширение бизнеса. Возможны крупные, но очень прибыльные вложения.",
-        mon1: "Месяц принесет мощный прилив сил, ментальную ясность и неожиданные возможности для реализации самых смелых планов.",
-        mon2: "Рабочие задачи будут решаться стремительно благодаря вашей воле и умению быстро принимать ключевые решения.",
-        mon3: "В домашнем кругу царит атмосфера обновления. Благоприятно делать ремонт, менять обстановку или планировать совместные поездки.",
-        mon4: "Денежные поступления возрастут, если вы проявите активность в переговорах и не побоитесь взять на себя дополнительные обязательства.",
-        week1: "Неделя потребует предельной концентрации внимания и быстрой реакции на меняющиеся обстоятельства вокруг вас.",
-        week2: "На работе ожидаются важные совещания или проверка ваших лидерских качеств на прочность. Вы блестяще справитесь.",
-        week3: "В семье уделите время доверительным беседам. Чашка вечернего чая с близкими поможет снять напряжение недели.",
-        week4: "Финансовый совет: избегайте импульсивных покупок, но смело инвестируйте в то, что повышает вашу продуктивность."
-      },
-      2: {
-        energy: "День глубокой интуиции, тонких энергий и душевного равновесия. Сегодня ваши предчувствия будут абсолютной правдой.",
-        gen1: "Двойка — воплощение дипломатии, эмпатии и космической гармонии. Вы чувствуете фальшь за километр и обладаете удивительным даром сглаживать любые острые углы.",
-        gen2: "В работе вы незаменимый командный игрок, мастер переговоров и тонкий психолог. Вам идеально удается улаживать конфликты и находить компромиссы там, где другие бессильны.",
-        gen3: "Семья для вас — святыня и тихая гавань. Вы готовы на всё ради комфорта и душевного спокойствия своих близких, окружая их заботой и нежностью.",
-        gen4: "Деньги приходят через партнерство, союзы, совместные инвестиции и дипломатические договоренности. Одиночные проекты даются вам тяжелее.",
-        year1: "Год партнерства, создания прочных союзов и духовного взросления. Успех придет через мудрое сотрудничество и доверие.",
-        year2: "В карьере наступает время плодотворных коллабораций. Заключение долгосрочных контрактов принесет стабильный доход.",
-        year3: "В личной жизни — гармония, углубление чувств и выход отношений на новый уровень зрелости. Для одиноких высок шанс встретить судьбу.",
-        year4: "Финансовая стратегия: избегайте рискованных авантюр, выбирайте надежные инструменты и совместные сбережения.",
-        mon1: "Время налаживания связей, исцеления старых обид и укрепления тылов. Интуиция подскажет верные шаги.",
-        mon2: "В делах царит стабильность, если вы опираетесь на помощь коллег и не пытаетесь тянуть всё в одиночку.",
-        mon3: "Дом наполнится уютом и теплом. Благоприятно принимать гостей и решать бытовые вопросы сообща.",
-        mon4: "Финансы ровные. Возможны приятные денежные поступления от давних партнеров или возвращение долгов.",
-        week1: "Неделя пройдет под знаком эмоциональной стабильности, душевного комфорта и приятных знаков судьбы.",
-        week2: "На работе ценится ваша внимательность к деталям и умение работать с документами без ошибок.",
-        week3: "В семье царит взаимопонимание. Посвятите выходные совместному отдыху на природе.",
-        week4: "Финансовый совет: доверяйте интуиции при крупных покупках, но советуйтесь с близкими."
-      },
-      3: {
-        energy: "Праздник жизни, радости и творческого вдохновения ворвется в ваш день! Звезды советуют отбросить сомнения.",
-        gen1: "Тройка — любимица фортуны, искра божественного вдохновения, юмора и легкого отношения к жизни. Вы умеете видеть прекрасное.",
-        gen2: "В работе вы блистаете там, где нужны креатив, ораторское искусство, реклама, дизайн или живое общение с людьми.",
-        gen3: "В семье вы являетесь главным источником позитива, праздников и хорошего настроения. С вами никогда не бывает скучно.",
-        gen4: "Деньги текут к вам легко через творчество, соцсети, выступления и хобби. Главное — любить то, что вы делаете.",
-        year1: "Год творческого триумфа, расширения кругозора, путешествий, ярких знакомств и реализации смелых идей.",
-        year2: "Карьера пойдет в гору благодаря вашему обаянию и нестандартному подходу к привычным задачам.",
-        year3: "В любви — флирт, страсть, обновление чувств и романтические путешествия со второй половинкой.",
-        year4: "Финансы динамичны: инвестируйте в свой личный бренд, образование и создание яркого контента.",
-        mon1: "Период мощного ментального подъема. Идеи этого месяца принесут отличные плоды в будущем.",
-        mon2: "Рабочие проекты принесут не только доход, но и искреннее удовольствие от процесса.",
-        mon3: "В кругу семьи возможны радостные события, семейные праздники и приятные сюрпризы.",
-        mon4: "Денежный поток расширяется за счет новых источников дохода и удачных стечений обстоятельств.",
-        week1: "Неделя обещает быть насыщенной встречами, звонками, общением и приятными хлопотами.",
-        week2: "На работе удастся блестяще презентовать свои идеи перед руководством или клиентами.",
-        week3: "В семье царит радость. Устройте для родных небольшой незабываемый праздник.",
-        week4: "Финансовый совет: часть заработанного обязательно потратьте на впечатления и радость для себя."
-      },
-      4: {
-        energy: "День порядка, созидания и надежного фундамента. Практические дела пойдут как по маслу.",
-        gen1: "Четверка — символ стабильности, честного труда и каменной стены. На вас всегда можно положиться в любой ситуации.",
-        gen2: "В работе вы профессионал высочайшего класса, ценящий четкие инструкции, дедлайны и безупречное качество.",
-        gen3: "В семье вы — оплот безопасности. Вы обеспечиваете дом всем необходимым и заботитесь о будущем каждого члена семьи.",
-        gen4: "Деньги приходят через упорный труд, дисциплину, четкое планирование бюджета и надежные активы.",
-        year1: "Год упорной работы и укрепления позиций. Всё, что вы построите в этот период, простоит долгие годы.",
-        year2: "На работе стабильный рост, уважение коллег и укрепление профессионального авторитета.",
-        year3: "В семье царят преданность, верность и проверенная временем надежность. Никаких лишних драм.",
-        year4: "Финансовая стратегия: консервативное накопление, инвестиции в недвижимость и полезные вещи.",
-        mon1: "Месяц наведения идеального порядка в делах, документах, на рабочем столе и в финансах.",
-        mon2: "Рабочий процесс идет размеренно и продуктивно, принося заслуженные результаты.",
-        mon3: "В доме уют и порядок. Благоприятно заниматься крупными покупками для быта.",
-        mon4: "Финансы под строгим контролем. Отличный месяц для создания финансовой подушки безопасности.",
-        week1: "Неделя благоприятна для планомерного выполнения задач без спешки и суеты.",
-        week2: "На работе успешно завершатся рутинные дела, до которых долго не доходили руки.",
-        week3: "В семье спокойная и надежная обстановка. Помогите близким с их практичными делами.",
-        week4: "Финансовый совет: отложите часть средств на долгосрочные цели."
-      },
-      5: {
-        energy: "Ветер перемен уже стучится в окно! День полон сюрпризов и новых возможностей.",
-        gen1: "Пятерка — воплощение свободы, динамики, путешествий и жажды познания мира. Вы не переносите рамки.",
-        gen2: "В работе успешны там, где есть командировки, общение с иностранцами, динамика и свобода принятия решений.",
-        gen3: "В семье вы выступаете генератором поездок и развлечений, но требуете, чтобы ваши границы уважали.",
-        gen4: "Финансы подвижны: деньги приходят из разных источников, легко зарабатываются и легко тратятся на жизнь.",
-        year1: "Год грандиозных трансформаций: смена места жительства, поездки, выход из зоны комфорта.",
-        year2: "В карьере возможен неожиданный поворот, переход на новый уровень или новый проект.",
-        year3: "В личной жизни — буря эмоций, обновление чувств и избавление от рутины.",
-        year4: "Финансовая стратегия: диверсифицируйте доходы и будьте готовы к гибкому перераспределению бюджета.",
-        mon1: "Период неожиданных поворотов, новых знакомств и расширения кругозора.",
-        mon2: "В делах потребуется гибкость и способность быстро адаптироваться под новые вводные.",
-        mon3: "В семье обсуждаются планы на будущие поездки или крупные перемены в быту.",
-        mon4: "Денежные поступления могут быть нестабильными, но весьма щедрыми.",
-        week1: "Неделя принесет спонтанные поездки, интересные встречи и разрушение привычной рутины.",
-        week2: "На работе возможны срочные задачи, требующие нестандартного взгляда.",
-        week3: "В семье важно дать близким личное пространство и свободу мнений.",
-        week4: "Финансовый совет: не рискуйте крупными суммами в сомнительных авантюрах."
-      },
-      6: {
-        energy: "День тепла, семейного уюта, безусловной любви и исцеления душ.",
-        gen1: "Шестерка — хранитель домашнего очага, красоты, гармонии и глубокой преданности близким.",
-        gen2: "В работе успешны в сферах красоты, искусства, психологии, медицины и заботы о людях.",
-        gen3: "Семья для вас — центр Вселенной. Вы готовы отдать последнюю рубашку ради счастья родных.",
-        gen4: "Деньги приходят через гармоничное партнерство, семейный бизнес или деятельность от всего сердца.",
-        year1: "Год укрепления семьи, рождения детей, обустройства жилья и душевного расцвета.",
-        year2: "В карьере стабильность и уважение коллектива, где царит атмосфера поддержки.",
-        year3: "Пик романтики, официальное оформление отношений, гармония и уют в доме.",
-        year4: "Финансовая стратегия: вложения в домашний комфорт, недвижимость и заботу о здоровье.",
-        mon1: "Период, когда все вопросы решаются через любовь, дипломатию и заботу о близких.",
-        mon2: "Рабочие задачи выполняются легко, если вы чувете свою нужность и пользу.",
-        mon3: "В доме царит благополучие. Идеальное время для семейных ужинов и праздников.",
-        mon4: "Финансы стабильны. Возможны приятные траты на подарки для родных.",
-        week1: "Неделя принесет приятные хлопоты по дому и заботу о близких людях.",
-        week2: "На работе вы станете миротворцем, помогающим разрешить споры в коллективе.",
-        week3: "В семье максимум тепла и поддержки. Проведите вечер в кругу родных.",
-        week4: "Финансовый совет: направьте средства на улучшение бытовых условий."
-      },
-      7: {
-        energy: "День глубокого погружения в себя, медитации и мудрости. Вселенная шепчет подсказки.",
-        gen1: "Семерка — мистик, философ, исследователь скрытых тайных знаний и законов вселенной.",
-        gen2: "В работе сильны в аналитике, науке, IT, экспертной деятельности и глубоких исследованиях.",
-        gen3: "В семье цените личное пространство и тишину. Родные знают: вам нужна пауза наедине с собой.",
-        gen4: "Деньги приходят через уникальный интеллектуальный труд, экспертность и глубокие знания.",
-        year1: "Год духовного прорыва, обучения, написания трудов и накопления внутренней мудрости.",
-        year2: "В карьере время глубокой индивидуальной работы и разработки стратегий.",
-        year3: "В личной жизни — ментальное сближение с партнером, разделяющим ваши взгляды.",
-        year4: "Финансовая стратегия: воздержитесь от рискованных вложений, практикуйте финансовый аудит.",
-        mon1: "Месяц уединения, обучения и погружения в профессиональные тайны.",
-        mon2: "В делах нет равных вашей аналитике и умению видеть скрытые риски.",
-        mon3: "В семье царит спокойствие, если близкие дают вам возможность побыть в тишине.",
-        mon4: "Финансы под контролем разума. Благоприятно планировать бюджет наперед.",
-        week1: "Неделя тишины, размышлений и освобождения от информационной суеты.",
-        week2: "На работе удастся в одиночку решить сложнейшую задачу, требующую ума.",
-        week3: "В семье проявите мудрость и сдержанность в спорных вопросах.",
-        week4: "Финансовый совет: не поддавайтесь на чужие уговоры вложить деньги быстро."
-      },
-      8: {
-        energy: "День колоссальной личной силы, материализации мыслей и больших возможностей.",
-        gen1: "Восьмерка — владыка материального мира, кармических законов, масштаба и больших финансов.",
-        gen2: "В работе вы прирожденный топ-менеджер, директор, бизнесмен и стратег.",
-        gen3: "В семье вы защитник и опора, но требуете порядка и уважения к своим правилам.",
-        gen4: "Ваша стихия — большие деньги, крупные инвестиции, недвижимость и масштабные сделки.",
-        year1: "Год триумфального карьерного взлета, подписания крупных контрактов и богатства.",
-        year2: "В бизнесе и карьере прорыв на самый высокий уровень влияния и доходов.",
-        year3: "В любви — щедрость, статус, надежные союзы и демонстрация чувств через поступки.",
-        year4: "Финансовая стратегия: максимальное масштабирование капитала и покупка активов.",
-        mon1: "Время управления серьезными процессами и получения заслуженных дивидендов.",
-        mon2: "Рабочие проекты принесут крупную прибыль и признание вашего авторитета.",
-        mon3: "В семье стабильность и уверенность в завтрашнем дне благодаря вашим усилиям.",
-        mon4: "Пиковые финансовые поступления. Удачный момент для крупных приобретений.",
-        week1: "Неделя важных переговоров, подписания контрактов и крупных чеков.",
-        week2: "На работе вы демонстрируете железную хватку и побеждаете конкурентов.",
-        week3: "В семье вы решаете любые вопросы силой своего авторитета и заботы.",
-        week4: "Финансовый совет: грамотно реинвестируйте прибыль для приумножения."
-      },
-      9: {
-        energy: "День завершения больших циклов, мудрости и духовного освобождения.",
-        gen1: "Девятка — финишер, космический мудрец, филантроп и целитель человеческих душ.",
-        gen2: "В работе успешны в масштабных социальных проектах, благотворительности, искусстве и медицине.",
-        gen3: "В семье вы самый понимающий и мудрый наставник, прощающий любые ошибки.",
-        gen4: "Деньги приходят тогда, когда вы служите людям и миру, отпуская излишнюю хватку.",
-        year1: "Год подведения итогов 9-летнего цикла, очищения от старого и подготовки к чуду.",
-        year2: "В карьере завершение крупных этапов перед переходом на новый уровень.",
-        year3: "В личной жизни глубокое переосмысление чувств и гармонизация отношений.",
-        year4: "Финансовая стратегия: закрытие долгов, кредитов и освобождение от обязательств.",
-        mon1: "Период подведения итогов, закрытия старых вопросов и душевного покоя.",
-        mon2: "В делах вы завершаете то, что тянулось долгое время, очищая поле для нового.",
-        mon3: "В семье царит атмосфера прощения, тепла и взаимного уважения.",
-        mon4: "Благоприятно раздать долги и навести порядок в денежных обязательствах.",
-        week1: "Неделя отпускания обид, завершения дел и подготовки к новому этапу.",
-        week2: "На работе сдайте все отчеты и поставьте точку в старых проектах.",
-        week3: "В семье окружите близких заботой и прощением за прошлые мелкие споры.",
-        week4: "Финансовый совет: закройте старые финансовые хвосты перед новым циклом."
-      }
-    };
-
-    const tgUserLang = window.Telegram?.WebApp?.initDataUnsafe?.user?.language_code || navigator.language || 'ru';
-    let langKey = 'ru';
-    const t = i18n[langKey];
-
-    document.getElementById('t-brand').textContent = t.brand;
-    document.getElementById('t-sub').textContent = t.sub;
-    document.getElementById('t-label').textContent = t.label;
-    document.getElementById('trigger-day').textContent = t.day;
-    document.getElementById('trigger-month').textContent = t.month;
-    document.getElementById('trigger-year').textContent = t.year;
-    document.getElementById('t-btn-calc').textContent = t.calcBtn;
-    document.getElementById('t-energy').textContent = t.energy;
-
-    let selectedDay = '';
-    let selectedMonth = '';
-    let selectedYear = '';
-
-    const daysContainer = document.getElementById('options-day');
-    for (let i = 1; i <= 31; i++) {
-      let val = i < 10 ? '0' + i : i;
-      let div = document.createElement('div');
-      div.className = 'custom-option';
-      div.dataset.value = i;
-      div.textContent = val;
-      div.onclick = () => selectValue('day', i, val);
-      daysContainer.appendChild(div);
-    }
-
-    const monthsContainer = document.getElementById('options-month');
-    t.months.forEach((mName, idx) => {
-      let mNum = idx + 1;
-      let div = document.createElement('div');
-      div.className = 'custom-option';
-      div.dataset.value = mNum;
-      div.textContent = mName;
-      div.onclick = () => selectValue('month', mNum, mName);
-      monthsContainer.appendChild(div);
-    });
-
-    const yearsContainer = document.getElementById('options-year');
-    for (let i = 2008; i >= 1940; i--) {
-      let div = document.createElement('div');
-      div.className = 'custom-option';
-      div.dataset.value = i;
-      div.textContent = i;
-      div.onclick = () => selectValue('year', i, i);
-      yearsContainer.appendChild(div);
-    }
-
-    function selectValue(type, val, text) {
-      if (type === 'day') { selectedDay = val; document.getElementById('trigger-day').textContent = text; }
-      if (type === 'month') { selectedMonth = val; document.getElementById('trigger-month').textContent = text; }
-      if (type === 'year') { selectedYear = val; document.getElementById('trigger-year').textContent = text; }
-      closeAllDropdowns();
-    }
-
-    document.getElementById('trigger-day').onclick = (e) => { e.stopPropagation(); toggleDropdown('options-day'); };
-    document.getElementById('trigger-month').onclick = (e) => { e.stopPropagation(); toggleDropdown('options-month'); };
-    document.getElementById('trigger-year').onclick = (e) => { e.stopPropagation(); toggleDropdown('options-year'); };
-
-    function toggleDropdown(id) {
-      const el = document.getElementById(id);
-      const isOpen = el.classList.contains('open');
-      closeAllDropdowns();
-      if (!isOpen) el.classList.add('open');
-    }
-
-    function closeAllDropdowns() {
-      document.querySelectorAll('.custom-options').forEach(o => o.classList.remove('open'));
-    }
-
-    window.onclick = () => closeAllDropdowns();
-
-    function calculateDestinyNumber(d, m, y) {
-      const fullStr = `${d}${m}${y}`;
-      let sum = 0;
-      for (let char of fullStr) {
-        sum += parseInt(char, 10);
-      }
-      while (sum > 9) {
-        sum = sum.toString().split('').reduce((acc, curr) => acc + parseInt(curr, 10), 0);
-      }
-      return sum;
-    }
-
-    function switchTab(tabName, event) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById('tab-' + tabName).classList.add('active');
-      event.currentTarget.classList.add('active');
-    }
-
-    function calculateBasicForecast() {
-      if (!selectedDay || !selectedMonth || !selectedYear) {
-        alert(t.alertDate);
-        return;
-      }
-
-      const destinyNum = calculateDestinyNumber(selectedDay, selectedMonth, selectedYear);
-      const data = numerologyData[destinyNum];
-
-      document.getElementById('res-title').textContent = t.resTitle + destinyNum;
-      document.getElementById('res-energy').textContent = data.energy;
-      
-      document.getElementById('global-forecast').style.display = 'none';
-      document.getElementById('teaser-block').style.display = 'block';
-
-      const resBox = document.getElementById('result');
-      resBox.style.display = 'block';
-      resBox.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function watchAdForGlobalReport() {
-      if (!selectedDay || !selectedMonth || !selectedYear) {
-        alert(t.alertDate);
-        return;
-      }
-
-      const modal = document.getElementById('ad-modal');
-      const counter = document.getElementById('ad-countdown');
-      modal.style.display = 'flex';
-      let timeLeft = 3;
-      counter.textContent = timeLeft;
-
-      let timer = setInterval(() => {
-        timeLeft--;
-        counter.textContent = timeLeft;
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          modal.style.display = 'none';
-          alert(t.bonusUnlocked);
-          revealGlobalForecast();
+            document.getElementById('input-card').classList.add('hidden');
+            document.getElementById('result-card').classList.remove('hidden');
         }
-      }, 1000);
-    }
 
-    function revealGlobalForecast() {
-      const destinyNum = calculateDestinyNumber(selectedDay, selectedMonth, selectedYear);
-      const data = numerologyData[destinyNum];
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
 
-      document.getElementById('res-title').textContent = t.resTitle + destinyNum;
-      document.getElementById('res-energy').textContent = data.energy;
-      
-      // Заполняем массивные тексты для всех табов
-      document.getElementById('res-gen-1').textContent = data.gen1;
-      document.getElementById('res-gen-2').textContent = data.gen2;
-      document.getElementById('res-gen-3').textContent = data.gen3;
-      document.getElementById('res-gen-4').textContent = data.gen4;
+        function watchAd(section) {
+            if (adController) {
+                adController.show().then(() => {
+                    unlockSection(section);
+                }).catch(() => {
+                    alert("Реклама не была досмотрена до конца.");
+                });
+            } else {
+                alert("Симуляция просмотра рекламы (Adsgram SDK вне Telegram).");
+                unlockSection(section);
+            }
+        }
 
-      document.getElementById('res-year-1').textContent = data.year1;
-      document.getElementById('res-year-2').textContent = data.year2;
-      document.getElementById('res-year-3').textContent = data.year3;
-      document.getElementById('res-year-4').textContent = data.year4;
+        function unlockSection(section) {
+            const block = document.getElementById(section + '-deep-block');
+            block.querySelector('.blurred').classList.remove('blurred');
+            document.getElementById('paywall-' + section).style.display = 'none';
+        }
 
-      document.getElementById('res-mon-1').textContent = data.mon1;
-      document.getElementById('res-mon-2').textContent = data.mon2;
-      document.getElementById('res-mon-3').textContent = data.mon3;
-      document.getElementById('res-mon-4').textContent = data.mon4;
-
-      document.getElementById('res-week-1').textContent = data.week1;
-      document.getElementById('res-week-2').textContent = data.week2;
-      document.getElementById('res-week-3').textContent = data.week3;
-      document.getElementById('res-week-4').textContent = data.week4;
-
-      document.getElementById('teaser-block').style.display = 'none';
-      document.getElementById('global-forecast').style.display = 'block';
-
-      const resBox = document.getElementById('result');
-      resBox.style.display = 'block';
-      resBox.scrollIntoView({ behavior: 'smooth' });
-    }
-  </script>
-
+        function resetForm() {
+            document.getElementById('result-card').classList.add('hidden');
+            document.getElementById('input-card').classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
