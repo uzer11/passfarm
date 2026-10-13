@@ -46,14 +46,14 @@
 
     <div class="card screen active" id="inputScreen">
       <label for="userName">Ваше полное имя:</label>
-      <input type="text" id="userName" value="Игорь" style="text-align: left;">
+      <input type="text" id="userName" placeholder="Введите имя" style="text-align: left;">
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div><label style="font-size:8px;">День</label><input type="text" id="bDay" value="10"></div>
-        <div><label style="font-size:8px;">Месяц</label><input type="text" id="bMonth" value="2"></div>
-        <div><label style="font-size:8px;">Год</label><input type="text" id="bYear" value="1975"></div>
-        <div><label style="font-size:8px;">Час</label><input type="text" id="bHour" value="12"></div>
+        <div><label style="font-size:8px;">День</label><input type="text" id="bDay" placeholder="ДД"></div>
+        <div><label style="font-size:8px;">Месяц</label><input type="text" id="bMonth" placeholder="ММ"></div>
+        <div><label style="font-size:8px;">Год</label><input type="text" id="bYear" placeholder="ГГГГ"></div>
+        <div><label style="font-size:8px;">Час</label><input type="text" id="bHour" placeholder="1-12"></div>
       </div>
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
