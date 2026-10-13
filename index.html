@@ -100,7 +100,7 @@
       <div id="premSpheresContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v7.7</div>
+    <div class="version-footer">Оракул Звёзд v7.8</div>
   </div>
 
   <script>
@@ -186,7 +186,7 @@
 
     function backToHome() { showScreen('homeScreen'); }
     function goToInput() { showScreen('inputScreen'); }
-
+EOFcat >> index.html << 'EOF'
     const detailedBanks = {
       love: {
         1: "В сфере чувств вы проявляете ярко выраженные лидерские качества. Вам необходим надежный партнер, который уважает вашу независимость и разделяет амбиции.",
@@ -305,4 +305,13 @@
         </div>
         <div class="sphere-section">
           <h4>🔮 Карма и Скрытые Таланты</h4>
-          <p>${detaile
+          <p>${detailedBanks.karma[textIndex]}</p>
+        </div>
+        <div class="sphere-section" style="border: 1px solid #f0cb69; background: rgba(240,203,105,0.08);">
+          <h4>✨ Тайное Значение Вашего Имени (${userData.name})</h4>
+          <p>${detailedBanks.nameMeaning[textIndex]}</p>
+        </div>
+      `;
+    }
+  </script>
+</html>
