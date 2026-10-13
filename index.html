@@ -45,27 +45,29 @@
         .input-group { display: flex; flex-direction: column; gap: 10px; }
         label { font-size: 12px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .date-selectors { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; }
-        .time-selectors { display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px; }
+        .time-selectors { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         
-        /* Стильные кастомные селекторы без белых багов */
         .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
         .custom-select-trigger {
             background: rgba(11, 15, 25, 0.9);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 10px;
+            padding: 10px 8px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .custom-select-trigger::after {
             content: '▼';
-            font-size: 9px;
+            font-size: 8px;
             color: var(--accent-gold);
-            margin-left: 6px;
+            margin-left: 4px;
         }
         .custom-options {
             position: absolute;
@@ -83,7 +85,7 @@
         .custom-select-wrapper.open .custom-options { display: block; }
         .custom-option {
             padding: 10px;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-main);
             cursor: pointer;
             border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -104,14 +106,14 @@
             margin-top: 4px;
         }
         .hidden { display: none !important; }
-        .tabs-header { display: flex; gap: 4px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; }
+        .tabs-header { display: flex; gap: 3px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; }
         .tab-btn {
             flex: 1;
             background: rgba(11, 15, 25, 0.6);
             border: 1px solid rgba(212, 175, 55, 0.2);
             color: var(--text-muted);
-            padding: 8px 6px;
-            font-size: 11px;
+            padding: 8px 4px;
+            font-size: 10px;
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
@@ -127,7 +129,7 @@
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
         .report-section { margin-bottom: 14px; }
-        .report-section h3 { font-size: 14px; color: var(--accent-gold); margin-bottom: 6px; }
+        .report-section h3 { font-size: 13px; color: var(--accent-gold); margin-bottom: 6px; }
         .report-section p { font-size: 12px; line-height: 1.5; color: var(--text-main); margin-bottom: 8px; }
         .teaser-container { position: relative; }
         .blurred { filter: blur(5px); user-select: none; pointer-events: none; opacity: 0.4; }
@@ -186,26 +188,37 @@
                     </div>
                 </div>
 
-                <label style="margin-top: 4px;">Время рождения (для точных циклов)</label>
+                <label style="margin-top: 4px;">Время рождения (12ч формат)</label>
                 <div class="time-selectors">
                     <div class="custom-select-wrapper" id="select-hour">
-                        <div class="custom-select-trigger" id="trigger-hour">Точно не знаю</div>
+                        <div class="custom-select-trigger" id="trigger-hour">Час (-)</div>
                         <div class="custom-options" id="options-hour">
-                            <div class="custom-option" data-value="-1" onclick="selectOption('hour', '-1', 'Точно не знаю')">Точно не знаю</div>
-                            <div class="custom-option" data-value="0" onclick="selectOption('hour', '0', '00:00 - 03:00 (Ночь)')">00:00 - 03:00 (Ночь)</div>
-                            <div class="custom-option" data-value="3" onclick="selectOption('hour', '3', '03:00 - 06:00 (Рассвет)')">03:00 - 06:00 (Рассвет)</div>
-                            <div class="custom-option" data-value="6" onclick="selectOption('hour', '6', '06:00 - 09:00 (Утро)')">06:00 - 09:00 (Утро)</div>
-                            <div class="custom-option" data-value="9" onclick="selectOption('hour', '9', '09:00 - 12:00 (Полдень)')">09:00 - 12:00 (Полдень)</div>
-                            <div class="custom-option" data-value="12" onclick="selectOption('hour', '12', '12:00 - 15:00 (День)')">12:00 - 15:00 (День)</div>
-                            <div class="custom-option" data-value="15" onclick="selectOption('hour', '15', '15:00 - 18:00 (Закат)')">15:00 - 18:00 (Закат)</div>
-                            <div class="custom-option" data-value="18" onclick="selectOption('hour', '18', '18:00 - 21:00 (Вечер)')">18:00 - 21:00 (Вечер)</div>
-                            <div class="custom-option" data-value="21" onclick="selectOption('hour', '21', '21:00 - 24:00 (Полночь)')">21:00 - 24:00 (Полночь)</div>
+                            <div class="custom-option" data-value="-1" onclick="selectOption('hour', '-1', 'Не знаю')">Не знаю</div>
+                            <div class="custom-option" data-value="1" onclick="selectOption('hour', '1', '1 час')">1 час</div>
+                            <div class="custom-option" data-value="2" onclick="selectOption('hour', '2', '2 часа')">2 часа</div>
+                            <div class="custom-option" data-value="3" onclick="selectOption('hour', '3', '3 часа')">3 часа</div>
+                            <div class="custom-option" data-value="4" onclick="selectOption('hour', '4', '4 часа')">4 часа</div>
+                            <div class="custom-option" data-value="5" onclick="selectOption('hour', '5', '5 часов')">5 часов</div>
+                            <div class="custom-option" data-value="6" onclick="selectOption('hour', '6', '6 часов')">6 часов</div>
+                            <div class="custom-option" data-value="7" onclick="selectOption('hour', '7', '7 часов')">7 часов</div>
+                            <div class="custom-option" data-value="8" onclick="selectOption('hour', '8', '8 часов')">8 часов</div>
+                            <div class="custom-option" data-value="9" onclick="selectOption('hour', '9', '9 часов')">9 часов</div>
+                            <div class="custom-option" data-value="10" onclick="selectOption('hour', '10', '10 часов')">10 часов</div>
+                            <div class="custom-option" data-value="11" onclick="selectOption('hour', '11', '11 часов')">11 часов</div>
+                            <div class="custom-option" data-value="12" onclick="selectOption('hour', '12', '12 часов')">12 часов</div>
+                        </div>
+                    </div>
+                    <div class="custom-select-wrapper" id="select-ampm">
+                        <div class="custom-select-trigger" id="trigger-ampm">AM / PM</div>
+                        <div class="custom-options" id="options-ampm">
+                            <div class="custom-option" data-value="AM" onclick="selectOption('ampm', 'AM', 'AM (Утро)')">AM (Утро)</div>
+                            <div class="custom-option" data-value="PM" onclick="selectOption('ampm', 'PM', 'PM (Вечер)')">PM (Вечер)</div>
                         </div>
                     </div>
                     <div class="custom-select-wrapper" id="select-minute">
-                        <div class="custom-select-trigger" id="trigger-minute">Минуты (~00)</div>
+                        <div class="custom-select-trigger" id="trigger-minute">Мин (~00)</div>
                         <div class="custom-options" id="options-minute">
-                            <div class="custom-option" data-value="0" onclick="selectOption('minute', '0', 'Минуты (~00)')">Минуты (~00)</div>
+                            <div class="custom-option" data-value="0" onclick="selectOption('minute', '0', '~00 мин')">~00 мин</div>
                             <div class="custom-option" data-value="15" onclick="selectOption('minute', '15', '~15 мин')">~15 мин</div>
                             <div class="custom-option" data-value="30" onclick="selectOption('minute', '30', '~30 мин')">~30 мин</div>
                             <div class="custom-option" data-value="45" onclick="selectOption('minute', '45', '~45 мин')">~45 мин</div>
@@ -219,14 +232,23 @@
 
         <div id="result-card" class="card hidden">
             <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('general')">🌟 Общий</button>
+                <button class="tab-btn active" onclick="switchTab('day')">⚡ День</button>
+                <button class="tab-btn" onclick="switchTab('general')">🌟 Общий</button>
                 <button class="tab-btn" onclick="switchTab('year')">📅 Год</button>
                 <button class="tab-btn" onclick="switchTab('month')">🌙 Месяц</button>
                 <button class="tab-btn" onclick="switchTab('week')">⏳ Неделя</button>
             </div>
 
-            <!-- Общий прогноз (с тизером и одной рекламой внизу) -->
-            <div id="tab-general" class="tab-content active">
+            <!-- Вкладка: Прогноз на День -->
+            <div id="tab-day" class="tab-content active">
+                <div class="report-section">
+                    <h3>⚡ Энергетика и совет на сегодня</h3>
+                    <p id="day-forecast-text">Загрузка прогноза дня...</p>
+                </div>
+            </div>
+
+            <!-- Вкладка: Общий прогноз -->
+            <div id="tab-general" class="tab-content">
                 <div class="report-section">
                     <h3>🧿 Базовый код судьбы</h3>
                     <p id="general-teaser-text">Загрузка...</p>
@@ -252,8 +274,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Прогноз на Год (полностью открытый) -->
+            <!-- Прогноз на Год -->
             <div id="tab-year" class="tab-content">
                 <div class="report-section">
                     <h3>🚀 Макро-цикл текущего года</h3>
@@ -265,7 +286,7 @@
                 </div>
             </div>
 
-            <!-- Прогноз на Месяц (полностью открытый) -->
+            <!-- Прогноз на Месяц -->
             <div id="tab-month" class="tab-content">
                 <div class="report-section">
                     <h3>🌙 Энергетика текущего месяца</h3>
@@ -277,7 +298,7 @@
                 </div>
             </div>
 
-            <!-- Прогноз на Неделю (полностью открытый) -->
+            <!-- Прогноз на Неделю -->
             <div id="tab-week" class="tab-content">
                 <div class="report-section">
                     <h3>⏳ Краткосрочные вибрации недели</h3>
@@ -301,7 +322,7 @@
         let tg = window.Telegram.WebApp;
         if (tg) { tg.expand(); }
 
-        let formData = { day: 15, month: 4, year: 1995, hour: -1, minute: 0 };
+        let formData = { day: 15, month: 4, year: 1995, hour: -1, ampm: 'AM', minute: 0 };
 
         function initCustomSelects() {
             const daysContainer = document.getElementById('options-day');
@@ -355,12 +376,14 @@
             const monthNames = ["", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
             const monthName = monthNames[formData.month] || "Апрель";
             
-            let timeVibe = "Время рождения не указано, расчет ведется по чистым солнечным суткам.";
-            const hNum = parseInt(formData.hour);
-            if (hNum >= 0 && hNum < 6) timeVibe = "Ночной час рождения наделяет вас глубокой интуицией и даром предвидения.";
-         else if (hNum >= 6 && hNum < 12) timeVibe = "Утренний час рождения дарует мощный заряд созидательной энергии и лидерства.";
-            else if (hNum >= 12 && hNum < 18) timeVibe = "Дневной час рождения усиливает ваш социальный потенциал и денежные потоки.";
-            else if (hNum >= 18) timeVibe = "Вечерний час рождения открывает доступ к тайным знаниям и мудрости.";
+            let timeVibe = "Время рождения не указано.";
+            if (formData.hour !== -1) {
+                timeVibe = `Час рождения: ${formData.hour}:00 ${formData.ampm}. Это добавляет в матрицу тонкие утренне-вечерние вибрации.`;
+            }
+
+            // Прогноз дня
+            document.getElementById('day-forecast-text').innerHTML = 
+                `Сегодняшний день несет вибрацию гармонии и личного роста. Ваша дата рождения (${formData.day} ${monthName}) резонирует с энергией текущих суток. Звезды рекомендуют избегать спешки и прислушаться к интуиции.`;
 
             document.getElementById('general-teaser-text').innerHTML = 
                 `Дата рождения: <b>${formData.day} ${monthName} ${formData.year} г.</b><br>${timeVibe}<br><br>` +
