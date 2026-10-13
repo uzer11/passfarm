@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Оракул Звёзд v8.3</title>
+  <title>Оракул Звёзд v8.4</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
@@ -50,10 +50,10 @@
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bMonth\x27).focus();"></div>
-        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bYear\x27).focus();"></div>
-        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,4); if(this.value.length>=4) document.getElementById(\x27bHour\x27).focus();"></div>
-        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2);"></div>
+        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bMonth\x27).focus();"></div>
+        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bYear\x27).focus();"></div>
+        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\\D/g,\x27\x27).slice(0,4); if(this.value.length>=4) document.getElementById(\x27bHour\x27).focus();"></div>
+        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\\D/g,\x27\x27).slice(0,2);"></div>
       </div>
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
@@ -87,7 +87,7 @@
       <div id="premContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v8.3</div>
+    <div class="version-footer">Оракул Звёзд v8.4</div>
   </div>
 
   <script>
@@ -129,9 +129,9 @@
       const hourVal = document.getElementById(\x27bHour\x27).value.trim();
 
       uData.name = nameVal || \x27Игорь\x27;
-      uData.d = dayVal ? parseInt(dayVal) : 1;
-      uData.m = monthVal ? parseInt(monthVal) : 1;
-      uData.y = yearVal ? parseInt(yearVal) : 2000;
+      uData.d = dayVal ? parseInt(dayVal) : 10;
+      uData.m = monthVal ? parseInt(monthVal) : 2;
+      uData.y = yearVal ? parseInt(yearVal) : 1975;
       uData.h = hourVal ? parseInt(hourVal) : 12;
 
       showScreen(\x27homeScreen\x27);
