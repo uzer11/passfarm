@@ -7,7 +7,6 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
   <script>
-    // Мгновенная инициализация фона Telegram до отрисовки страницы
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
@@ -17,7 +16,7 @@
     } catch(e) {}
   </script>
   <style>
-    body { margin: 0; padding: 0; background: #05070e !important; font-family: 'Arial', sans-serif; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 40px; }
+    body { margin: 0; padding: 0; background: #05070e !important; font-family: 'Arial', sans-serif; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 50px; }
     .header { text-align: center; padding: 20px 20px 10px; }
     .star-icon { font-size: 42px; filter: drop-shadow(0 0 15px #f0cb69); }
     .brand-title { font-family: "Georgia", serif; font-size: 26px; color: #f0cb69; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 15px rgba(240, 203, 105, 0.8); margin-top: 5px; }
@@ -83,7 +82,7 @@
       <div class="result-title" id="res-title">⚡ Число судьбы: 9</div>
       <div><strong id="t-energy">Энергия дня:</strong> <span id="res-energy">...</span></div>
 
-      <!-- Глобальный блок (скрыт до просмотра рекламы) -->
+      <!-- Глобальный блок -->
       <div id="global-forecast" class="forecast-section">
         <div><strong id="t-year-f">🌍 Прогноз на год:</strong> <span id="res-year">...</span></div>
         <div style="margin-top: 6px;"><strong id="t-month-f">🌙 Прогноз на месяц:</strong> <span id="res-month">...</span></div>
@@ -150,8 +149,7 @@
         bonusUnlocked: "🎁 Globaler Bericht freigeschaltet!"
       }
     };
-
-    const numerologyData = {
+const numerologyData = {
       1: {
         energy: "Лидерский потенциал на высоте. Время брать инициативу и заявлять о себе.",
         year: "Год лидерства, мощного старта и личных прорывов. Закладывайте фундамент на 9 лет вперёд.",
@@ -341,7 +339,6 @@
       return sum;
     }
 
-    // 1. Базовый расчет (только число и энергия дня)
     function calculateBasicForecast() {
       if (!selectedDay || !selectedMonth || !selectedYear) {
         alert(t.alertDate);
@@ -354,14 +351,14 @@
       document.getElementById('res-title').textContent = t.resTitle + destinyNum;
       document.getElementById('res-energy').textContent = data.energy;
       
-      // Скрываем глобальный прогноз до просмотра рекламы
       document.getElementById('global-forecast').style.display = 'none';
-      document.getElementById('result').style.display = 'block';
+      const resBox = document.getElementById('result');
+      resBox.style.display = 'block';
+      resBox.scrollIntoView({ behavior: 'smooth' });
     }
 
     const adController = window.Adsgram ? window.Adsgram.init({ blockId: "int-test-block-id" }) : null;
 
-    // 2. Глобальный расчет (после просмотра рекламы открывает весь глубокий разбор)
     function watchAdForGlobalReport() {
       if (!selectedDay || !selectedMonth || !selectedYear) {
         alert(t.alertDate);
@@ -369,7 +366,7 @@
       }
 
       if (adController) {
-adController.show()
+        adController.show()
           .then((result) => {
             alert(t.bonusUnlocked);
             revealGlobalForecast();
@@ -378,7 +375,6 @@ adController.show()
             console.log('Ad error or skipped', result);
           });
       } else {
-        // Заглушка для теста
         alert(t.bonusUnlocked);
         revealGlobalForecast();
       }
@@ -391,7 +387,6 @@ adController.show()
       document.getElementById('res-title').textContent = t.resTitle + destinyNum;
       document.getElementById('res-energy').textContent = data.energy;
       
-      // Заполняем данные глобального прогноза
       document.getElementById('res-year').textContent = data.year;
       document.getElementById('res-month').textContent = data.month;
       document.getElementById('res-love').textContent = data.love;
@@ -400,9 +395,12 @@ adController.show()
       document.getElementById('res-health').textContent = data.health;
       document.getElementById('res-karma').textContent = data.karma;
 
-      // Показываем блок с глобальным прогнозом
+      const resBox = document.getElementById('result');
       document.getElementById('global-forecast').style.display = 'block';
-      document.getElementById('result').style.display = 'block';
+      resBox.style.display = 'block';
+      
+      // Автоматическая плавная прокрутка к блоку результатов
+      resBox.scrollIntoView({ behavior: 'smooth' });
     }
   </script>
 
