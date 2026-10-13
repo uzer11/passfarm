@@ -50,10 +50,10 @@
 
       <label>Дата и время рождения:</label>
       <div class="date-grid">
-        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2); if(this.value.length>=2) document.getElementById('bMonth').focus();"></div>
-        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2); if(this.value.length>=2) document.getElementById('bYear').focus();"></div>
-        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4); if(this.value.length>=4) document.getElementById('bHour').focus();"></div>
-        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\D/g,'').slice(0,2);"></div>
+        <div><label style="font-size:8px;">День</label><input type="text" inputmode="numeric" id="bDay" placeholder="ДД" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bMonth\x27).focus();"></div>
+        <div><label style="font-size:8px;">Месяц</label><input type="text" inputmode="numeric" id="bMonth" placeholder="ММ" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2); if(this.value.length>=2) document.getElementById(\x27bYear\x27).focus();"></div>
+        <div><label style="font-size:8px;">Год</label><input type="text" inputmode="numeric" id="bYear" placeholder="ГГГГ" maxlength="4" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,4); if(this.value.length>=4) document.getElementById(\x27bHour\x27).focus();"></div>
+        <div><label style="font-size:8px;">Час</label><input type="text" inputmode="numeric" id="bHour" placeholder="1-12" maxlength="2" oninput="this.value=this.value.replace(/\D/g,\x27\x27).slice(0,2);"></div>
       </div>
       <button class="btn" onclick="calculateAndOpenHome()" style="margin-top: 6px;">Рассчитать карту</button>
     </div>
@@ -62,10 +62,10 @@
       <button class="btn btn-premium" onclick="openPremiumScreen()">⭐ Открыть Полный Отчёт (5 сфер + Имя)</button>
       <div style="font-size:10px; color:#a89bb8; margin-bottom:4px; text-transform:uppercase;">🌿 Базовый обзор:</div>
       <div class="periods-bar">
-        <div class="period-tab active" onclick="selectFreeForecast('life', 0, this)">Общий</div>
-        <div class="period-tab" onclick="selectFreeForecast('week', 1, this)">Неделя</div>
-        <div class="period-tab" onclick="selectFreeForecast('month', 2, this)">Месяц</div>
-        <div class="period-tab" onclick="selectFreeForecast('year', 3, this)">Год</div>
+        <div class="period-tab active" onclick="selectFreeForecast(\x27life\x27, 0, this)">Общий</div>
+        <div class="period-tab" onclick="selectFreeForecast(\x27week\x27, 1, this)">Неделя</div>
+        <div class="period-tab" onclick="selectFreeForecast(\x27month\x27, 2, this)">Месяц</div>
+        <div class="period-tab" onclick="selectFreeForecast(\x27year\x27, 3, this)">Год</div>
       </div>
       <div class="number-circle" id="freeNumDisplay">7</div>
       <div class="forecast-title" id="freeForecastTitle">Заголовок</div>
@@ -77,106 +77,49 @@
       <button class="btn" onclick="backToHome()" style="background: rgba(15, 20, 36, 0.9); color: #f0cb69; border: 1px solid #4a3e75; margin-bottom: 8px; font-size: 11px; padding: 8px;">⬅️ Назад</button>
       <div style="font-size:10px; color:#f0cb69; margin-bottom:4px; text-transform:uppercase;">⭐ Премиум-отчёт:</div>
       <div class="periods-bar">
-        <div class="period-tab premium-tab active" onclick="selectPremForecast('life_prem', 4, this)">⭐ Общий</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast('week_prem', 5, this)">⭐ Неделя</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast('month_prem', 6, this)">⭐ Месяц</div>
-        <div class="period-tab premium-tab" onclick="selectPremForecast('year_prem', 7, this)">⭐ Год</div>
+        <div class="period-tab premium-tab active" onclick="selectPremForecast(\x27life_prem\x27, 4, this)">⭐ Общий</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27week_prem\x27, 5, this)">⭐ Неделя</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27month_prem\x27, 6, this)">⭐ Месяц</div>
+        <div class="period-tab premium-tab" onclick="selectPremForecast(\x27year_prem\x27, 7, this)">⭐ Год</div>
       </div>
       <div class="number-circle" id="premNumDisplay">7</div>
       <div class="forecast-title" id="premForecastTitle">Премиум Заголовок</div>
       <div id="premSpheresContainer"></div>
     </div>
 
-    <div class="version-footer">Оракул Звёзд v7.8</div>
+    <div class="version-footer">Оракул Звёзд v7.9</div>
   </div>
 
   <script>
     let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     if (tg) { try { tg.expand(); } catch(e) {} }
 
-    let userData = { name: 'Игорь', day: 1, month: 1, year: 2000, hour: 12 };
+    let userData = { name: \x27Игорь\x27, day: 1, month: 1, year: 2000, hour: 12 };
 
     const letterMap = {
-      'а': 1, 'и': 1, 'с': 1, 'ъ': 1,
-      'б': 2, 'й': 2, 'т': 2, 'ы': 2,
-      'в': 3, 'к': 3, 'у': 3, 'ь': 3,
-      'г': 4, 'л': 4, 'ф': 4, 'э': 4,
-      'д': 5, 'м': 5, 'х': 5, 'ю': 5,
-      'е': 6, 'н': 6, 'ц': 6, 'я': 6,
-      'ё': 7, 'о': 7, 'ч': 7,
-      'ж': 8, 'п': 8, 'ш': 8,
-      'з': 9, 'р': 9, 'щ': 9
+      \x27а\x27: 1, \x27и\x27: 1, \x27с\x27: 1, \x27ъ\x27: 1,
+      \x27б\x27: 2, \x27й\x27: 2, \x27т\x27: 2, \x27ы\x27: 2,
+      \x27в\x27: 3, \x27к\x27: 3, \x27у\x27: 3, \x27ь\x27: 3,
+      \x27г\x27: 4, \x27л\x27: 4, \x27ф\x27: 4, \x27э\x27: 4,
+      \x27д\x27: 5, \x27м\x27: 5, \x27х\x27: 5, \x27ю\x27: 5,
+      \x27е\x27: 6, \x27н\x27: 6, \x27ц\x27: 6, \x27я\x27: 6,
+      \x27ё\x27: 7, \x27о\x27: 7, \x27ч\x27: 7,
+      \x27ж\x27: 8, \x27п\x27: 8, \x27ш\x27: 8,
+      \x27з\x27: 9, \x27р\x27: 9, \x27щ\x27: 9
     };
 
-    function reduceToSingle(num) {
-      while (num > 9 && num !== 11 && num !== 22) {
-        num = num.toString().split('').map(Number).reduce((a, b) => a + b, 0);
-      }
-      return num;
-    }
+    const freeTextBank = {
+      1: "Энергия Лидера и Первопроходца. Время брать инициативу в свои руки, принимать смелые решения и закладывать фундамент будущих побед.",
+      2: "Энергия Дипломатии и Интуиции. Успех приходит через партнерство, мягкое преодоление преград и глубокое понимание окружающих.",
+      3: "Энергия Творчества и Радости. Период вдохновения, самовыражения, ярких коммуникаций и реализации творческих идей.",
+      4: "Энергия Системы и Труда. Время наведения порядка, упорной работы, укрепления материальной базы и стабильности.",
+      5: "Энергия Перемен и Свободы. Благоприятный момент для поездок, расширения кругозора, новых знакомств и гибких решений.",
+      6: "Энергия Гармонии и Семьи. Фокус на доме, близких людях, создании уютной атмосферы и заботе об окружающих.",
+      7: "Энергия Мудрости и Анализа. Время для глубокого самопознания, обучения, планирования и работы в уединении.",
+      8: "Энергия Успеха и Масштаба. Период финансовых возможностей, карьерного роста, управления ресурсами и реализации амбиций.",
+      9: "Энергия Завершения и Мудрости. Время подводить итоги, избавляться от лишнего, проявлять сострадание и духовный рост."
+    };
 
-    function calculateNameNumber(name) {
-      let sum = 0;
-      name.toLowerCase().split('').forEach(char => {
-        if (letterMap[char]) { sum += letterMap[char]; }
-      });
-      if (sum === 0) sum = 5;
-      return reduceToSingle(sum);
-    }
-
-    function showScreen(screenId) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      let target = document.getElementById(screenId);
-      if (target) { target.classList.add('active'); }
-    }
-
-    function calculateAndOpenHome() {
-      const nameInput = document.getElementById('userName').value.trim() || 'Игорь';
-      const dayInput = parseInt(document.getElementById('bDay').value) || 1;
-      const monthInput = parseInt(document.getElementById('bMonth').value) || 1;
-      const yearInput = parseInt(document.getElementById('bYear').value) || 2000;
-      const hourInput = parseInt(document.getElementById('bHour').value) || 12;
-
-      userData = { 
-        name: nameInput, 
-        day: dayInput, 
-        month: monthInput, 
-        year: yearInput, 
-        hour: hourInput 
-      };
-
-      showScreen('homeScreen');
-      selectFreeForecast('life', 0, document.querySelector('#homeScreen .periods-bar .period-tab'));
-    }
-
-    function selectFreeForecast(type, offset, element) {
-      document.querySelectorAll('#homeScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
-      if (element) element.classList.add('active');
-
-      let dateSum = userData.day + userData.month + userData.year + userData.hour;
-      let nameNum = calculateNameNumber(userData.name);
-      let num = reduceToSingle(dateSum + nameNum + offset);
-
-      document.getElementById('freeNumDisplay').innerText = num;
-
-      let title = `Базовый обзор (${userData.name}, код ${num})`;
-      let text = `Ваш персональный нумерологический код (${num}) указывает на глубокий потенциал самореализации. В этот период Вселенная акцентирует внимание на принятии ключевых решений, балансе между вашим внутренним «Я» и внешним миром. Чтобы узнать детальный разбор по всем сферам и глубокий анализ вашего имени, откройте полный премиум-отчёт выше.`;
-
-      document.getElementById('freeForecastTitle').innerText = title;
-      document.getElementById('freeForecastText').innerText = text;
-    }
-
-    function openPremiumScreen() {
-      showScreen('premiumScreen');
-      selectPremForecast('life_prem', 4, document.querySelector('#premiumScreen .periods-bar .period-tab'));
-    }
-
-    function backToHome() { showScreen('homeScreen'); }
-    function goToInput() { showScreen('inputScreen'); }
-  </script>
-</html>
-EOFcat >> index.html << 'EOF'
-<script>
     const detailedBanks = {
       love: {
         1: "В сфере чувств вы проявляете ярко выраженные лидерские качества. Вам необходим надежный партнер, который уважает вашу независимость и разделяет амбиции.",
@@ -246,78 +189,95 @@ EOFcat >> index.html << 'EOF'
       }
     };
 
-    function selectPremForecast(type, offset, element) {
-      document.querySelectorAll('#premiumScreen .periods-bar .period-tab').forEach(t => t.classList.remove('active'));
-      if (element) element.classList.add('active');
+    function reduceToSingle(num) {
+      while (num > 9 && num !== 11 && num !== 22) {
+        num = num.toString().split("").map(Number).reduce((a, b) => a + b, 0);
+      }
+      return num;
+    }
+
+    function calculateNameNumber(name) {
+      let sum = 0;
+      name.toLowerCase().split("").forEach(char => {
+        if (letterMap[char]) { sum += letterMap[char]; }
+      });
+      if (sum === 0) sum = 5;
+      return reduceToSingle(sum);
+    }
+
+    function showScreen(screenId) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      let target = document.getElementById(screenId);
+      if (target) { target.classList.add("active"); }
+    }
+
+    function calculateAndOpenHome() {
+      const nameInput = document.getElementById("userName").value.trim() || "Игорь";
+      const dayInput = parseInt(document.getElementById("bDay").value) || 1;
+      const monthInput = parseInt(document.getElementById("bMonth").value) || 1;
+      const yearInput = parseInt(document.getElementById("bYear").value) || 2000;
+      const hourInput = parseInt(document.getElementById("bHour").value) || 12;
+
+      userData = { name: nameInput, day: dayInput, month: monthInput, year: yearInput, hour: hourInput };
+      showScreen("homeScreen");
+      selectFreeForecast("life", 0, document.querySelector("#homeScreen .periods-bar .period-tab"));
+    }
+
+    function selectFreeForecast(type, offset, element) {
+      document.querySelectorAll("#homeScreen .periods-bar .period-tab").forEach(t => t.classList.remove("active"));
+      if (element) element.classList.add("active");
 
       let dateSum = userData.day + userData.month + userData.year + userData.hour;
       let nameNum = calculateNameNumber(userData.name);
       let num = reduceToSingle(dateSum + nameNum + offset);
 
-      document.getElementById('premNumDisplay').innerText = num;
+      document.getElementById("freeNumDisplay").innerText = num;
+      let textIndex = ((num - 1) % 9) + 1;
+
+      let title = "Базовый обзор (" + userData.name + ", код " + num + ")";
+      document.getElementById("freeForecastTitle").innerText = title;
+      document.getElementById("freeForecastText").innerText = freeTextBank[textIndex];
+    }
+
+    function openPremiumScreen() {
+      showScreen("premiumScreen");
+      selectPremForecast("life_prem", 4, document.querySelector("#premiumScreen .periods-bar .period-tab"));
+    }
+
+    function backToHome() { showScreen("homeScreen"); }
+    function goToInput() { showScreen("inputScreen"); }
+
+    function selectPremForecast(type, offset, element) {
+      document.querySelectorAll("#premiumScreen .periods-bar .period-tab").forEach(t => t.classList.remove("active"));
+      if (element) element.classList.add("active");
+
+      let dateSum = userData.day + userData.month + userData.year + userData.hour;
+      let nameNum = calculateNameNumber(userData.name);
+      let num = reduceToSingle(dateSum + nameNum + offset);
+
+      document.getElementById("premNumDisplay").innerText = num;
       let textIndex = ((num - 1) % 9) + 1;
 
       let title = "";
       let periodDesc = "";
 
-      if (type === 'life_prem') {
-        title = `⭐ Глубокий разбор Судьбы (${userData.name})`;
+      if (type === "life_prem") {
+        title = "⭐ Глубокий разбор Судьбы (" + userData.name + ")";
         periodDesc = "на весь жизненный путь";
-      } else if (type === 'week_prem') {
-        title = `⭐ Детальный отчёт на Неделю`;
-        periodDesc = "на текущую неделю";
-      } else if (type === 'month_prem') {
-        title = `⭐ Стратегический прогноз на Месяц`;
-        periodDesc = "на текущий месяц";
-      } else if (type === 'year_prem') {
-        title = `⭐ Масштабный путеводитель на Год`;
-        periodDesc = "на текущий год";
-      }
-
-      document.getElementById('premForecastTitle').innerText = title;
-
-      document.getElementById('premSpheresContainer').innerHTML = `
-        <div class="sphere-section">
-          <h4>❤️ Любовь и Отношения (${periodDesc})</h4>
-          <p>${detailedBanks.love[textIndex]}</p>
-        </div>
-        <div class="sphere-section">
-          <h4>🏡 Дом, Семья и Очаг</h4>
-          <p>${detailedBanks.home[textIndex]}</p>
-        </div>
-        <div class="sphere-section">
-          <h4>💰 Работа, Карьера и Финансы</h4>
-          <p>${detailedBanks.work[textIndex]}</p>
-        </div>
-        <div class="sphere-section">
-          <h4>🍏 Здоровье и Энергетический Баланс</h4>
-          <p>${detailedBanks.health[textIndex]}</p>
-        </div>
-        <div class="sphere-section">
-          <h4>🔮 Карма и Скрытые Таланты</h4>
-          <p>${detailedBanks.karma[textIndex]}</p>
-        </div>
-        <div class="sphere-section" style="border: 1px solid #f0cb69; background: rgba(240,203,105,0.08);">
-          <h4>✨ Тайное Значение Вашего Имени (${userData.name})</h4>
-          <p>${detailedBanks.nameMeaning[textIndex]}</p>
-        </div>
-      `;
-    }
-</script>
- "⭐ Глубокий разбор Судьбы (" + userData.name + ")";
-        periodDesc = "на весь жизненный путь";
-      } else if (type === 'week_prem') {
+      } else if (type === "week_prem") {
         title = "⭐ Детальный отчёт на Неделю";
         periodDesc = "на текущую неделю";
-      } else if (type === 'month_prem') {
+      } else if (type === "month_prem") {
         title = "⭐ Стратегический прогноз на Месяц";
         periodDesc = "на текущий месяц";
-      } else if (type === 'year_prem') {
+      } else if (type === "year_prem") {
         title = "⭐ Масштабный путеводитель на Год";
         periodDesc = "на текущий год";
       }
-      document.getElementById('premForecastTitle').innerText = title;
-      document.getElementById('premSpheresContainer').innerHTML = `
+
+      document.getElementById("premForecastTitle").innerText = title;
+
+      document.getElementById("premSpheresContainer").innerHTML = `
         <div class="sphere-section">
           <h4>❤️ Любовь и Отношения (${periodDesc})</h4>
           <p>${detailedBanks.love[textIndex]}</p>
