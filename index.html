@@ -7,7 +7,7 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
   <style>
-    body { margin: 0; padding: 0; background: #05070e; font-family: 'Arial', sans-serif; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 30px; }
+    body { margin: 0; padding: 0; background: #05070e; font-family: 'Arial', sans-serif; color: #fff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 40px; }
     .header { text-align: center; padding: 25px 20px 10px; }
     .star-icon { font-size: 48px; filter: drop-shadow(0 0 15px #f0cb69); }
     .brand-title { font-family: "Georgia", serif; font-size: 28px; color: #f0cb69; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 15px rgba(240, 203, 105, 0.8); margin-top: 5px; }
@@ -30,16 +30,23 @@
     .btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #f0cb69, #b8860b); border: none; border-radius: 10px; color: #05070e; font-weight: bold; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 10px; box-shadow: 0 0 15px rgba(240, 203, 105, 0.4); }
     .btn-secondary { background: transparent; border: 1px solid #f0cb69; color: #f0cb69; margin-top: 10px; box-shadow: none; }
     
-    .result-box { margin-top: 20px; padding: 15px; background: #070a12; border-radius: 10px; border: 1px solid rgba(240, 203, 105, 0.3); font-size: 14px; line-height: 1.6; color: #d0d7de; display: none; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
-    .result-title { color: #f0cb69; font-family: "Georgia", serif; font-size: 16px; margin-bottom: 8px; font-weight: bold; text-align: center; letter-spacing: 1px; }
+    .result-box { margin-top: 20px; padding: 15px; background: #070a12; border-radius: 10px; border: 1px solid rgba(240, 203, 105, 0.3); font-size: 13px; line-height: 1.6; color: #d0d7de; display: none; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
+    .result-title { color: #f0cb69; font-family: "Georgia", serif; font-size: 15px; margin-bottom: 10px; font-weight: bold; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
     .sphere-item { margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(240,203,105,0.2); }
+    .forecast-section { margin-top: 12px; padding: 10px; background: rgba(240,203,105,0.05); border-radius: 8px; border-left: 3px solid #f0cb69; }
   </style>
 </head>
 <body>
 
   <script>
-    window.Telegram.WebApp.ready();
-    window.Telegram.WebApp.expand();
+    // Инициализация Telegram WebApp и синхронизация темного фона
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    try {
+      tg.setBackgroundColor('#05070e');
+      tg.setHeaderColor('#05070e');
+    } catch(e) {}
   </script>
 
   <div class="header">
@@ -71,107 +78,155 @@
     </div>
 
     <button class="btn" id="t-btn-calc" onclick="calculateDestiny()">Узнать прогноз дня</button>
-    <button class="btn btn-secondary" id="t-btn-ad" onclick="watchAdForBonus()">🎁 Получить бонус за рекламу</button>
+    <button class="btn btn-secondary" id="t-btn-ad" onclick="watchAdForBonus()">🎁 Получить глобальный разбор</button>
     
     <div id="result" class="result-box">
       <div class="result-title" id="res-title">⚡ Число судьбы: 9</div>
-      <div id="result-text">
-        <div><strong id="t-energy">Энергия дня:</strong> <span id="res-energy">...</span></div>
-        <div class="sphere-item"><strong id="t-fin">💰 Финансы:</strong> <span id="res-fin">...</span></div>
+      
+      <div class="forecast-section">
+        <div><strong id="t-year-f">🌍 Прогноз на год:</strong> <span id="res-year">...</span></div>
+        <div style="margin-top: 6px;"><strong id="t-month-f">🌙 Прогноз на месяц:</strong> <span id="res-month">...</span></div>
+      </div>
+
+      <div style="margin-top: 12px;">
         <div class="sphere-item"><strong id="t-love">❤️ Любовь:</strong> <span id="res-love">...</span></div>
+        <div class="sphere-item"><strong id="t-fin">💰 Финансы:</strong> <span id="res-fin">...</span></div>
+        <div class="sphere-item"><strong id="t-career">💼 Карьера:</strong> <span id="res-career">...</span></div>
+        <div class="sphere-item"><strong id="t-health">🌿 Здоровье:</strong> <span id="res-health">...</span></div>
+        <div class="sphere-item"><strong id="t-karma">⚖️ Карма:</strong> <span id="res-karma">...</span></div>
       </div>
     </div>
   </div>
-
-  <script>
+ <script>
     const i18n = {
       ru: {
         brand: "Оракул Звёзд", sub: "Портал Судьбы", label: "Дата вашего рождения:",
         day: "День", month: "Месяц", year: "Год",
-        calcBtn: "Узнать прогноз дня", adBtn: "🎁 Получить бонус за рекламу",
+        calcBtn: "Узнать прогноз дня", adBtn: "🎁 Получить глобальный разбор",
         months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-        resTitle: "⚡ Ваше число судьбы: ",
-        energy: "Энергия дня:", fin: "💰 Финансы:", love: "❤️ Любовь:",
+        resTitle: "⚡ Ваша матрица судьбы: ",
+        yearF: "🌍 Прогноз на год:", monthF: "🌙 Прогноз на месяц:",
+        love: "❤️ Любовь:", fin: "💰 Финансы:", career: "💼 Карьера:", health: "🌿 Здоровье:", karma: "⚖️ Карма:",
         alertDate: "Пожалуйста, выберите день, месяц и год рождения!",
-        bonusUnlocked: "🎁 Реклама просмотрена! Звёзды открыли тайный совет."
+        bonusUnlocked: "🎁 Глобальный разбор успешно разблокирован через звёздный поток!"
       },
       en: {
         brand: "Oracle of Stars", sub: "Portal of Destiny", label: "Your Birth Date:",
         day: "Day", month: "Month", year: "Year",
-        calcBtn: "Get Daily Forecast", adBtn: "🎁 Get Bonus via Ad",
+        calcBtn: "Get Daily Forecast", adBtn: "🎁 Get Global Deep Report",
         months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        resTitle: "⚡ Your Destiny Number: ",
-        energy: "Daily Energy:", fin: "💰 Finances:", love: "❤️ Love:",
+        resTitle: "⚡ Your Destiny Matrix: ",
+        yearF: "🌍 Yearly Forecast:", monthF: "🌙 Monthly Forecast:",
+        love: "❤️ Love:", fin: "💰 Finances:", career: "💼 Career:", health: "🌿 Health:", karma: "⚖️ Karma:",
         alertDate: "Please select your day, month, and year of birth!",
-        bonusUnlocked: "🎁 Ad watched! Star secrets unlocked."
+        bonusUnlocked: "🎁 Global deep report unlocked!"
       },
       uk: {
         brand: "Оракул Зірок", sub: "Портал Долі", label: "Дата вашого народження:",
         day: "День", month: "Місяць", year: "Рік",
-        calcBtn: "Дізнатися прогноз дня", adBtn: "🎁 Отримати бонус за рекламу",
+        calcBtn: "Дізнатися прогноз дня", adBtn: "🎁 Отримати глобальний розбір",
         months: ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
-        resTitle: "⚡ Ваше число долі: ",
-        energy: "Енергія дня:", fin: "💰 Фінанси:", love: "❤️ Любов:",
+        resTitle: "⚡ Ваша матриця долі: ",
+        yearF: "🌍 Прогноз на рік:", monthF: "🌙 Прогноз на місяць:",
+        love: "❤️ Любов:", fin: "💰 Фінанси:", career: "💼 Кар'єра:", health: "🌿 Здоров'я:", karma: "⚖️ Карма:",
         alertDate: "Будь ласка, виберіть день, місяць і рік народження!",
-        bonusUnlocked: "🎁 Рекламу переглянуто! Зірки відкрили таємний порадник."
+        bonusUnlocked: "🎁 Глобальний розбор успішно розблоковано!"
       },
       de: {
         brand: "Orakel der Sterne", sub: "Portal des Schicksals", label: "Ihr Geburtsdatum:",
         day: "Tag", month: "Monat", year: "Jahr",
-        calcBtn: "Tageshoroskop anzeigen", adBtn: "🎁 Bonus durch Werbung",
+        calcBtn: "Tageshoroskop anzeigen", adBtn: "🎁 Globalen Bericht erhalten",
         months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
-        resTitle: "⚡ Ihre Schicksalszahl: ",
-        energy: "Tagesenergie:", fin: "💰 Finanzen:", love: "❤️ Liebe:",
+        resTitle: "⚡ Ihre Schicksalsmatrix: ",
+        yearF: "🌍 Jahresprognose:", monthF: "🌙 Monatsprognose:",
+        love: "❤️ Liebe:", fin: "💰 Finanzen:", career: "💼 Karriere:", health: "🌿 Gesundheit:", karma: "⚖️ Karma:",
         alertDate: "Bitte wählen Sie Tag, Monat und Jahr Ihrer Geburt aus!",
-        bonusUnlocked: "🎁 Werbung angesehen! Geheimnis der Sterne freigeschaltet."
+        bonusUnlocked: "🎁 Globaler Bericht freigeschaltet!"
       }
     };
 
+    // Глубокая база данных с годовыми, месячными прогнозами и 5 сферами жизни
     const numerologyData = {
       1: {
-        energy: "Лидерский потенциал на высоте. Время брать инициативу в свои руки и заявлять о себе.",
-        fin: "Отличный день для крупных сделок, запуска проектов и независимых инвестиций.",
-        love: "Проявите заботу к партнеру, но не доминируйте. Одиноких ждут судьбоносные знакомства."
+        year: "Год лидерства, мощного старта и личных прорывов. Закладывайте фундамент на 9 лет вперёд.",
+        month: "Месяц активных действий и принятия смелых решений. Не бойтесь брать ответственность.",
+        love: "Яркие страсти и инициатива в отношениях. Время зажигать сердца.",
+        fin: "Финансовая независимость и новые источники доходов через личные проекты.",
+        career: "Выход на лидирующие позиции, руководство процессами и запуск нового.",
+        health: "Энергии много, но берегите нервную систему от перегрузок.",
+        karma: "Урок эгоизма: научитесь слышать мнения окружающих, сохраняя свой стержень."
       },
       2: {
-        energy: "День гармонии, дипломатии и интуиции. Избегайте конфликтов, положитесь на компромисс.",
-        fin: "Финансовые вопросы лучше решать в партнерстве. Прислушайтесь к внутреннему голосу.",
-        love: "Идеальное время для романтики, откровенных разговоров и укрепления союза."
+        year: "Год партнерства, союза, дипломатии и терпения. Успех приходит через сотрудничество.",
+        month: "Месяц внутренних озарений, развития интуиции и сглаживания острых углов.",
+        love: "Глубокое доверие, романтика и гармония в паре. Для одиноких — знаковая встреча.",
+        fin: "Деньги приходят через партнерские соглашения и совместные инвестиции.",
+        career: "Командная работа принесет больше плодов, чем одиночные маневры.",
+        health: "Уделите внимание эмоциональному балансу и полноценному сну.",
+        karma: "Урок зависимости: не растворяйтесь в партнере полностью, цените себя."
       },
       3: {
-        energy: "Энергия творчества, вдохновения и самовыражения. Творческие задачи будут решаться легко.",
-        fin: "Возможны неожиданные денежные поступления через творчество или коммуникации.",
-        love: "Легкость и флирт наполнят отношения радостью. Проведите вечер в компании друзей."
+        year: "Год творчества, самовыражения, общения и расширения круга знакомств.",
+        month: "Месяц вдохновения, публичных выступлений и реализации творческих идей.",
+        love: "Легкость, флирт, праздники и обновление чувств в отношениях.",
+        fin: "Прибыль через творчество, рекламу, соцсети и коммуникации.",
+        career: "Успех ждет тех, кто проявляет креативность и нестандартный подход.",
+        health: "Избегайте эмоционального выгорания на волне бурной активности.",
+        karma: "Урок поверхностности: доводите начатые проекты до конца."
       },
       4: {
-        energy: "День стабильности, порядка и упорного труда. Сконцентрируйтесь на практических делах.",
-        fin: "Надежный день для планирования бюджета, погашения обязательств и надежных вложений.",
-        love: "Стабильность и верность станут фундаментом для глубокого доверия с партнером."
+        year: "Год упорного труда, порядка, укрепления стабильности и дисциплины.",
+        month: "Месяц наведения идеального порядка в делах, документах и финансах.",
+        love: "Надежность, преданность и проверка отношений на прочность и верность.",
+        fin: "Консервативное накопление, планирование бюджета и надежные активы.",
+        career: "Стабильный рост благодаря профессионализму и трудолюбию.",
+        health: "Важна профилактика опорно-двигательного аппарата и режима дня.",
+        karma: "Урок излишнего консерватизма: будьте гибче к переменам."
       },
       5: {
-        energy: "Энергия перемен, свободы и путешествий. Будьте открыты к неожиданным поворотам.",
-        fin: "Возможны спонтанные траты или неожиданные финансовые возможности из новых источников.",
-        love: "Яркие эмоции и страсть. Сделайте шаг навстречу новому опыту в личной жизни."
+        year: "Год масштабных перемен, путешествий, свободы и выхода из зоны комфорта.",
+        month: "Месяц неожиданных поворотов, новых поездок и знакомств.",
+        love: "Буря эмоций, обновление чувств, избавление от рутины в паре.",
+        fin: "Динамичные финансы: возможны как быстрые доходы, так и спонтанные траты.",
+        career: "Гибкость и адаптивность к меняющимся условиям принесут успех.",
+        health: "Следите за дыхательной системой и избегайте экстремального риска.",
+        karma: "Урок ответственности: свобода не означает вседозволенность."
       },
       6: {
-        energy: "День семьи, уюта и ответственности перед близкими. Посвятите время заботе о доме.",
-        fin: "Финансовая стабильность через помощь другим или семейные проекты.",
-        love: "Гармония, нежность и взаимопонимание достигают пика. Отличное время для признаний."
+        year: "Год семьи, любви, домашних забот, служения близким и гармонизации пространства.",
+        month: "Месяц решения семейных вопросов, ремонта и укрепления семейных уз.",
+        love: "Пик романтики, официальное оформление отношений, забота и уют.",
+        fin: "Финансовая стабильность через семейный бизнес или помощь близких.",
+        career: "Успех в коллективах, где царит атмосфера доверия и взаимопомощи.",
+        health: "Поберегите сердце и эмоциональную сферу от чужих стрессов.",
+        karma: "Урок гиперопеки: дайте близким право на самостоятельные ошибки."
       },
       7: {
-        energy: "День глубокого анализа, духовного роста и уединения. Доверьтесь внутренней мудрости.",
-        fin: "Воздержитесь от импульсивных трат. Проанализируйте свои финансовые стратегии.",
-        love: "Партнеру может понадобиться личное пространство. Проведите время в раздумьях."
+        year: "Год духовного роста, самопознания, накопления мудрости и внутреннего анализа.",
+        month: "Месяц уединения, обучения, глубокого погружения в профессиональные тайны.",
+        love: "Потребность в личном пространстве и ментальном сближении с партнером.",
+        fin: "Воздержитесь от рискованных вложений. Время финансового аудита.",
+        career: "Индивидуальная глубокая работа, наука, аналитика и стратегия.",
+        health: "Необходим отдых от информационной суеты и тишина.",
+        karma: "Урок изоляции: не отталкивайте искреннюю заботу близких людей."
       },
       8: {
-        energy: "Мощная энергия власти, карьерного роста и материального успеха. Действуйте масштабно.",
-        fin: "Высокая вероятность заключения выгодных контрактов и роста доходов.",
-        love: "Ваша харизма привлекает внимание. Проявите щедрость и внимание к любимому человеку."
+        year: "Год карьерного взлета, больших денег, власти, кармических плодов и масштаба.",
+        month: "Месяц подписания крупных контрактов и управления серьезными процессами.",
+        love: "Яркие амбициозные союзы, щедрость и демонстрация чувств через поступки.",
+        fin: "Максимальный финансовый потенциал года. Время крупных инвестиций.",
+        career: "Решающий прорыв в бизнесе или карьере, заслуженное признание.",
+        health: "Контролируйте уровень стресса и артериальное давление.",
+        karma: "Урок власти: оставайтесь честными и справедливыми к людям."
       },
       9: {
-        energy: "День завершения циклов, мудрости и духовного освобождения. Отпустите всё лишнее.",
-        fin: "Благоприятно закрывать долги, завершать старые финансовые обязательства.",
-        love: "Прощение и отпущение обид принесут долгожданное облегчение и новый виток чувств."
+        year: "Год завершения 9-летнего цикла, очищения от старого, мудрости и отпускания.",
+        month: "Месяц подведения итогов, закрытия долгов и подготовки к новому этапу.",
+        love: "Переосмысление чувств: либо переход на новый уровень, либо расставание без обид.",
+        fin: "Благоприятно закрывать кредиты и завершать старые финансовые обязательства.",
+        career: "Завершение масштабных проектов перед большим скачком в следующем году.",
+        health: "Очищение организма, детокс и восстановление сил.",
+        karma: "Урок прощения: отпустите старые обиды, чтобы они не тянули вас назад."
       }
     };
 
@@ -191,9 +246,13 @@
     document.getElementById('trigger-year').textContent = t.year;
     document.getElementById('t-btn-calc').textContent = t.calcBtn;
     document.getElementById('t-btn-ad').textContent = t.adBtn;
-    document.getElementById('t-energy').textContent = t.energy;
-    document.getElementById('t-fin').textContent = t.fin;
+    document.getElementById('t-year-f').textContent = t.yearF;
+    document.getElementById('t-month-f').textContent = t.monthF;
     document.getElementById('t-love').textContent = t.love;
+    document.getElementById('t-fin').textContent = t.fin;
+    document.getElementById('t-career').textContent = t.career;
+    document.getElementById('t-health').textContent = t.health;
+    document.getElementById('t-karma').textContent = t.karma;
 
     let selectedDay = '';
     let selectedMonth = '';
@@ -220,8 +279,7 @@
       div.onclick = () => selectValue('month', mNum, mName);
       monthsContainer.appendChild(div);
     });
-
-    const yearsContainer = document.getElementById('options-year');
+   const yearsContainer = document.getElementById('options-year');
     for (let i = 2008; i >= 1940; i--) {
       let div = document.createElement('div');
       div.className = 'custom-option';
@@ -277,9 +335,13 @@
       const data = numerologyData[destinyNum];
 
       document.getElementById('res-title').textContent = t.resTitle + destinyNum;
-      document.getElementById('res-energy').textContent = data.energy;
-      document.getElementById('res-fin').textContent = data.fin;
+      document.getElementById('res-year').textContent = data.year;
+      document.getElementById('res-month').textContent = data.month;
       document.getElementById('res-love').textContent = data.love;
+      document.getElementById('res-fin').textContent = data.fin;
+      document.getElementById('res-career').textContent = data.career;
+      document.getElementById('res-health').textContent = data.health;
+      document.getElementById('res-karma').textContent = data.karma;
       document.getElementById('result').style.display = 'block';
     }
 
@@ -301,7 +363,6 @@
             console.log('Ad error or skipped', result);
           });
       } else {
-        // Для локального теста в браузере: выводим сообщение и СРАЗУ показываем результат расчета!
         alert(t.bonusUnlocked);
         calculateDestiny();
       }
