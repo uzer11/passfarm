@@ -3,8 +3,8 @@ import urllib.request
 import urllib.parse
 import json
 
-TOKEN = "8656135022:AAEQzeQ1e005dCD45SDrxMuKTBDZ0YE_I5o"
-CHANNEL_ID = "@orakul_zvezd"  # Укажи юзернейм своего канала (бот должен быть там администратором)
+TOKEN = "8656135022:AAH9F7k1vuqHdbSEIACPerznHRXCBfC9rNQ"
+CHANNEL_ID = "@orakul_zvezd"
 
 HOOKS_TEEN = [
     "Твой код судьбы скрывает цифру, которую знают только 3% людей. Проверь свою матрицу Пифагора прямо сейчас! https://t.me/pass_farm_game_bot/play",
@@ -26,7 +26,7 @@ def send_telegram(text):
         with urllib.request.urlopen(req) as response:
             print("Пост успешно отправлен в Telegram!")
     except Exception as e:
-        print("Ошибка отправки (убедись, что бот админ в канале):", e)
+        print("Ошибка отправки:", e)
 
 if __name__ == "__main__":
     category = random.choice([HOOKS_TEEN, HOOKS_ADULT])
