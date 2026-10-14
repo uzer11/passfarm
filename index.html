@@ -7,16 +7,18 @@
     <script src='https://telegram.org/js/telegram-web-app.js'></script>
     <style>
         :root { --bg: #0b0b0e; --card-bg: #141418; --accent: #d4af37; --text: #f3f3f3; --text-muted: #aaa; --border: #333; }
-        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; box-sizing: border-box; }
-        .container { max-width: 420px; width: 100%; background: var(--card-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        h1 { color: var(--accent); font-size: 22px; text-align: center; margin-bottom: 5px; }
-        .subtitle { color: var(--text-muted); font-size: 12px; text-align: center; margin-bottom: 15px; }
+        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        .container { max-width: 420px; width: 100%; background: var(--card-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); text-align: center; }
+        h1 { color: var(--accent); font-size: 22px; margin-bottom: 5px; }
+        .subtitle { color: var(--text-muted); font-size: 12px; margin-bottom: 20px; line-height: 1.4; }
+        input { width: 100%; padding: 14px; margin: 10px 0; background: #1e1e24; border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 16px; text-align: center; box-sizing: border-box; }
+        button.calc-btn { background: linear-gradient(135deg, #d4af37, #aa8c2c); color: #000; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; width: 100%; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(212,175,55,0.4); }
+        .result-card { display: none; text-align: left; margin-top: 15px; }
         .card { background: #1a1a20; border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-top: 15px; }
-        .card-title { color: var(--accent); font-weight: bold; margin-bottom: 8px; font-size: 15px; display: flex; align-items: center; gap: 6px; }
+        .card-title { color: var(--accent); font-weight: bold; margin-bottom: 8px; font-size: 15px; }
         .tabs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 15px 0; }
-        .tab-btn { background: #1e1e24; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 4px; border-radius: 8px; font-size: 11px; cursor: pointer; text-align: center; transition: all 0.2s; }
+        .tab-btn { background: #1e1e24; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 4px; border-radius: 8px; font-size: 11px; cursor: pointer; text-align: center; }
         .tab-btn.active { background: var(--accent); color: #000; font-weight: bold; border-color: var(--accent); }
-        button.action-btn { background: linear-gradient(135deg, #d4af37, #aa8c2c); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px; width: 100%; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 15px rgba(212,175,55,0.4); }
         .footer { text-align: center; font-size: 11px; color: #666; margin-top: 20px; }
     </style>
 </head>
@@ -25,49 +27,50 @@
         <h1>🔮 Оракул Звёзд</h1>
         <div class='subtitle'>Элитный портал судьбы, нумерологических откровений и глубокой трансформации вашей жизни</div>
         
-        <div class='card'>
-            <div class='card-title'>⚡ Ваша матрица судьбы: <span id='matrix-num'>4</span></div>
-            <div style='font-size: 13px; color: #ccc; line-height: 1.4;' id='forecast-text'>
-                Энергия порядка, структуры и надежного фундамента. День требует дисциплины, завершения начатых дел и наведения безупречного порядка в материальных вопросах.
-            </div>
-            
-            <div class='tabs-grid'>
-                <div class='tab-btn active' onclick='switchPeriod('month', this)'>🌙 Месяц</div>
-                <div class='tab-btn' onclick='switchPeriod('year', this)'>🌍 Год</div>
-                <div class='tab-btn' onclick='switchPeriod('week', this)'>📅 Неделя</div>
-                <div class='tab-btn' onclick='switchPeriod('couple', this)'>👥 М и Ж</div>
-            </div>
+        <div id='input-section'>
+            <p style='color: #ccc; font-size: 13px; margin-bottom: 10px;'>Введите дату рождения для расчета:</p>
+            <input type='text' id='birthdate' placeholder='ДД.ММ.ГГГГ' maxlength='10'>
+            <button class='calc-btn' onclick='calculateMatrix()'>✨ Рассчитать Матрицу Судьбы</button>
         </div>
 
-        <button class='action-btn' onclick='resetData()'>🔄 Ввести другую дату</button>
+        <div id='result-section' class='result-card'>
+            <div class='card'>
+                <div class='card-title'>⚡ Ваша матрица судьбы: <span id='matrix-num'>4</span></div>
+                <div style='font-size: 13px; color: #ccc; line-height: 1.4;' id='forecast-text'>
+                    Энергия порядка, структуры и надежного фундамента. День требует дисциплины, завершения начатых дел и наведения безупречного порядка в материальных вопросах.
+                </div>
+                
+                <div class='tabs-grid'>
+                    <div class='tab-btn active' onclick='switchPeriod('month', this)'>🌙 Месяц</div>
+                    <div class='tab-btn' onclick='switchPeriod('year', this)'>🌍 Год</div>
+                    <div class='tab-btn' onclick='switchPeriod('week', this)'>📅 Неделя</div>
+                    <div class='tab-btn' onclick='switchPeriod('couple', this)'>👥 М и Ж</div>
+                </div>
+            </div>
+            <button class='calc-btn' onclick='resetData()' style='margin-top: 15px;'>🔄 Ввести другую дату</button>
+        </div>
+
         <div class='footer'>Оракул Звёзд © 2026 • Все права защищены</div>
-    </div>
-
-    <div id='ad-lock-modal' style='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;'>
-        <div style='background:#141418;border:1px solid #d4af37;padding:30px;border-radius:16px;max-width:320px;box-shadow:0 10px 30px rgba(0,0,0,0.9);'>
-            <h2 style='color:#d4af37;margin-top:0;font-size:22px;'>🔮 Доступ ограничен</h2>
-            <p style='color:#ccc;font-size:14px;line-height:1.5;'>Чтобы получить полный доступ ко всем расчетам Матрицы Судьбы на 24 часа, посмотрите короткое видео.</p>
-            <button onclick='watchAdForAccess()' style='background:linear-gradient(135deg, #d4af37, #aa8c2c);color:#000;border:none;padding:14px 20px;border-radius:8px;font-weight:bold;font-size:15px;cursor:pointer;width:100%;margin-top:15px;box-shadow:0 4px 15px rgba(212,175,55,0.4);'>✨ Разблокировать на 24 часа</button>
-        </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        function checkOracleAccess() {
-            const savedExpiry = localStorage.getItem('oracle_access_until');
-            const now = new Date().getTime();
-                document.getElementById('ad-lock-modal').style.display = 'flex';
-            } else {
-                document.getElementById('ad-lock-modal').style.display = 'none';
+        function calculateMatrix() {
+            const val = document.getElementById('birthdate').value;
+            if (val.length < 8) {
+                alert('Пожалуйста, введите корректную дату рождения (например, 15.05.1995)');
+                return;
             }
+            document.getElementById('input-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
         }
 
-        function watchAdForAccess() {
-            const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 часа
-            localStorage.setItem('oracle_access_until', expiryTime);
-            document.getElementById('ad-lock-modal').style.display = 'none';
+        function resetData() {
+            document.getElementById('birthdate').value = '';
+            document.getElementById('result-section').style.display = 'none';
+            document.getElementById('input-section').style.display = 'block';
         }
 
         function switchPeriod(period, btn) {
@@ -85,15 +88,6 @@
                 textEl.innerHTML = '<b>Совместимость М и Ж:</b> Высокий уровень ментальной связи. Успех в совместных делах и преодоление бытовых кризисов.';
             }
         }
-
-        function resetData() {
-            localStorage.removeItem('oracle_access_until');
-            checkOracleAccess();
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(checkOracleAccess, 300);
-        });
     </script>
 </body>
 </html>
