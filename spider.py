@@ -1,9 +1,10 @@
 import random
 import urllib.request
 import urllib.parse
+import urllib.error
 import json
 
-TOKEN = "8656135022:AAH9F7k1vuqHdbSEIACPerznHRXCBfC9rNQ"
+TOKEN = "8806109466:AAEHw35oBFHQVAm0o3S418RwW_uEb9o2jo"
 CHANNEL_ID = "@orakul_zvezd"
 
 HOOKS_TEEN = [
@@ -24,9 +25,12 @@ def send_telegram(text):
     req = urllib.request.Request(url, data=data)
     try:
         with urllib.request.urlopen(req) as response:
-            print("Пост успешно отправлен в Telegram!")
+            print("УРА! Пост успешно отправлен в Telegram!")
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode("utf-8")
+        print(f"Ошибка от Telegram (код {e.code}): {err_body}")
     except Exception as e:
-        print("Ошибка отправки:", e)
+        print("Общая ошибка:", e)
 
 if __name__ == "__main__":
     category = random.choice([HOOKS_TEEN, HOOKS_ADULT])
