@@ -1,20 +1,35 @@
 import random
+import urllib.request
+import urllib.parse
+import json
+
+TOKEN = "8656135022:AAEQzeQ1e005dCD45SDrxMuKTBDZ0YE_I5o"
+CHANNEL_ID = "@orakul_zvezd"  # Укажи юзернейм своего канала (бот должен быть там администратором)
 
 HOOKS_TEEN = [
-    "Твой код судьбы скрывает цифру, которую знают только 3% людей. Проверь свою матрицу Пифагора прямо сейчас! t.me/pass_farm_game_bot/play",
-    "Какая цифра отвечает за твою популярность и удачу в этом месяце? Рассчитай по дате рождения! t.me/pass_farm_game_bot/play",
-    "Совпадение по дате рождения: узнай всю правду о человеке за 5 секунд. t.me/pass_farm_game_bot/play"
+    "Твой код судьбы скрывает цифру, которую знают только 3% людей. Проверь свою матрицу Пифагора прямо сейчас! https://t.me/pass_farm_game_bot/play",
+    "Какая цифра отвечает за твою популярность и удачу в этом месяце? Рассчитай по дате рождения! https://t.me/pass_farm_game_bot/play",
+    "Совпадение по дате рождения: узнай всю правду о человеке за 5 секунд. https://t.me/pass_farm_game_bot/play"
 ]
 
 HOOKS_ADULT = [
-    "Финансовый код по Пифагору: почему одни богатеют в 30, а другие теряют? Узнай свой код богатства. t.me/pass_farm_game_bot/play",
-    "Скрытый потенциал твоей даты рождения: чего ты о себе не знал? Глубокий нумерологический разбор. t.me/pass_farm_game_bot/play",
-    "Кризис или точка роста? Что ждет тебя в ближайшие 3 года по картам судьбы. t.me/pass_farm_game_bot/play"
+    "Финансовый код по Пифагору: почему одни богатеют в 30, а другие теряют? Узнай свой код богатства. https://t.me/pass_farm_game_bot/play",
+    "Скрытый потенциал твоей даты рождения: чего ты о себе не знал? Глубокий нумерологический разбор. https://t.me/pass_farm_game_bot/play",
+    "Кризис или точка роста? Что ждет тебя в ближайшие 3 года по картам судьбы. https://t.me/pass_farm_game_bot/play"
 ]
 
-def generate_post():
-    category = random.choice([HOOKS_TEEN, HOOKS_ADULT])
-    return random.choice(category)
+def send_telegram(text):
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    data = urllib.parse.urlencode({"chat_id": CHANNEL_ID, "text": text}).encode("utf-8")
+    req = urllib.request.Request(url, data=data)
+    try:
+        with urllib.request.urlopen(req) as response:
+            print("Пост успешно отправлен в Telegram!")
+    except Exception as e:
+        print("Ошибка отправки (убедись, что бот админ в канале):", e)
 
 if __name__ == "__main__":
-    print("Сгенерированный пост для публикации:\n", generate_post())
+    category = random.choice([HOOKS_TEEN, HOOKS_ADULT])
+    post_text = random.choice(category)
+    print("Текст:", post_text)
+    send_telegram(post_text)
