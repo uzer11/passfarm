@@ -144,14 +144,20 @@
             color: var(--accent-gold);
         }
 
-        .teaser-lock {
-            background: rgba(124, 58, 237, 0.15);
-            border: 1px dashed rgba(124, 58, 237, 0.4);
-            border-radius: 10px;
-            padding: 12px;
+        .teaser-container { position: relative; }
+        .blurred { filter: blur(5px); user-select: none; pointer-events: none; opacity: 0.4; }
+        .paywall-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+            padding: 16px;
             text-align: center;
+            z-index: 10;
         }
-        .teaser-lock p { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+        .paywall-overlay p { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
         .btn-ad { background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); color: white; }
 
         footer { text-align: center; font-size: 10px; color: var(--text-muted); padding: 8px 0; margin-top: auto; }
@@ -236,11 +242,10 @@
                 </div>
 
                 <button class="btn" id="t-btn-calc" onclick="calculateForecast()">Узнать прогноз дня</button>
-                <button class="btn btn-secondary" onclick="watchAdForGlobal()">🎁 Получить глобальный разбор</button>
             </div>
         </div>
 
-        <!-- Карточка результатов -->
+        <!-- Карточка результатов (Прогноз дня + заблокированный глобальный разбор) -->
         <div id="result-card" class="card hidden">
             <div class="result-box">
                 <div class="result-title" id="res-matrix-title">⚡ Ваша матрица судьбы: 6</div>
@@ -250,34 +255,24 @@
                     <p id="res-energy">День тепла, семейного уюта, безусловной любви и исцеления душ. Сегодня лучшее время, чтобы собрать за общим столом близких, простить старые обиды и окружить себя красотой.</p>
                 </div>
 
-                <!-- Кнопки сфер -->
-                <div class="aspect-buttons">
-                    <button class="aspect-btn active" onclick="switchAspect('year', event)">🌍 Год</button>
-                    <button class="aspect-btn" onclick="switchAspect('month', event)">🌙 Месяц</button>
-                    <button class="aspect-btn" onclick="switchAspect('week', event)">📅 Неделя</button>
-                    <button class="aspect-btn" onclick="switchAspect('spheres', event)">✨ Сферы</button>
-                </div>
+                <!-- Блок с вкладками сфер (заблокирован до просмотра рекламы) -->
+                <div class="teaser-container">
+                    <div id="deep-forecast-block">
+                        <div class="aspect-buttons blurred" style="margin-bottom: 10px;">
+                            <button class="aspect-btn active">🌍 Год</button>
+                            <button class="aspect-btn">🌙 Месяц</button>
+                            <button class="aspect-btn">📅 Неделя</button>
+                            <button class="aspect-btn">✨ Сферы</button>
+                        </div>
+                        <div class="text-block blurred">
+                            <strong>🚀 Макро-цикл текущего года:</strong>
+                            <p>Этот год станет поворотным пунктом вашего двенадцатилетнего цикла. Судьба предоставляет уникальные шансы для кардинальной смены деятельности и реализации масштабных планов.</p>
+                        </div>
 
-                <div class="text-block">
-                    <strong id="aspect-title">🚀 Макро-цикл текущего года:</strong>
-                    <p id="aspect-text">Этот год станет поворотным пунктом вашего двенадцатилетнего цикла. Судьба предоставляет уникальные шансы для кардинальной смены деятельности, реализации масштабных планов и укрепления личного авторитета.</p>
-                </div>
-
-                <div class="text-block">
-                    <strong>✨ Ваш сакральный код личности:</strong>
-                    <p id="res-personality">Хранитель домашнего очага, красоты, гармонии и высокой преданности. Время рождения усиливает вашу интуицию и связь с высшими циклами.</p>
-                </div>
-
-                <!-- Блокировка рекламой для глобального разбора -->
-                <div id="teaser-block" class="teaser-lock">
-                    <p>🔒 Глобальный разбор всех сфер и глубокий кармический анализ заблокирован.</p>
-                    <button class="btn btn-ad" onclick="watchAdForGlobal()">🎁 Открыть весь прогноз (Реклама)</button>
-                </div>
-
-                <div id="global-unlocked-block" class="hidden">
-                    <div class="text-block" style="border-color: #7c3aed;">
-                        <strong style="color: #a78bfa;">💎 Элитный разбор судьбы и финансов:</strong>
-                        <p>Ваши денежные потоки активируются при работе в команде и творческих проектах. В личной жизни наступает гармония, а скрытый потенциал начнет приносить реальные плоды уже в этом месяце.</p>
+                        <div id="paywall-overlay" class="paywall-overlay">
+                            <p>🔒 Полный глобальный разбор (Год, Месяц, Неделя и Сферы) доступен после просмотра рекламы.</p>
+                            <button class="btn btn-ad" onclick="watchAd()">🎁 Открыть весь прогноз (Реклама)</button>
+                        </div>
                     </div>
                 </div>
 
@@ -295,8 +290,20 @@
         if (tg) { tg.expand(); }
 
         let formData = { day: 1, month: 1, year: 2000, hour: -1, ampm: 'AM', minute: 0 };
+        let adController = null;
 
-        function initCustomSelects() {
+        // Инициализация Adsgram SDK в фоновом режиме
+        window.addEventListener('DOMContentLoaded', () => {
+            initCustomSelects();
+            if (typeof window.Adsgram !== 'undefined') {
+                try {
+                    adController = window.Adsgram.init({ blockId: "bot-53766" });
+                } catch (e) {
+                    console.log("Adsgram init error:", e);
+                }
+            }
+        });
+       function initCustomSelects() {
             const daysContainer = document.getElementById('options-day');
             for (let i = 1; i <= 31; i++) {
                 let opt = document.createElement('div');
@@ -305,6 +312,7 @@
                 opt.onclick = () => selectOption('day', i, i);
                 daysContainer.appendChild(opt);
             }
+
             const yearsContainer = document.getElementById('options-year');
             const currentYear = new Date().getFullYear();
             for (let i = currentYear; i >= 1940; i--) {
@@ -337,26 +345,6 @@
             document.getElementById('select-' + type).classList.remove('open');
         }
 
-        window.onload = function() {
-            initCustomSelects();
-        };
-
-        // Надежная инициализация Adsgram с защитой от задержек загрузки SDK
-        function watchAdForGlobal() {
-            if (typeof window.Adsgram !== 'undefined') {
-                const adController = window.Adsgram.init({ blockId: "bot-53766" });
-                adController.show().then(() => {
-                    unlockGlobal();
-                }).catch((err) => {
-                    console.log("Adsgram error:", err);
-                    alert("Реклама не была досмотрена до конца.");
-                });
-            } else {
-                // Если SDK еще не успел загрузиться в WebView
-                alert("Реклама загружается... Пожалуйста, подождите секунду и нажмите еще раз.");
-            }
-        }
-
         function calculateForecast() {
             let sum = formData.day + formData.month + String(formData.year).split('').reduce((a,b)=>a+parseInt(b),0);
             while(sum > 9 && sum !== 11 && sum !== 22) {
@@ -373,36 +361,47 @@
             document.getElementById('result-card').classList.remove('hidden');
         }
 
-        function switchAspect(aspect, event) {
-            document.querySelectorAll('.aspect-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            const title = document.getElementById('aspect-title');
-            const text = document.getElementById('aspect-text');
-
-            if (aspect === 'year') {
-                title.textContent = "🚀 Макро-цикл текущего года:";
-                text.textContent = "Этот год станет поворотным пунктом вашего двенадцатилетнего цикла. Судьба предоставляет уникальные шансы для кардинальной смены деятельности и реализации масштабных планов.";
-            } else if (aspect === 'month') {
-                title.textContent = "🌙 Энергетика текущего месяца:";
-                text.textContent = "Текущий лунный месяц требует сосредоточения на внутренних ресурсах и завершении старых обязательств. Энергия планет благоприятствует духовному росту.";
-            } else if (aspect === 'week') {
-                title.textContent = "📅 Краткосрочные вибрации недели:";
-                text.textContent = "Ближайшие семь дней пройдут под знаком активного взаимодействия с окружением. Будьте внимательны к знакам и случайным встречам.";
-            } else if (aspect === 'spheres') {
-                title.textContent = "✨ Основные жизненные сферы:";
-                text.textContent = "Любовь наполняет вас вдохновением, карьера требует решительных шагов, здоровье стабильно, а кармический вектор указывает на доверие интуиции.";
+        function watchAd() {
+            if (adController) {
+                adController.show().then(() => {
+                    unlockFullForecast();
+                }).catch((err) => {
+                    console.log("Adsgram show error:", err);
+                    alert("Реклама не была досмотрена до конца. Попробуйте еще раз!");
+                });
+            } else {
+                // Фоллбэк для тестирования вне Telegram / если SDK не прогрузился
+                if (typeof window.Adsgram !== 'undefined') {
+                    try {
+                        const tempController = window.Adsgram.init({ blockId: "bot-53766" });
+                        tempController.show().then(() => {
+                            unlockFullForecast();
+                        }).catch(() => {
+                            alert("Симуляция: просмотр рекламы зачтен!");
+                            unlockFullForecast();
+                        });
+                        return;
+                    } catch(e) {}
+                }
+                alert("Симуляция просмотра рекламы (Adsgram SDK недоступен в текущем окружении).");
+                unlockFullForecast();
             }
         }
 
-        function unlockGlobal() {
-            document.getElementById('teaser-block').classList.add('hidden');
-            document.getElementById('global-unlocked-block').classList.remove('hidden');
-            document.getElementById('input-card').classList.add('hidden');
-            document.getElementById('result-card').classList.remove('hidden');
+        function unlockFullForecast() {
+            document.querySelectorAll('#deep-forecast-block .blurred').forEach(el => {
+                el.classList.remove('blurred');
+            });
+            document.getElementById('paywall-overlay').style.display = 'none';
         }
 
         function resetForm() {
+            // Сбрасываем размытие для следующего пользователя
+            document.querySelectorAll('#deep-forecast-block .aspect-buttons, #deep-forecast-block .text-block').forEach(el => {
+                el.classList.add('blurred');
+            });
+            document.getElementById('paywall-overlay').style.display = 'flex';
+
             document.getElementById('result-card').classList.add('hidden');
             document.getElementById('input-card').classList.remove('hidden');
         }
