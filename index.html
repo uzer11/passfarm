@@ -45,19 +45,23 @@
         .input-group { display: flex; flex-direction: column; gap: 10px; }
         label { font-size: 12px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
         .date-selectors { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; }
+        .time-selectors { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         
         .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
         .custom-select-trigger {
             background: rgba(11, 15, 25, 0.9);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 10px;
+            padding: 10px 8px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .custom-select-trigger::after {
             content: '▼';
@@ -81,7 +85,7 @@
         .custom-select-wrapper.open .custom-options { display: block; }
         .custom-option {
             padding: 10px;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-main);
             cursor: pointer;
             border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -139,11 +143,6 @@
             border-color: var(--accent-gold);
             color: var(--accent-gold);
         }
-        .aspect-btn.active {
-            background: var(--accent-glow);
-            border-color: var(--accent-gold);
-            color: var(--accent-gold);
-        }
 
         .teaser-lock {
             background: rgba(124, 58, 237, 0.15);
@@ -166,17 +165,17 @@
             <p class="subtitle">Портал судьбы и нумерологических откровений</p>
         </header>
 
-        <!-- Карточка ввода (предзаполненная) -->
+        <!-- Карточка ввода -->
         <div id="input-card" class="card">
             <div class="input-group">
                 <label id="t-label">Дата вашего рождения:</label>
                 <div class="date-selectors">
                     <div class="custom-select-wrapper" id="select-day">
-                        <div class="custom-select-trigger" id="trigger-day">15</div>
+                        <div class="custom-select-trigger" id="trigger-day">1</div>
                         <div class="custom-options" id="options-day"></div>
                     </div>
                     <div class="custom-select-wrapper" id="select-month">
-                        <div class="custom-select-trigger" id="trigger-month">Апрель</div>
+                        <div class="custom-select-trigger" id="trigger-month">Январь</div>
                         <div class="custom-options" id="options-month">
                             <div class="custom-option" data-value="1" onclick="selectOption('month', 1, 'Январь')">Январь</div>
                             <div class="custom-option" data-value="2" onclick="selectOption('month', 2, 'Февраль')">Февраль</div>
@@ -193,8 +192,46 @@
                         </div>
                     </div>
                     <div class="custom-select-wrapper" id="select-year">
-                        <div class="custom-select-trigger" id="trigger-year">1995</div>
+                        <div class="custom-select-trigger" id="trigger-year">2000</div>
                         <div class="custom-options" id="options-year"></div>
+                    </div>
+                </div>
+
+                <label style="margin-top: 2px;">Время рождения (12ч формат)</label>
+                <div class="time-selectors">
+                    <div class="custom-select-wrapper" id="select-hour">
+                        <div class="custom-select-trigger" id="trigger-hour">Не знаю</div>
+                        <div class="custom-options" id="options-hour">
+                            <div class="custom-option" data-value="-1" onclick="selectOption('hour', -1, 'Не знаю')">Не знаю</div>
+                            <div class="custom-option" data-value="1" onclick="selectOption('hour', 1, '1 час')">1 час</div>
+                            <div class="custom-option" data-value="2" onclick="selectOption('hour', 2, '2 часа')">2 часа</div>
+                            <div class="custom-option" data-value="3" onclick="selectOption('hour', 3, '3 часа')">3 часа</div>
+                            <div class="custom-option" data-value="4" onclick="selectOption('hour', 4, '4 часа')">4 часа</div>
+                            <div class="custom-option" data-value="5" onclick="selectOption('hour', 5, '5 часов')">5 часов</div>
+                            <div class="custom-option" data-value="6" onclick="selectOption('hour', 6, '6 часов')">6 часов</div>
+                            <div class="custom-option" data-value="7" onclick="selectOption('hour', 7, '7 часов')">7 часов</div>
+                            <div class="custom-option" data-value="8" onclick="selectOption('hour', 8, '8 часов')">8 часов</div>
+                            <div class="custom-option" data-value="9" onclick="selectOption('hour', 9, '9 часов')">9 часов</div>
+                            <div class="custom-option" data-value="10" onclick="selectOption('hour', 10, '10 часов')">10 часов</div>
+                            <div class="custom-option" data-value="11" onclick="selectOption('hour', 11, '11 часов')">11 часов</div>
+                            <div class="custom-option" data-value="12" onclick="selectOption('hour', 12, '12 часов')">12 часов</div>
+                        </div>
+                    </div>
+                    <div class="custom-select-wrapper" id="select-ampm">
+                        <div class="custom-select-trigger" id="trigger-ampm">AM/PM</div>
+                        <div class="custom-options" id="options-ampm">
+                            <div class="custom-option" data-value="AM" onclick="selectOption('ampm', 'AM', 'AM (Утро)')">AM (Утро)</div>
+                            <div class="custom-option" data-value="PM" onclick="selectOption('ampm', 'PM', 'PM (Вечер)')">PM (Вечер)</div>
+                        </div>
+                    </div>
+                    <div class="custom-select-wrapper" id="select-minute">
+                        <div class="custom-select-trigger" id="trigger-minute">~00 мин</div>
+                        <div class="custom-options" id="options-minute">
+                            <div class="custom-option" data-value="0" onclick="selectOption('minute', 0, '~00 мин')">~00 мин</div>
+                            <div class="custom-option" data-value="15" onclick="selectOption('minute', 15, '~15 мин')">~15 мин</div>
+                            <div class="custom-option" data-value="30" onclick="selectOption('minute', 30, '~30 мин')">~30 мин</div>
+                            <div class="custom-option" data-value="45" onclick="selectOption('minute', 45, '~45 мин')">~45 мин</div>
+                        </div>
                     </div>
                 </div>
 
@@ -228,7 +265,7 @@
 
                 <div class="text-block">
                     <strong>✨ Ваш сакральный код личности:</strong>
-                    <p id="res-personality">Шестерка — хранитель домашнего очага, красоты, гармонии и высокой преданности. Ваше сердце открыто людям, а дом полон света. Вы чувствуете глубокую потребность приносить пользу миру.</p>
+                    <p id="res-personality">Хранитель домашнего очага, красоты, гармонии и высокой преданности. Время рождения усиливает вашу интуицию и связь с высшими циклами.</p>
                 </div>
 
                 <!-- Блокировка рекламой для глобального разбора -->
@@ -257,7 +294,7 @@
         let tg = window.Telegram.WebApp;
         if (tg) { tg.expand(); }
 
-        let formData = { day: 15, month: 4, year: 1995 };
+        let formData = { day: 1, month: 1, year: 2000, hour: -1, ampm: 'AM', minute: 0 };
 
         function initCustomSelects() {
             const daysContainer = document.getElementById('options-day');
@@ -268,7 +305,6 @@
                 opt.onclick = () => selectOption('day', i, i);
                 daysContainer.appendChild(opt);
             }
-
             const yearsContainer = document.getElementById('options-year');
             const currentYear = new Date().getFullYear();
             for (let i = currentYear; i >= 1940; i--) {
@@ -278,6 +314,7 @@
                 opt.onclick = () => selectOption('year', i, i);
                 yearsContainer.appendChild(opt);
             }
+
             document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
                 const trigger = wrapper.querySelector('.custom-select-trigger');
                 trigger.onclick = (e) => {
@@ -304,16 +341,34 @@
             initCustomSelects();
         };
 
-        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "bot-53766" }) : null;
+        // Надежная инициализация Adsgram с защитой от задержек загрузки SDK
+        function watchAdForGlobal() {
+            if (typeof window.Adsgram !== 'undefined') {
+                const adController = window.Adsgram.init({ blockId: "bot-53766" });
+                adController.show().then(() => {
+                    unlockGlobal();
+                }).catch((err) => {
+                    console.log("Adsgram error:", err);
+                    alert("Реклама не была досмотрена до конца.");
+                });
+            } else {
+                // Если SDK еще не успел загрузиться в WebView
+                alert("Реклама загружается... Пожалуйста, подождите секунду и нажмите еще раз.");
+            }
+        }
 
         function calculateForecast() {
-            // Расчет матрицы по сумме цифр
             let sum = formData.day + formData.month + String(formData.year).split('').reduce((a,b)=>a+parseInt(b),0);
             while(sum > 9 && sum !== 11 && sum !== 22) {
                 sum = String(sum).split('').reduce((a,b)=>a+parseInt(b),0);
             }
 
-            document.getElementById('res-matrix-title').textContent = `⚡ Ваша матрица судьбы: ${sum}`;
+            let timeNote = "";
+            if (formData.hour !== -1) {
+                timeNote = ` (Час: ${formData.hour}:00 ${formData.ampm})`;
+            }
+
+            document.getElementById('res-matrix-title').textContent = `⚡ Ваша матрица судьбы: ${sum}${timeNote}`;
             document.getElementById('input-card').classList.add('hidden');
             document.getElementById('result-card').classList.remove('hidden');
         }
@@ -327,29 +382,16 @@
 
             if (aspect === 'year') {
                 title.textContent = "🚀 Макро-цикл текущего года:";
-                text.textContent = "Этот год станет поворотным пунктом вашего двенадцатилетнего цикла. Судьба предоставляет уникальные шансы для кардинальной смены деятельности, реализации масштабных планов и укрепления личного авторитета.";
+                text.textContent = "Этот год станет поворотным пунктом вашего двенадцатилетнего цикла. Судьба предоставляет уникальные шансы для кардинальной смены деятельности и реализации масштабных планов.";
             } else if (aspect === 'month') {
                 title.textContent = "🌙 Энергетика текущего месяца:";
-                text.textContent = "Текущий лунный месяц требует сосредоточения на внутренних ресурсах и завершении старых обязательств. Энергия планет благоприятствует духовному росту и наведению порядка в делах.";
+                text.textContent = "Текущий лунный месяц требует сосредоточения на внутренних ресурсах и завершении старых обязательств. Энергия планет благоприятствует духовному росту.";
             } else if (aspect === 'week') {
                 title.textContent = "📅 Краткосрочные вибрации недели:";
-                text.textContent = "Ближайшие семь дней пройдут под знаком активного взаимодействия с окружением. Будьте внимательны к знакам и случайным встречам — они принесут важные подсказки.";
+                text.textContent = "Ближайшие семь дней пройдут под знаком активного взаимодействия с окружением. Будьте внимательны к знакам и случайным встречам.";
             } else if (aspect === 'spheres') {
                 title.textContent = "✨ Основные жизненные сферы:";
-                text.textContent = "Любовь наполняет вас вдохновением, карьера требует решительных шагов, здоровье стабильно, а кармический вектор указывает на необходимость доверия интуиции.";
-            }
-        }
-
-        function watchAdForGlobal() {
-            if (adController) {
-                adController.show().then(() => {
-                    unlockGlobal();
-                }).catch(() => {
-                    alert("Реклама не была досмотрена до конца.");
-                });
-            } else {
-                alert("Симуляция просмотра рекламы (Adsgram SDK вне Telegram).");
-                unlockGlobal();
+                text.textContent = "Любовь наполняет вас вдохновением, карьера требует решительных шагов, здоровье стабильно, а кармический вектор указывает на доверие интуиции.";
             }
         }
 
