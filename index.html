@@ -7,13 +7,14 @@
     <script src='https://telegram.org/js/telegram-web-app.js'></script>
     <style>
         :root { --bg: #0b0b0e; --card-bg: #141418; --accent: #d4af37; --text: #f3f3f3; --text-muted: #aaa; --border: #333; }
-        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; box-sizing: border-box; }
         .container { max-width: 420px; width: 100%; background: var(--card-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         h1 { color: var(--accent); font-size: 22px; text-align: center; margin-bottom: 5px; }
-        .subtitle { color: var(--text-muted); font-size: 12px; text-align: center; margin-bottom: 15px; line-height: 1.4; }
-        input { width: 100%; padding: 14px; margin: 10px 0; background: #1e1e24; border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 16px; text-align: center; box-sizing: border-box; }
+        .subtitle { color: var(--text-muted); font-size: 12px; text-align: center; margin-bottom: 15px; }
+        .input-group { background: #1a1a20; border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; background: #1e1e24; border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 15px; text-align: center; box-sizing: border-box; }
         button.calc-btn { background: linear-gradient(135deg, #d4af37, #aa8c2c); color: #000; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; width: 100%; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(212,175,55,0.4); }
-        .card { background: #1a1a20; border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-top: 15px; }
+        .card { background: #1a1a20; border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-top: 15px; display: none; }
         .card-title { color: var(--accent); font-weight: bold; margin-bottom: 8px; font-size: 15px; }
         .tabs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 12px 0; }
         .tab-btn { background: #1e1e24; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 4px; border-radius: 8px; font-size: 11px; cursor: pointer; text-align: center; }
@@ -29,50 +30,61 @@
 <body>
     <div class='container'>
         <h1>🔮 Оракул Звёзд</h1>
-        <div class='subtitle'>Элитный портал судьбы, нумерологических откровений и глубокой трансформации вашей жизни</div>
+        <div class='subtitle'>Элитный портал судьбы и глубокой трансформации</div>
         
-        <div id='input-section'>
-            <p style='color: #ccc; font-size: 13px; margin-bottom: 10px; text-align: center;'>Введите дату рождения для расчета:</p>
-            <input type='text' id='birthdate' placeholder='ДД.ММ.ГГГГ' maxlength='10'>
-            <button class='calc-btn' onclick='calculateMatrix()'>✨ Рассчитать Матрицу Судьбы</button>
+        <div class='input-group' id='input-section'>
+            <div style='color: var(--accent); font-size: 13px; font-weight: bold; margin-bottom: 8px;'>📅 Введите данные рождения:</div>
+            <input type='text' id='birthdate' placeholder='ДД.ММ.ГГГГ (например, 15.05.1995)' maxlength='10'>
+            <input type='text' id='birthtime' placeholder='Время: ЧЧ:ММ (необязательно)' maxlength='5'>
+            <button class='calc-btn' onclick='calculateMatrix()'>✨ Рассчитать Матрицу</button>
         </div>
 
-        <div id='result-section' style='display:none;'>
-            <div class='card'>
-                <div class='card-title'>⚡ Ваша матрица судьбы: <span id='matrix-num'>4</span></div>
-                <div style='font-size: 13px; color: #ccc; line-height: 1.4; margin-bottom: 10px;' id='forecast-text'>
-                    Энергия порядка, структуры и надежного фундамента. День требует дисциплины, завершения начатых дел и наведения безупречного порядка в материальных вопросах.
-                </div>
-                
-                <div class='tabs-grid'>
-                    <div class='tab-btn active' onclick='switchPeriod('month', this)'>🌙 Месяц</div>
-                    <div class='tab-btn' onclick='switchPeriod('year', this)'>🌍 Год</div>
-                    <div class='tab-btn' onclick='switchPeriod('week', this)'>📅 Неделя</div>
-                    <div class='tab-btn' onclick='switchPeriod('couple', this)'>👥 М и Ж</div>
-                </div>
+        <div id='result-section' class='card'>
+            <div class='card-title'>⚡ Энергетика и совет на сегодня:</div>
+            <div style='font-size: 13px; color: #ccc; line-height: 1.4; margin-bottom: 12px;' id='daily-forecast'>
+                Энергия порядка, структуры и надежного фундамента. День требует дисциплины и наведения безупречного порядка.
             </div>
 
-            <div class='card'>
-                <div class='card-title'>🌟 Ключевые сферы жизни</div>
-                <div class='spheres-container'>
-                    <div class='sphere-tab active' onclick='switchSphere(event, 'love')'>❤️ Любовь</div>
-                    <div class='sphere-tab' onclick='switchSphere(event, 'money')'>💰 Финансы</div>
-                    <div class='sphere-tab' onclick='switchSphere(event, 'career')'>📈 Карьера</div>
-                    <div class='sphere-tab' onclick='switchSphere(event, 'health')'>🌿 Здоровье</div>
-                    <div class='sphere-tab' onclick='switchSphere(event, 'karma')'>⚡ Карма</div>
-                </div>
-
-                <div id='love' class='sphere-content active'>Высокая совместимость с партнерами-единомышленниками. Энергия любви открыта на 88%, гармоничные союзы приносят внутренний рост.</div>
-                <div id='money' class='sphere-content'>Денежный код Пифагора указывает на сильный потенциал через творчество и цифровые проекты. Стеклянный потолок снимается при масштабировании.</div>
-                <div id='career' class='sphere-content'>Благоприятны руководящие роли, независимые IT-направления и автономные онлайн-системы.</div>
-                <div id='health' class='sphere-content'>Запас жизненных сил высокий. Рекомендуется следить за балансом отдыха и работы во избежание выгорания.</div>
-                <div id='karma' class='sphere-content'>Кармический хвост проработан через накопленный опыт прошлых циклов. Открыт чистый путь к личной независимости.</div>
+            <div style='font-size: 13px; color: var(--accent); font-weight: bold; margin-top: 10px;'>Переключатели периодов:</div>
+            <div class='tabs-grid'>
+                <div class='tab-btn active' onclick='switchPeriod('month', this)'>🌙 Месяц</div>
+                <div class='tab-btn' onclick='switchPeriod('year', this)'>🌍 Год</div>
+                <div class='tab-btn' onclick='switchPeriod('week', this)'>📅 Неделя</div>
+                <div class='tab-btn' onclick='switchPeriod('couple', this)'>👥 М и Ж</div>
             </div>
+            <div style='font-size: 13px; color: #ccc; line-height: 1.4; margin-top: 8px; min-height: 45px;' id='period-text'>
+                Месяц структурирования. Наведите полный порядок в документах и финансах.
+            </div>
+
+            <hr style='border: 0; border-top: 1px solid var(--border); margin: 15px 0;'>
+
+            <div class='card-title'>🌟 5 ключевых жизненных сфер</div>
+            <div class='spheres-container'>
+                <div class='sphere-tab active' onclick='switchSphere(event, 'love')'>❤️ Любовь</div>
+                <div class='sphere-tab' onclick='switchSphere(event, 'money')'>💰 Финансы</div>
+                <div class='sphere-tab' onclick='switchSphere(event, 'career')'>📈 Карьера</div>
+                <div class='sphere-tab' onclick='switchSphere(event, 'health')'>🌿 Здоровье</div>
+                <div class='sphere-tab' onclick='switchSphere(event, 'karma')'>⚡ Карма</div>
+            </div>
+
+            <div id='love' class='sphere-content active'>Высокая совместимость с партнерами-единомышленниками. Гармоничные союзы приносят внутренний рост.</div>
+            <div id='money' class='sphere-content'>Денежный код Пифагора указывает на сильный потенциал через творчество и проекты. Стеклянный потолок снимается при масштабировании.</div>
+            <div id='career' class='sphere-content'>Благоприятны руководящие роли, независимые IT-направления и автономные онлайн-системы.</div>
+            <div id='health' class='sphere-content'>Запас жизненных сил высокий. Рекомендуется следить за балансом отдыха и работы во избежание выгорания.</div>
+            <div id='karma' class='sphere-content'>Кармический хвост проработан через накопленный опыт прошлых циклов. Открыт чистый путь к независимости.</div>
 
             <button class='calc-btn' onclick='resetData()' style='margin-top: 15px;'>🔄 Ввести другую дату</button>
         </div>
 
         <div class='footer'>Оракул Звёзд © 2026 • Все права защищены</div>
+    </div>
+
+    <div id='ad-lock-modal' style='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;'>
+        <div style='background:#141418;border:1px solid #d4af37;padding:30px;border-radius:16px;max-width:320px;box-shadow:0 10px 30px rgba(0,0,0,0.9);'>
+            <h2 style='color:#d4af37;margin-top:0;font-size:22px;'>🔮 Расширенный доступ</h2>
+            <p style='color:#ccc;font-size:14px;line-height:1.5;'>Чтобы разблокировать глубокий расширенный анализ и все сферы на 24 часа, посмотрите короткое видео.</p>
+            <button onclick='watchAdForAccess()' style='background:linear-gradient(135deg, #d4af37, #aa8c2c);color:#000;border:none;padding:14px 20px;border-radius:8px;font-weight:bold;font-size:15px;cursor:pointer;width:100%;margin-top:15px;box-shadow:0 4px 15px rgba(212,175,55,0.4);'>✨ Разблокировать на 24 часа</button>
+        </div>
     </div>
 
     <script>
@@ -87,27 +99,44 @@
             }
             document.getElementById('input-section').style.display = 'none';
             document.getElementById('result-section').style.display = 'block';
+            checkOracleAccess();
         }
 
         function resetData() {
             document.getElementById('birthdate').value = '';
+            document.getElementById('birthtime').value = '';
             document.getElementById('result-section').style.display = 'none';
             document.getElementById('input-section').style.display = 'block';
+        }
+
+        function checkOracleAccess() {
+            const savedExpiry = localStorage.getItem('oracle_access_until');
+            const now = new Date().getTime();
+                document.getElementById('ad-lock-modal').style.display = 'flex';
+            } else {
+                document.getElementById('ad-lock-modal').style.display = 'none';
+            }
+        }
+
+        function watchAdForAccess() {
+            const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 часа
+            localStorage.setItem('oracle_access_until', expiryTime);
+            document.getElementById('ad-lock-modal').style.display = 'none';
         }
 
         function switchPeriod(period, btn) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            const textEl = document.getElementById('forecast-text');
+            const textEl = document.getElementById('period-text');
             if (period === 'month') {
-                textEl.innerHTML = '<b>Энергетика текущего месяца:</b> Месяц структурирования. Наведите полный порядок в документах, финансах и планах на будущее.';
+                textEl.innerHTML = '<b>Месяц:</b> Месяц структурирования. Наведите полный порядок в документах, финансах и планах на будущее.';
             } else if (period === 'year') {
-                textEl.innerHTML = '<b>Энергетика года:</b> Год кармических сдвигов и выхода на новый финансовый уровень. Удачное время для запуска проектов.';
+                textEl.innerHTML = '<b>Год:</b> Год кармических сдвигов и выхода на новый финансовый уровень. Удачное время для запуска проектов.';
             } else if (period === 'week') {
-                textEl.innerHTML = '<b>Энергетика недели:</b> Неделя общения и поиска союзников. Возможны судьбоносные знакомства в сфере бизнеса.';
+                textEl.innerHTML = '<b>Неделя:</b> Неделя общения и поиска союзников. Возможны судьбоносные знакомства в сфере бизнеса.';
             } else if (period === 'couple') {
-                textEl.innerHTML = '<b>Совместимость М и Ж:</b> Высокий уровень ментальной связи. Успех в совместных делах и преодоление бытовых кризисов.';
+                textEl.innerHTML = '<b>М и Ж:</b> Высокий уровень ментальной связи. Успех в совместных делах и преодоление бытовых кризисов.';
             }
         }
 
