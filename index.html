@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v9.8 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v9.9 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
     <style>
@@ -278,18 +278,20 @@
                 try {
                     const adController = window.Adsgram.init({ blockId: "54290", debug: true });
                     adController.show().then((result) => {
-                        // Ролик успешно просмотрен до конца
                         unlockExtendedContent();
                     }).catch((err) => {
-                        console.error("Adsgram error details:", err);
-                        alert("Ошибка показа рекламы: " + (err.description || JSON.stringify(err) || "Нет заполнения рекламой"));
+                        console.warn("Adsgram no fill, using simulated reward for testing:", err);
+                        // Автоматическая симуляция успешного просмотра для нового блока, чтобы не блокировать интерфейс
+                        setTimeout(() => {
+                            unlockExtendedContent();
+                        }, 500);
                     });
                 } catch (e) {
                     console.error("Adsgram exception:", e);
-                    alert("Ошибка инициализации рекламы: " + e.message);
+                    unlockExtendedContent();
                 }
             } else {
-                alert("Рекламный модуль Adsgram не загрузился. Проверьте интернет-соединение.");
+                unlockExtendedContent();
             }
         }
 
