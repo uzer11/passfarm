@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v8.5 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v9.0 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js" async></script>
     <style>
@@ -41,71 +41,70 @@
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.08); opacity: 1; } }
         h1 { color: var(--gold); font-size: 24px; font-weight: 700; margin-bottom: 4px; }
         .subtitle { color: var(--text-muted); font-size: 12.5px; line-height: 1.4; }
+        
         .screen { display: none; }
         .screen.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
         .form-group { margin-bottom: 14px; }
-        .form-label { color: var(--gold); font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block; text-align: center; }
+        .form-label { color: var(--gold); font-size: 13px; font-weight: 600; margin-bottom: 6px; display: block; text-align: center; }
         .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; margin-bottom: 10px; }
         
-        /* Кастомный селектор в стиле приложения */
-        .custom-select {
-            position: relative;
+        /* Надежные и стабильные выпадающие списки */
+        select {
+            width: 100%;
             background: #0b0f19;
             border: 1px solid var(--border-gold);
             color: var(--gold-light);
             padding: 10px 6px;
             border-radius: 10px;
             font-size: 13px;
-            font-weight: 500;
+            outline: none;
             text-align: center;
-            cursor: pointer;
-            user-select: none;
         }
-        .custom-select::after {
-            content: '▾';
-            margin-left: 4px;
-            color: var(--gold);
-        }
-        .custom-options {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            max-height: 160px;
-            overflow-y: auto;
-            background: #131b2e;
-            border: 1px solid var(--border-gold);
-            border-radius: 8px;
-            z-index: 100;
-            margin-top: 4px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.9);
-        }
-        .custom-select.active .custom-options {
-            display: block;
-        }
-        .custom-option {
-            padding: 9px 4px;
-            text-align: center;
-            color: var(--text-main);
-            font-size: 13px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .custom-option:hover, .custom-option.selected {
-            background: rgba(212,175,55,0.2);
-            color: var(--gold);
-        }
+        select option { background: #0b0f19; color: var(--text-main); }
 
         .matrix-badge { background: rgba(212, 175, 55, 0.12); border: 1px solid var(--border-gold); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
         .matrix-title { color: var(--gold); font-size: 15px; font-weight: 600; margin-bottom: 6px; }
         .matrix-text { font-size: 13.5px; line-height: 1.6; color: var(--text-main); }
         
-        .ads-banner { background: linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(11,15,25,0.8) 100%); border: 1px dashed var(--gold); border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 16px; }
-        .ads-banner h3 { color: var(--gold); font-size: 14px; margin-bottom: 6px; }
-        .ads-banner p { color: var(--text-muted); font-size: 12px; margin-bottom: 10px; }
-        .btn-ads { background: var(--gold); color: #0b0f19; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(212,175,55,0.3); }
-        
+        /* Блок рекламы Adsgram */
+        .ads-banner {
+            background: linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(11,15,25,0.9) 100%);
+            border: 1px dashed var(--gold);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .ads-banner h3 { color: var(--gold); font-size: 15px; margin-bottom: 6px; }
+        .ads-banner p { color: var(--text-muted); font-size: 12.5px; margin-bottom: 12px; line-height: 1.4; }
+        .btn-ads {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+            color: #0b0f19;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.4);
+            width: 100%;
+        }
+        .btn-ads:active { transform: scale(0.98); }
+
+        .locked-content {
+            opacity: 0.3;
+            pointer-events: none;
+            filter: blur(3px);
+            transition: all 0.4s ease;
+        }
+        .unlocked-content {
+            opacity: 1;
+            pointer-events: auto;
+            filter: none;
+        }
+
         .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; }
         .tab-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border-gold); color: var(--text-muted); padding: 10px 2px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; }
         .tab-btn.active { background: rgba(212, 175, 55, 0.22); color: var(--gold); border-color: var(--gold); box-shadow: 0 0 12px rgba(212, 175, 55, 0.3); }
@@ -136,50 +135,80 @@
             <div class="form-group">
                 <label class="form-label">📅 ДАТА ВАШЕГО РОЖДЕНИЯ</label>
                 <div class="select-row">
-                    <div id="sel-day" class="custom-select"></div>
-                    <div id="sel-month" class="custom-select"></div>
-                    <div id="sel-year" class="custom-select"></div>
+                    <select id="sel-day">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
+                    </select>
+                    <select id="sel-month">
+                        <option value="1">Январь</option><option value="2">Февраль</option><option value="3">Март</option><option value="4" selected>Апрель</option><option value="5">Май</option><option value="6">Июнь</option><option value="7">Июль</option><option value="8">Август</option><option value="9">Сентябрь</option><option value="10">Октябрь</option><option value="11">Ноябрь</option><option value="12">Декабрь</option>
+                    </select>
+                    <select id="sel-year">
+                        <option value="1985">1985</option><option value="1988">1988</option><option value="1990">1990</option><option value="1995">1995</option><option value="2000" selected>2000</option><option value="2005">2005</option><option value="2010">2010</option>
+                    </select>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">⏰ ВРЕМЯ РОЖДЕНИЯ</label>
+            <label class="form-label">⏰ ВРЕМЯ РОЖДЕНИЯ</label>
                 <div class="select-row">
-                    <div id="sel-hour" class="custom-select"></div>
-                    <div id="sel-ampm" class="custom-select"></div>
-                    <div id="sel-min" class="custom-select"></div>
+                    <select id="sel-hour">
+                        <option value="unknown">Не знаю</option>
+                        <option value="1">1 ч</option><option value="2">2 ч</option><option value="3">3 ч</option><option value="4">4 ч</option><option value="5">5 ч</option><option value="6">6 ч</option><option value="7">7 ч</option><option value="8">8 ч</option><option value="9">9 ч</option><option value="10">10 ч</option><option value="11">11 ч</option><option value="12" selected>12 ч</option>
+                    </select>
+                    <select id="sel-ampm">
+                        <option value="AM">AM (Утро)</option>
+                        <option value="PM" selected>PM (Вечер)</option>
+                    </select>
+                    <select id="sel-min">
+                        <option value="00" selected>~00 мин</option>
+                        <option value="15">~15 мин</option>
+                        <option value="30">~30 мин</option>
+                        <option value="45">~45 мин</option>
+                    </select>
                 </div>
             </div>
 
             <button class="btn-action" onclick="showResults()" style="margin-top: 10px;">✨ Узнать прогноз судьбы</button>
         </div>
 
-        <!-- ЭКРАН 2: РЕЗУЛЬТАТЫ, РЕКЛАМА И ВКЛАДКИ -->
+        <!-- ЭКРАН 2: ПРОГНОЗ НА СЕГОДНЯ + РЕКЛАМА ДЛЯ РАСШИРЕННОГО ВАРИАНТА -->
         <div id="screen-result" class="screen">
             <div class="matrix-badge">
                 <div class="matrix-title" id="matrix-title">⚡ Ваша матрица судьбы: 4 (Император)</div>
-                <div class="matrix-text" id="matrix-desc">
-                    Энергия структуры, материального порядка, контроля и надежности. Ваша жизненная миссия — выстраивать прочные системы и управлять ресурсами.
+                <div class="matrix-text">
+                    Энергия структуры, материального порядка и надежности. Ваша миссия — выстраивать прочные системы и управлять ресурсами.
                 </div>
             </div>
 
-            <!-- РЕКЛАМНЫЙ БЛОК ADSGRAM (МОНЕТИЗАЦИЯ) -->
-            <div class="ads-banner" id="ads-container">
-                <h3>💎 Премиум-доступ к глубокому разбору</h3>
-                <p>Посмотрите короткую спонсорскую рекламу, чтобы разблокировать полный расширенный финансовый код судьбы.</p>
+            <!-- Базовый прогноз на сегодня (доступен сразу) -->
+            <div class="content-card">
+                <div class="section-title">🌟 Энергетика и совет на сегодня:</div>
+                <div class="intro-p">Сегодняшний день требует от вас предельной собранности, дисциплины и холодного рассудка. Энергия числа 4 не прощает хаоса и импульсивных трат.</div>
+                <div class="info-block">
+                    <div class="info-header">💼 Карьера и финансы:</div>
+                    <div class="info-desc">Идеальный момент для аудита бюджета, работы с документами и закрытия задолженностей.</div>
+                </div>
+            </div>
+
+            <!-- РЕКЛАМНЫЙ БЛОК ADSGRAM ДЛЯ РАЗБЛОКИРОВКИ РАСШИРЕННОГО ВАРИАНТА -->
+            <div class="ads-banner" id="ads-banner-box">
+                <h3>💎 Премиум-разбор (Год, Месяц, М & Ж)</h3>
+                <p>Получите полный расширенный нумерологический код судьбы и финансовый прогноз на год.</p>
                 <button class="btn-ads" onclick="showAdsgramReward()">▶ Смотреть рекламу и разблокировать</button>
             </div>
 
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('day', this)">🌍 День</button>
-                <button class="tab-btn" onclick="switchTab('year', this)">🚀 Год</button>
-                <button class="tab-btn" onclick="switchTab('month', this)">🌙 Месяц</button>
-                <button class="tab-btn" onclick="switchTab('love', this)">👥 М & Ж</button>
+            <!-- РАСШИРЕННЫЙ ВАРИАНТ (ЗАКРЫТ ДО ПРОСМОТРА РЕКЛАМЫ) -->
+            <div id="extended-section" class="locked-content">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('day', this)">🌍 День</button>
+                    <button class="tab-btn" onclick="switchTab('year', this)">🚀 Год</button>
+                    <button class="tab-btn" onclick="switchTab('month', this)">🌙 Месяц</button>
+                    <button class="tab-btn" onclick="switchTab('love', this)">👥 М & Ж</button>
+                </div>
+
+                <div id="tab-content" class="content-card"></div>
             </div>
 
-            <div id="tab-content" class="content-card"></div>
-
-            <button class="btn-outline" onclick="showForm()" style="margin-top: 10px;">🔄 Ввести другую дату</button>
+            <button class="btn-outline" onclick="showForm()" style="margin-top: 16px;">🔄 Ввести другую дату</button>
         </div>
     </div>
 
@@ -227,68 +256,12 @@
             }
         };
 
-        // Инициализация кастомных селекторов
-        function createCustomSelect(id, items, defaultVal) {
-            const el = document.getElementById(id);
-            el.innerHTML = `<span class="sel-text">${defaultVal}</span><div class="custom-options"></div>`;
-            const optContainer = el.querySelector('.custom-options');
-            
-            items.forEach(item => {
-                const opt = document.createElement('div');
-                opt.className = 'custom-option' + (item == defaultVal ? ' selected' : '');
-                opt.innerText = item;
-                opt.onclick = (e) => {
-                    e.stopPropagation();
-                    el.querySelector('.sel-text').innerText = item;
-                    el.dataset.value = item;
-                    el.classList.remove('active');
-                    optContainer.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
-                    opt.classList.add('selected');
-                };
-                optContainer.appendChild(opt);
-            });
-            el.dataset.value = defaultVal;
-
-            el.onclick = (e) => {
-                e.stopPropagation();
-                document.querySelectorAll('.custom-select').forEach(s => {
-                    if (s !== el) s.classList.remove('active');
-                });
-                el.classList.toggle('active');
-            };
-        }
-
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.custom-select').forEach(s => s.classList.remove('active'));
-        });
-
-        window.onload = function() {
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.ready();
-                window.Telegram.WebApp.expand();
-            }
-
-            // Заполняем селекторы
-            createCustomSelect('sel-day', Array.from({length: 31}, (_, i) => i + 1), 4);
-            createCustomSelect('sel-month', ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'], 'Апрель');
-            createCustomSelect('sel-year', [1985, 1988, 1990, 1995, 2000, 2005, 2010], 2000);
-            createCustomSelect('sel-hour', ['Не знаю', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 12);
-            createCustomSelect('sel-ampm', ['AM', 'PM'], 'PM');
-            createCustomSelect('sel-min', ['~00 мин', '~15 мин', '~30 мин', '~45 мин'], '~00 мин');
-        };
-
         function showResults() {
-            const day = document.getElementById('sel-day').dataset.value;
-            const month = document.getElementById('sel-month').dataset.value;
-            const year = document.getElementById('sel-year').dataset.value;
+            const day = document.getElementById('sel-day').value;
+            const month = document.getElementById('sel-month').value;
+            const year = document.getElementById('sel-year').value;
             
-            let sum = parseInt(day) || 4;
-            let mNum = 4;
-            const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-            const mIdx = months.indexOf(month);
-            if (mIdx !== -1) mNum = mIdx + 1;
-
-            sum += mNum + parseInt(year);
+            let sum = parseInt(day) + parseInt(month) + parseInt(year);
             while (sum > 22) {
                 sum = sum.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
             }
@@ -317,16 +290,23 @@
             if (window.Adsgram) {
                 const adController = window.Adsgram.init({ blockId: "1234" });
                 adController.show().then((result) => {
-                    document.getElementById('ads-container').innerHTML = '<h3 style="color: #4ade80;">✅ Премиум-доступ успешно разблокирован!</h3><p style="color: #cbd5e1;">Вам доступны все тайные нумерологические коды судьбы.</p>';
-                    if (window.Telegram && window.Telegram.WebApp) {
-                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-                    }
+                    unlockExtendedContent();
                 }).catch((err) => {
                     alert("Реклама не была досмотрена. Попробуйте еще раз.");
                 });
             } else {
-                document.getElementById('ads-container').innerHTML = '<h3 style="color: #4ade80;">✅ Премиум-доступ разблокирован!</h3>';
-                alert("Реклама просмотрена! Приятного чтения.");
+                // Тестовый режим в браузере или если SDK еще грузится
+                unlockExtendedContent();
+            }
+        }
+
+        function unlockExtendedContent() {
+            document.getElementById('ads-banner-box').innerHTML = '<h3 style="color: #4ade80;">✅ Премиум-разбор успешно разблокирован!</h3><p style="color: #cbd5e1;">Вам доступны все вкладки Год, Месяц и М & Ж.</p>';
+            const ext = document.getElementById('extended-section');
+            ext.classList.remove('locked-content');
+            ext.classList.add('unlocked-content');
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
             }
         }
 
@@ -349,6 +329,13 @@
 
             container.innerHTML = html;
         }
+
+        window.onload = function() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+        };
     </script>
 </body>
 </html>
