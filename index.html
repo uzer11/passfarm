@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v10.0 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v10.1 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
     <style>
@@ -274,22 +274,23 @@
         }
 
         function showAdsgramReward() {
-            if (window.Adsgram) {
+            if (window.Adsgram && typeof window.Adsgram.init === 'function') {
                 try {
                     const adController = window.Adsgram.init({ blockId: "54290", debug: true });
                     adController.show().then((result) => {
-                        // Реклама успешно просмотрена
                         unlockExtendedContent();
                     }).catch((err) => {
-                        console.error("Adsgram error:", err);
-                        alert("Adsgram ошибка показа: " + JSON.stringify(err));
+                        console.warn("Adsgram no-fill or error, falling back to simulated completion:", err);
+                        // Защитный механизм для новых блоков: если реклама отсутствует, разблокируем контент через короткую задержку
+                        setTimeout(unlockExtendedContent, 600);
                     });
                 } catch (e) {
                     console.error("Adsgram exception:", e);
-                    alert("Ошибка: " + e.message);
+                    setTimeout(unlockExtendedContent, 600);
                 }
             } else {
-                alert("Adsgram SDK не подключен.");
+                // Если SDK по какой-то причине не загрузился в Telegram WebView, разблокируем контент
+                setTimeout(unlockExtendedContent, 600);
             }
         }
 
