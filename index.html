@@ -252,7 +252,6 @@
         function resetDate() {
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-                // Мгновенно закрываем WebApp и возвращаем пользователя в чат с ботом
                 window.Telegram.WebApp.close();
             } else {
                 alert("Для сброса даты перейдите в чат с ботом!");
