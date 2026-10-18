@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v9.4 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v9.5 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js" async></script>
     <style>
@@ -187,7 +187,7 @@
                 </div>
             </div>
 
-            <!-- 2. РЕКЛАМНЫЙ БЛОК ADSGRAM С ВАШИМ ID 54290 -->
+            <!-- 2. РЕКЛАМНЫЙ БЛОК ADSGRAM (ID 54290) -->
             <div class="ads-banner" id="ads-banner-box">
                 <h3>💎 Премиум-разбор (Год, Месяц, М & Ж)</h3>
                 <p>Получите полный расширенный нумерологический код судьбы и финансовый прогноз.</p>
@@ -212,6 +212,8 @@
     <div class="footer">Оракул Звёзд © 2026 • Все права защищены</div>
 
     <script>
+        let adController = null;
+
         const data = {
             year: {
                 title: "🚀 Развернутый макро-цикл текущего года:",
@@ -274,18 +276,20 @@
         }
 
         function showAdsgramReward() {
-            if (window.Adsgram) {
-                // Инициализация с вашим реальным ID блока 54290
-                const adController = window.Adsgram.init({ blockId: "54290", debug: true });
+            if (adController) {
                 adController.show().then((result) => {
+                    // Пользователь досмотрел рекламу до конца
                     unlockExtendedContent();
                 }).catch((err) => {
                     console.error("Adsgram error:", err);
-                    alert("Реклама не была досмотрена или произошла ошибка загрузки. Попробуйте еще раз.");
+                    alert("Реклама не была досмотрена до конца или произошла ошибка. Попробуйте еще раз.");
                 });
             } else {
-                console.warn("Adsgram SDK not loaded, executing fallback unlock.");
-                unlockExtendedContent();
+                // Если контроллер еще не инициализирован
+                alert("Реклама загружается, попробуйте еще через секунду.");
+                if (window.Adsgram) {
+                    adController = window.Adsgram.init({ blockId: "54290", debug: true });
+                }
             }
         }
 
@@ -323,6 +327,11 @@
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
+            }
+
+            // Предварительная инициализация Adsgram SDK с вашим реальным ID 54290 при загрузке
+            if (window.Adsgram) {
+                adController = window.Adsgram.init({ blockId: "54290", debug: true });
             }
         };
     </script>
