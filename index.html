@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v8.0 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v8.1 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     <style>
         :root {
@@ -252,8 +252,11 @@
         function resetDate() {
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+                // Мгновенно закрываем WebApp и возвращаем пользователя в чат с ботом
+                window.Telegram.WebApp.close();
+            } else {
+                alert("Для сброса даты перейдите в чат с ботом!");
             }
-            alert("Для сброса даты перейдите в чат с ботом!");
         }
 
         window.onload = function() {
