@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v9.1 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v9.4 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js" async></script>
     <style>
@@ -67,7 +67,6 @@
         .matrix-title { color: var(--gold); font-size: 15px; font-weight: 600; margin-bottom: 6px; }
         .matrix-text { font-size: 13.5px; line-height: 1.6; color: var(--text-main); }
         
-        /* Блок рекламы Adsgram */
         .ads-banner {
             background: linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(11,15,25,0.9) 100%);
             border: 1px dashed var(--gold);
@@ -169,7 +168,7 @@
             <button class="btn-action" onclick="showResults()" style="margin-top: 10px;">✨ Узнать прогноз судьбы</button>
         </div>
 
-        <!-- ЭКРАН 2: РЕЗУЛЬТАТЫ (ПРОГНОЗ НА СЕГОДНЯ + РЕКЛАМА + РАСШИРЕННЫЙ БЛОК) -->
+        <!-- ЭКРАН 2: РЕЗУЛЬТАТЫ -->
         <div id="screen-result" class="screen">
             <div class="matrix-badge">
                 <div class="matrix-title" id="matrix-title">⚡ Ваша матрица судьбы: 4 (Император)</div>
@@ -178,7 +177,7 @@
                 </div>
             </div>
 
-            <!-- 1. ОТКРЫТЫЙ ПРОГНОЗ НА СЕГОДНЯ -->
+            <!-- 1. ПРОГНОЗ НА СЕГОДНЯ -->
             <div class="content-card">
                 <div class="section-title">🌟 Энергетика и совет на сегодня:</div>
                 <div class="intro-p">Сегодняшний день требует от вас предельной собранности, дисциплины и холодного рассудка. Энергия числа 4 не прощает хаоса и импульсивных трат.</div>
@@ -188,14 +187,14 @@
                 </div>
             </div>
 
-            <!-- 2. РЕКЛАМНЫЙ БЛОК ADSGRAM -->
+            <!-- 2. РЕКЛАМНЫЙ БЛОК ADSGRAM С ВАШИМ ID 54290 -->
             <div class="ads-banner" id="ads-banner-box">
                 <h3>💎 Премиум-разбор (Год, Месяц, М & Ж)</h3>
                 <p>Получите полный расширенный нумерологический код судьбы и финансовый прогноз.</p>
                 <button class="btn-ads" onclick="showAdsgramReward()">▶ Смотреть рекламу и разблокировать</button>
             </div>
 
-            <!-- 3. ЗАКРЫТЫЙ (РАСШИРЕННЫЙ) ВАРИАНТ -->
+            <!-- 3. РАСШИРЕННЫЙ ВАРИАНТ (ЗАКРЫТ) -->
             <div id="extended-section" class="locked-content">
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('year', this)">🚀 Год</button>
@@ -276,13 +275,16 @@
 
         function showAdsgramReward() {
             if (window.Adsgram) {
-                const adController = window.Adsgram.init({ blockId: "1234" });
+                // Инициализация с вашим реальным ID блока 54290
+                const adController = window.Adsgram.init({ blockId: "54290", debug: true });
                 adController.show().then((result) => {
                     unlockExtendedContent();
                 }).catch((err) => {
-                    alert("Реклама не была досмотрена. Попробуйте еще раз.");
+                    console.error("Adsgram error:", err);
+                    alert("Реклама не была досмотрена или произошла ошибка загрузки. Попробуйте еще раз.");
                 });
             } else {
+                console.warn("Adsgram SDK not loaded, executing fallback unlock.");
                 unlockExtendedContent();
             }
         }
