@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v9.7 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v9.8 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
     <style>
@@ -278,23 +278,18 @@
                 try {
                     const adController = window.Adsgram.init({ blockId: "54290", debug: true });
                     adController.show().then((result) => {
+                        // Ролик успешно просмотрен до конца
                         unlockExtendedContent();
                     }).catch((err) => {
-                        console.warn("Adsgram error or no ad fill:", err);
-                        // Если реклама еще не заполнена в новом блоке, даем пользователю доступ с уведомлением
-                        if (confirm("В рекламном блоке пока нет доступных роликов (новый блок). Разблокировать премиум-разбор?")) {
-                            unlockExtendedContent();
-                        }
+                        console.error("Adsgram error details:", err);
+                        alert("Ошибка показа рекламы: " + (err.description || JSON.stringify(err) || "Нет заполнения рекламой"));
                     });
                 } catch (e) {
-                    console.error("Adsgram init exception:", e);
-                    unlockExtendedContent();
+                    console.error("Adsgram exception:", e);
+                    alert("Ошибка инициализации рекламы: " + e.message);
                 }
             } else {
-                // Если SDK по какой-то причине заблокирован (например, блокировщиком рекламы)
-                if (confirm("Рекламный модуль недоступен. Разблокировать премиум-разбор?")) {
-                    unlockExtendedContent();
-                }
+                alert("Рекламный модуль Adsgram не загрузился. Проверьте интернет-соединение.");
             }
         }
 
