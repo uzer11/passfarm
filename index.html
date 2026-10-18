@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v8.4 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v8.5 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js" async></script>
     <style>
@@ -48,9 +48,9 @@
         .form-label { color: var(--gold); font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block; text-align: center; }
         .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; margin-bottom: 10px; }
         
-        /* Стилизованные компактные селекторы в тон дизайна */
-        select {
-            width: 100%;
+        /* Кастомный селектор в стиле приложения */
+        .custom-select {
+            position: relative;
             background: #0b0f19;
             border: 1px solid var(--border-gold);
             color: var(--gold-light);
@@ -58,16 +58,44 @@
             border-radius: 10px;
             font-size: 13px;
             font-weight: 500;
-            outline: none;
             text-align: center;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.367%22%20height%3D%22292.47%22%3E%3Cpath%20fill%3D%22%23d4af37%22%20d%3D%22M287.283%20191.965c-3.59%203.6-7.925%205.4-13.003%205.4H18.084c-5.076%200-9.414-1.8-13.018-5.4-3.604-3.6-5.405-7.942-5.405-13.017%200-5.076%201.8-9.413%205.405-13.015L130.643%2039.29c3.6-3.61%207.94-5.412%2013.018-5.412%205.078%200%209.416%201.802%2013.016%205.412l125.608%20126.643c3.603%203.602%205.405%207.938%205.405%2013.015%200%205.075-1.802%209.414-5.405%2013.017z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 6px center;
-            background-size: 9px;
-            padding-right: 18px;
+            cursor: pointer;
+            user-select: none;
         }
-        select option { background: #0b0f19; color: var(--text-main); }
+        .custom-select::after {
+            content: '▾';
+            margin-left: 4px;
+            color: var(--gold);
+        }
+        .custom-options {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 160px;
+            overflow-y: auto;
+            background: #131b2e;
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            z-index: 100;
+            margin-top: 4px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.9);
+        }
+        .custom-select.active .custom-options {
+            display: block;
+        }
+        .custom-option {
+            padding: 9px 4px;
+            text-align: center;
+            color: var(--text-main);
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .custom-option:hover, .custom-option.selected {
+            background: rgba(212,175,55,0.2);
+            color: var(--gold);
+        }
 
         .matrix-badge { background: rgba(212, 175, 55, 0.12); border: 1px solid var(--border-gold); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
         .matrix-title { color: var(--gold); font-size: 15px; font-weight: 600; margin-bottom: 6px; }
@@ -108,35 +136,18 @@
             <div class="form-group">
                 <label class="form-label">📅 ДАТА ВАШЕГО РОЖДЕНИЯ</label>
                 <div class="select-row">
-                    <select id="sel-day">
-                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
-                    </select>
-                    <select id="sel-month">
-                        <option value="1">Январь</option><option value="2">Февраль</option><option value="3">Март</option><option value="4" selected>Апрель</option><option value="5">Май</option><option value="6">Июнь</option><option value="7">Июль</option><option value="8">Август</option><option value="9">Сентябрь</option><option value="10">Октябрь</option><option value="11">Ноябрь</option><option value="12">Декабрь</option>
-                    </select>
-                    <select id="sel-year">
-                        <option value="1985">1985</option><option value="1988">1988</option><option value="1990">1990</option><option value="1995">1995</option><option value="2000" selected>2000</option><option value="2005">2005</option><option value="2010">2010</option>
-                    </select>
+                    <div id="sel-day" class="custom-select"></div>
+                    <div id="sel-month" class="custom-select"></div>
+                    <div id="sel-year" class="custom-select"></div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">⏰ ВРЕМЯ РОЖДЕНИЯ</label>
                 <div class="select-row">
-                    <select id="sel-hour">
-                        <option value="unknown">Не знаю</option>
-                        <option value="1">1 ч</option><option value="2">2 ч</option><option value="3">3 ч</option><option value="4">4 ч</option><option value="5">5 ч</option><option value="6">6 ч</option><option value="7">7 ч</option><option value="8">8 ч</option><option value="9">9 ч</option><option value="10">10 ч</option><option value="11">11 ч</option><option value="12" selected>12 ч</option>
-                    </select>
-                    <select id="sel-ampm">
-                        <option value="AM">AM (Утро)</option>
-                        <option value="PM" selected>PM (Вечер)</option>
-                    </select>
-                    <select id="sel-min">
-                        <option value="00" selected>~00 мин</option>
-                        <option value="15">~15 мин</option>
-                        <option value="30">~30 мин</option>
-                        <option value="45">~45 мин</option>
-                    </select>
+                    <div id="sel-hour" class="custom-select"></div>
+                    <div id="sel-ampm" class="custom-select"></div>
+                    <div id="sel-min" class="custom-select"></div>
                 </div>
             </div>
 
@@ -216,12 +227,68 @@
             }
         };
 
-        function showResults() {
-            const day = document.getElementById('sel-day').value;
-            const month = document.getElementById('sel-month').value;
-            const year = document.getElementById('sel-year').value;
+        // Инициализация кастомных селекторов
+        function createCustomSelect(id, items, defaultVal) {
+            const el = document.getElementById(id);
+            el.innerHTML = `<span class="sel-text">${defaultVal}</span><div class="custom-options"></div>`;
+            const optContainer = el.querySelector('.custom-options');
             
-            let sum = parseInt(day) + parseInt(month) + parseInt(year);
+            items.forEach(item => {
+                const opt = document.createElement('div');
+                opt.className = 'custom-option' + (item == defaultVal ? ' selected' : '');
+                opt.innerText = item;
+                opt.onclick = (e) => {
+                    e.stopPropagation();
+                    el.querySelector('.sel-text').innerText = item;
+                    el.dataset.value = item;
+                    el.classList.remove('active');
+                    optContainer.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                };
+                optContainer.appendChild(opt);
+            });
+            el.dataset.value = defaultVal;
+
+            el.onclick = (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.custom-select').forEach(s => {
+                    if (s !== el) s.classList.remove('active');
+                });
+                el.classList.toggle('active');
+            };
+        }
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.custom-select').forEach(s => s.classList.remove('active'));
+        });
+
+        window.onload = function() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+
+            // Заполняем селекторы
+            createCustomSelect('sel-day', Array.from({length: 31}, (_, i) => i + 1), 4);
+            createCustomSelect('sel-month', ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'], 'Апрель');
+            createCustomSelect('sel-year', [1985, 1988, 1990, 1995, 2000, 2005, 2010], 2000);
+            createCustomSelect('sel-hour', ['Не знаю', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 12);
+            createCustomSelect('sel-ampm', ['AM', 'PM'], 'PM');
+            createCustomSelect('sel-min', ['~00 мин', '~15 мин', '~30 мин', '~45 мин'], '~00 мин');
+        };
+
+        function showResults() {
+            const day = document.getElementById('sel-day').dataset.value;
+            const month = document.getElementById('sel-month').dataset.value;
+            const year = document.getElementById('sel-year').dataset.value;
+            
+            let sum = parseInt(day) || 4;
+            let mNum = 4;
+            const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+            const mIdx = months.indexOf(month);
+            if (mIdx !== -1) mNum = mIdx + 1;
+
+            sum += mNum + parseInt(year);
             while (sum > 22) {
                 sum = sum.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
             }
@@ -252,14 +319,14 @@
                 adController.show().then((result) => {
                     document.getElementById('ads-container').innerHTML = '<h3 style="color: #4ade80;">✅ Премиум-доступ успешно разблокирован!</h3><p style="color: #cbd5e1;">Вам доступны все тайные нумерологические коды судьбы.</p>';
                     if (window.Telegram && window.Telegram.WebApp) {
-                        window.Telegram.WebApp.notificationOccurred('success');
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                     }
                 }).catch((err) => {
                     alert("Реклама не была досмотрена. Попробуйте еще раз.");
                 });
             } else {
                 document.getElementById('ads-container').innerHTML = '<h3 style="color: #4ade80;">✅ Премиум-доступ разблокирован!</h3>';
-                alert("Реклама промоделирована! Приятного чтения.");
+                alert("Реклама просмотрена! Приятного чтения.");
             }
         }
 
@@ -282,13 +349,6 @@
 
             container.innerHTML = html;
         }
-
-        window.onload = function() {
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.ready();
-                window.Telegram.WebApp.expand();
-            }
-        };
     </script>
 </body>
 </html>
