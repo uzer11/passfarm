@@ -2,403 +2,269 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд — Портал Судьбы</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оракул Звёзд v7.7 — Элитный портал судьбы</title>
+    <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     <style>
-        :root { --bg-color: #0b0f19; --card-bg: rgba(18, 24, 38, 0.85); --border-color: rgba(212, 175, 55, 0.3); --accent-gold: #d4af37; --accent-glow: rgba(212, 175, 55, 0.15); --text-main: #e2e8f0; --text-muted: #94a3b8; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); background-image: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(30, 58, 138, 0.15) 0%, transparent 40%); color: var(--text-main); min-height: 100vh; padding: 16px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
-        header { text-align: center; padding: 10px 0; }
-        .logo-icon { font-size: 36px; margin-bottom: 4px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
-        h1 { font-size: 24px; color: var(--accent-gold); letter-spacing: 1px; margin-bottom: 4px; }
-        p.subtitle { font-size: 12px; color: var(--text-muted); line-height: 1.4; padding: 0 10px; }
-        .card { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
-        .input-group { display: flex; flex-direction: column; gap: 10px; }
-        label { font-size: 12px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
-        .date-selectors { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; }
-        .time-selectors { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-        .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
-        .custom-select-trigger { background: rgba(11, 15, 25, 0.9); border: 1px solid var(--border-color); color: var(--text-main); padding: 10px 8px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .custom-select-trigger::after { content: '▼'; font-size: 8px; color: var(--accent-gold); margin-left: 4px; }
-        .custom-options { position: absolute; top: 100%; left: 0; right: 0; background: #0b0f19; border: 1px solid var(--border-color); border-radius: 8px; margin-top: 4px; max-height: 180px; overflow-y: auto; display: none; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.8); }
-        .custom-select-wrapper.open .custom-options { display: block; }
-        .custom-option { padding: 10px; font-size: 12px; color: var(--text-main); cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .custom-option:hover { background: var(--accent-glow); color: var(--accent-gold); }
-        .btn { background: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #aa771c 100%); color: #0b0f19; border: none; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); width: 100%; }
-        .btn-secondary { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); box-shadow: none; }
-        .hidden { display: none !important; }
-        .result-box { margin-top: 10px; display: flex; flex-direction: column; gap: 14px; }
-        .result-title { font-size: 16px; color: var(--accent-gold); font-weight: bold; text-align: center; margin-bottom: 4px; }
-        .text-block { background: rgba(11, 15, 25, 0.7); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 10px; padding: 14px; }
-        .text-block strong { color: var(--accent-gold); font-size: 13px; display: block; margin-bottom: 8px; }
-        .text-block p { font-size: 12px; line-height: 1.6; color: var(--text-main); margin-bottom: 8px; }
-        .aspect-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .aspect-btn { background: rgba(11, 15, 25, 0.8); border: 1px solid var(--border-color); color: var(--text-muted); padding: 9px 4px; font-size: 11px; font-weight: 600; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.3s; }
-        .aspect-btn.active { background: var(--accent-glow); border-color: var(--accent-gold); color: var(--accent-gold); }
-        .teaser-container { position: relative; }
-        .blurred { filter: blur(6px); user-select: none; pointer-events: none; opacity: 0.35; }
-        .paywall-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(6px); border-radius: 12px; padding: 16px; text-align: center; z-index: 10; }
-        .paywall-overlay p { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
-        .btn-ad { background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%); color: white; }
-        footer { text-align: center; font-size: 10px; color: var(--text-muted); padding: 8px 0; margin-top: auto; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131b2e;
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-gold: rgba(212, 175, 55, 0.35);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            margin-bottom: 20px;
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .crystal-icon {
+            font-size: 44px;
+            margin-bottom: 8px;
+            animation: pulse 3s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+        h1 {
+            color: var(--gold);
+            font-size: 25px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .matrix-badge {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--border-gold);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .matrix-title {
+            color: var(--gold);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .matrix-text {
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .tab-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-gold);
+            color: var(--text-muted);
+            padding: 10px 4px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .tab-btn.active {
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold);
+            border-color: var(--gold);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+        }
+        .content-card {
+            background: rgba(0,0,0,0.25);
+            border-radius: 14px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .section-title {
+            color: var(--gold-light);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed var(--border-gold);
+            padding-bottom: 6px;
+        }
+        .intro-p {
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: #cbd5e1;
+            margin-bottom: 14px;
+        }
+        .info-block {
+            margin-bottom: 14px;
+            background: rgba(255,255,255,0.02);
+            padding: 10px 12px;
+            border-radius: 10px;
+            border-left: 3px solid var(--gold);
+        }
+        .info-header {
+            color: var(--gold);
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .info-desc {
+            font-size: 13px;
+            line-height: 1.55;
+            color: var(--text-main);
+        }
+        .btn-action {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .btn-action:active { background: rgba(212, 175, 55, 0.2); }
+        .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.7; }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo-icon">🔮</div>
+        <div class="header">
+            <div class="crystal-icon">🔮</div>
             <h1>Оракул Звёзд</h1>
             <p class="subtitle">Элитный портал судьбы, нумерологических откровений и глубокой трансформации вашей жизни</p>
-        </header>
+        </div>
 
-        <div id="input-card" class="card">
-            <div class="input-group">
-                <label>Дата вашего рождения:</label>
-                <div class="date-selectors">
-                    <div class="custom-select-wrapper" id="select-day">
-                        <div class="custom-select-trigger" id="trigger-day">1</div>
-                        <div class="custom-options" id="options-day"></div>
-                    </div>
-                    <div class="custom-select-wrapper" id="select-month">
-                        <div class="custom-select-trigger" id="trigger-month">Январь</div>
-                        <div class="custom-options" id="options-month">
-                            <div class="custom-option" data-value="1" onclick="selectOption('month', 1, 'Январь')">Январь</div>
-                            <div class="custom-option" data-value="2" onclick="selectOption('month', 2, 'Февраль')">Февраль</div>
-                            <div class="custom-option" data-value="3" onclick="selectOption('month', 3, 'Март')">Март</div>
-                            <div class="custom-option" data-value="4" onclick="selectOption('month', 4, 'Апрель')">Апрель</div>
-                            <div class="custom-option" data-value="5" onclick="selectOption('month', 5, 'Май')">Май</div>
-                            <div class="custom-option" data-value="6" onclick="selectOption('month', 6, 'Июнь')">Июнь</div>
-                            <div class="custom-option" data-value="7" onclick="selectOption('month', 7, 'Июль')">Июль</div>
-                            <div class="custom-option" data-value="8" onclick="selectOption('month', 8, 'Август')">Август</div>
-                            <div class="custom-option" data-value="9" onclick="selectOption('month', 9, 'Сентябрь')">Сентябрь</div>
-                            <div class="custom-option" data-value="10" onclick="selectOption('month', 10, 'Октябрь')">Октябрь</div>
-                            <div class="custom-option" data-value="11" onclick="selectOption('month', 11, 'Ноябрь')">Ноябрь</div>
-                            <div class="custom-option" data-value="12" onclick="selectOption('month', 12, 'Декабрь')">Декабрь</div>
-                        </div>
-                    </div>
-                    <div class="custom-select-wrapper" id="select-year">
-                        <div class="custom-select-trigger" id="trigger-year">2000</div>
-                        <div class="custom-options" id="options-year"></div>
-                    </div>
-                </div>
-
-                <label style="margin-top: 2px;">Время рождения (12ч формат)</label>
-                <div class="time-selectors">
-                    <div class="custom-select-wrapper" id="select-hour">
-                        <div class="custom-select-trigger" id="trigger-hour">Не знаю</div>
-                        <div class="custom-options" id="options-hour">
-                            <div class="custom-option" data-value="-1" onclick="selectOption('hour', -1, 'Не знаю')">Не знаю</div>
-                            <div class="custom-option" data-value="1" onclick="selectOption('hour', 1, '1 час')">1 час</div>
-                            <div class="custom-option" data-value="2" onclick="selectOption('hour', 2, '2 часа')">2 часа</div>
-                            <div class="custom-option" data-value="3" onclick="selectOption('hour', 3, '3 часа')">3 часа</div>
-                            <div class="custom-option" data-value="4" onclick="selectOption('hour', 4, '4 часа')">4 часа</div>
-                            <div class="custom-option" data-value="5" onclick="selectOption('hour', 5, '5 часов')">5 часов</div>
-                            <div class="custom-option" data-value="6" onclick="selectOption('hour', 6, '6 часов')">6 часов</div>
-                            <div class="custom-option" data-value="7" onclick="selectOption('hour', 7, '7 часов')">7 часов</div>
-                            <div class="custom-option" data-value="8" onclick="selectOption('hour', 8, '8 часов')">8 часов</div>
-                            <div class="custom-option" data-value="9" onclick="selectOption('hour', 9, '9 часов')">9 часов</div>
-                            <div class="custom-option" data-value="10" onclick="selectOption('hour', 10, '10 часов')">10 часов</div>
-                            <div class="custom-option" data-value="11" onclick="selectOption('hour', 11, '11 часов')">11 часов</div>
-                            <div class="custom-option" data-value="12" onclick="selectOption('hour', 12, '12 часов')">12 часов</div>
-                        </div>
-                    </div>
-                    <div class="custom-select-wrapper" id="select-ampm">
-                        <div class="custom-select-trigger" id="trigger-ampm">AM/PM</div>
-                        <div class="custom-options" id="options-ampm">
-                            <div class="custom-option" data-value="AM" onclick="selectOption('ampm', 'AM', 'AM (Утро)')">AM (Утро)</div>
-                            <div class="custom-option" data-value="PM" onclick="selectOption('ampm', 'PM', 'PM (Вечер)')">PM (Вечер)</div>
-                        </div>
-                    </div>
-                    <div class="custom-select-wrapper" id="select-minute">
-                        <div class="custom-select-trigger" id="trigger-minute">~00 мин</div>
-                        <div class="custom-options" id="options-minute">
-                            <div class="custom-option" data-value="0" onclick="selectOption('minute', 0, '~00 мин')">~00 мин</div>
-                            <div class="custom-option" data-value="15" onclick="selectOption('minute', 15, '~15 мин')">~15 мин</div>
-                            <div class="custom-option" data-value="30" onclick="selectOption('minute', 30, '~30 мин')">~30 мин</div>
-                            <div class="custom-option" data-value="45" onclick="selectOption('minute', 45, '~45 мин')">~45 мин</div>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn" onclick="calculateForecast()">Узнать прогноз дня</button>
+        <div class="matrix-badge">
+            <div class="matrix-title">⚡ Ваша матрица судьбы: 4 (Император / Порядок)</div>
+            <div class="matrix-text">
+                <b>Глубинный архетип:</b> Энергия структуры, материального господства, надежности и стабильного фундамента. Ваша высшая кармическая задача — научиться управлять масштабными ресурсами без проявления жесткости и авторитаризма, создавая прочные финансовые и жизненные системы.
             </div>
         </div>
 
-        <div id="result-card" class="card hidden">
-            <div class="result-box">
-                <div class="result-title" id="res-matrix-title">⚡ Ваша матрица судьбы: 6</div>
-                <div class="text-block">
-                    <strong>🌟 Энергетика и совет на сегодня:</strong>
-                    <p id="res-energy">Загрузка энергетики дня...</p>
-                </div>
-                <div class="teaser-container">
-                    <div id="deep-forecast-block">
-                        <div class="aspect-buttons blurred" style="margin-bottom: 10px;">
-                            <button class="aspect-btn active" onclick="switchAspect('year', event)">🌍 Год</button>
-                            <button class="aspect-btn" onclick="switchAspect('month', event)">🌙 Месяц</button>
-                            <button class="aspect-btn" onclick="switchAspect('week', event)">📅 Неделя</button>
-                            <button class="aspect-btn" onclick="switchAspect('gender', event)">👥 М и Ж</button>
-                        </div>
-                        <div class="text-block blurred" id="aspect-box-container">
-                            <strong id="aspect-title">🚀 Макро-цикл текущего года:</strong>
-                            <p id="aspect-text">Загрузка прогноза...</p>
-                        </div>
-                        <div id="paywall-overlay" class="paywall-overlay">
-                            <p>🔒 Полный глобальный разбор (Детальный анализ по Году, Месяцу, Неделе и разделу «Мужчина и Женщина» со всеми сферами) заблокирован звёздами.</p>
-                            <button class="btn btn-ad" onclick="watchAd()">🎁 Открыть весь прогноз на 24 часа (Реклама)</button>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn btn-secondary" onclick="resetForm()">🔄 Ввести другую дату</button>
-            </div>
+        <div class="tabs">
+            <button class="tab-btn" onclick="switchTab('day', this)">🌍 День</button>
+            <button class="tab-btn active" onclick="switchTab('year', this)">🚀 Год</button>
+            <button class="tab-btn" onclick="switchTab('month', this)">🌙 Месяц</button>
+            <button class="tab-btn" onclick="switchTab('love', this)">👥 М & Ж</button>
         </div>
-        <footer>
-            <p>Оракул Звёзд © 2026 • Все права защищены</p>
-        </footer>
+
+        <div id="tab-content" class="content-card"></div>
+
+        <button class="btn-action" onclick="resetDate()">🔄 Ввести другую дату</button>
     </div>
-<script>
-    let tg = window.Telegram.WebApp;
-    if (tg) { tg.expand(); }
-    let formData = { day: 1, month: 1, year: 2000, hour: -1, ampm: 'AM', minute: 0 };
-    let adController = null;
-    let currentMatrixNum = 6;
 
-    const forecasts = {
-        1: { 
-            energy: "Энергия Лидера и Первопроходца. Сегодня идеальный день для старта новых начинаний, принятия волевых решений и проявления инициативы.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год мощного личного прорыва и новых горизонтов.<br><br>💼 <b>Работа и бизнес:</b> Время независимых проектов, стартапов и крупного карьерного роста.<br>🏠 <b>Дом и семья:</b> Укрепление авторитета дома, принятие важных семейных решений.<br>🌿 <b>Здоровье:</b> Высокий тонус, но берегите нервную систему от перегрузок.<br>❤️ <b>Любовь и отношения:</b> Страсть и инициатива, важно уметь слушать партнера.", 
-            month: "🌙 <b>Энергетика месяца:</b> Месяц активных действий и личного самовыражения.<br><br>💼 <b>Работа:</b> Успех в индивидуальных задачах.<br>🏠 <b>Дом:</b> Наведение порядка.<br>🌿 <b>Здоровье:</b> Активный отдых.<br>❤️ <b>Любовь:</b> Яркие свидания.", 
-            week: "📅 <b>Вибрации недели:</b> Неделя динамичных решений и быстрых побед во всех сферах.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Железобетонная решительность и лидерство.<br>👩 <b>Для Женщин:</b> Внутренний стержень и мудрость в управлении отношениями." 
-        },
-        2: { 
-            energy: "Энергия партнерства, дипломатии и тонкой интуиции. Острые углы сглаживаются через диалог.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год сотрудничества, создания прочных союзов и глубокого баланса.<br><br>💼 <b>Работа и бизнес:</b> Успешные партнерские сделки и командная работа.<br>🏠 <b>Дом и семья:</b> Гармония, уют и доверительные разговоры.<br>🌿 <b>Здоровье:</b> Важен эмоциональный покой и сон.<br>❤️ <b>Любовь и отношения:</b> Пик романтики и взаимопонимания.", 
-            month: "🌙 <b>Энергетика месяца:</b> Время компромиссов и укрепления связей.<br><br>💼 <b>Работа:</b> Дипломатия в офисе.<br>🏠 <b>Дом:</b> Совместный отдых.<br>🌿 <b>Здоровье:</b> Йога и релакс.<br>❤️ <b>Любовь:</b> Сближение с партнером.", 
-            week: "📅 <b>Вибрации недели:</b> Неделя мягких энергий, доверия и накопления ресурса.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Развитие эмпатии и внимания к деталям.<br>👩 <b>Для Женщин:</b> Раскрытие интуиции и природного очарования." 
-        },
-        3: { 
-            energy: "Энергия творчества, радости и самовыражения. Проявите таланты и займитесь любимым хобби.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год творческого расцвета, реализации и радости.<br><br>💼 <b>Работа и бизнес:</b> Прорыв в медиа, рекламе и творческих проектах.<br>🏠 <b>Дом и семья:</b> Праздники, радость и обновление обстановки.<br>🌿 <b>Здоровье:</b> Отличное самочувствие на волне позитива.<br>❤️ <b>Любовь и отношения:</b> Легкость, сюрпризы и романтика.", 
-            month: "🌙 <b>Энергетика месяца:</b> Месяц свежих идей и озарений.<br><br>💼 <b>Работа:</b> Генерация идей.<br>🏠 <b>Дом:</b> Радостные встречи.<br>🌿 <b>Здоровье:</b> Творческая терапия.<br>❤️ <b>Любовь:</b> Флирт и подарки.", 
-            week: "📅 <b>Вибрации недели:</b> Неделя ярких впечатлений и приятных сюрпризов.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Харизма и ораторский дар.<br>👩 <b>Для Женщин:</b> Магнетизм и умение наполнять пространство радостью." 
-        },
-        4: { 
-            energy: "Энергия порядка, структуры и надежного фундамента. День требует дисциплины и порядка.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год укрепления позиций и создания прочной базы.<br><br>💼 <b>Работа и бизнес:</b> Системный рост, надежные контракты и порядок в финансах.<br>🏠 <b>Дом и семья:</b> Ремонт, покупка недвижимости, стабильность.<br>🌿 <b>Здоровье:</b> Режим дня и полноценный отдых.<br>❤️ <b>Любовь и отношения:</b> Верность, забота и практическая поддержка.", 
-            month: "🌙 <b>Энергетика месяца:</b> Месяц структурирования дел и документов.<br><br>💼 <b>Работа:</b> Закрытие отчетов.<br>🏠 <b>Дом:</b> Уют и порядок.<br>🌿 <b>Здоровье:</b> Укрепление иммунитета.<br>❤️ <b>Любовь:</b> Надежное плечо.", 
-            week: "📅 <b>Вибрации недели:</b> Неделя практичных шагов по четкому плану.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Эталон надежности и защиты семьи.<br>👩 <b>Для Женщин:</b> Хозяйственность и уверенность в будущем." 
-        },
-        5: { 
-            energy: "Энергия перемен, свободы и расширения горизонтов. Благоприятно для поездок и общения.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год масштабных трансформаций и путешествий.<br><br>💼 <b>Работа и бизнес:</b> Новые ниши, командировки и расширение влияния.<br>🏠 <b>Дом и семья:</b> Смена обстановки, семейные поездки.<br>🌿 <b>Здоровье:</b> Больше движения и свежего воздуха.<br>❤️ <b>Любовь и отношения:</b> Освежение чувств и преодоление рутины.", 
-            month: "🌙 <b>Энергетика месяца:</b> Месяц неожиданных и приятных поворотов.<br><br>💼 <b>Работа:</b> Гибкие подходы.<br>🏠 <b>Дом:</b> Гости и общение.<br>🌿 <b>Здоровье:</b> Смена ритма.<br>❤️ <b>Любовь:</b> Новые грани чувств.", 
-            week: "📅 <b>Вибрации недели:</b> Неделя динамики, поездок и интересных знакомств.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Гибкость ума и тяга к приключениям.<br>👩 <b>Для Женщин:</b> Свободолюбие и яркая индивидуальность." 
-        },
-        6: { 
-            energy: "Энергия любви, гармонии, красоты и служения близким. День уюта и тепла.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год любви, партнерства и семейных ценностей.<br><br>💼 <b>Работа и бизнес:</b> Успех в сфере услуг, дизайна и работы с людьми.<br>🏠 <b>Дом и семья:</b> Свадьбы, рождение детей, полная гармония в доме.<br>🌿 <b>Здоровье:</b> Душевное равновесие.<br>❤️ <b>Любовь и отношения:</b> Абсолютное взаимопонимание и глубина чувств.", 
-            month: "🌙 <b>Энергетика месяца:</b> Месяц заботы о близких и гармонии.<br><br>💼 <b>Работа:</b> Комфортная атмосфера.<br>🏠 <b>Дом:</b> Создание уюта.<br>🌿 <b>Здоровье:</b> Спа и релакс.<br>❤️ <b>Любовь:</b> Семейное тепло.", 
-            week: "📅 <b>Вибрации недели:</b> Неделя романтики, встреч с друзьями и ую.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Заботливый семьянин и верный партнер.<br>👩 <b>Для Женщин:</b> Материнское тепло и безусловная любовь." 
-        },
-        7: { 
-            energy: "Энергия победы, движения вперед и стратегического планирования.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год активного движения к цели и триумфа.<br><br>💼 <b>Работа и бизнес:</b> Карьерный взлет и реализация сложных задач.<br>🏠 <b>Дом и семья:</b> Совместное преодоление бытовых задач.<br>🌿 <b>Здоровье:</b> Физическая активность и спорт.<br>❤️ <b>Любовь и отношения:</b> Проверка на прочность и доверие.", 
-            month: "🌙 <b>Энергетика месяца:</b> Месяц стратегических побед.<br><br>💼 <b>Работа:</b> Достижение целей.<br>🏠 <b>Дом:</b> Порядок в делах.<br>🌿 <b>Здоровье:</b> Энергичность.<br>❤️ <b>Любовь:</b> Поддержка.", 
-            week: "📅 <b>Вибрации недели:</b> Неделя преодоления препятствий и побед.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Мудрый стратег и победитель.<br>👩 <b>Для Женщин:</b> Независимость и острый ум." 
-        },
-        8: { 
-            energy: "Энергия справедливости, закона и материального успеха.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год финансовых достижений и управления ресурсами.<br><br>💼 <b>Работа и бизнес:</b> Крупные сделки, руководящие посты.<br>🏠 <b>Дом и семья:</b> Надежность и финансовое благополучие.<br>🌿 <b>Здоровье:</b> Контроль усталости.<br>❤️ <b>Любовь и отношения:</b> Равноправие и честность.", 
-            month: "🌙 <b>Энергетика месяца:</b> Месяц материальных результатов.<br><br>💼 <b>Работа:</b> Прибыль.<br>🏠 <b>Дом:</b> Покупки.<br>🌿 <b>Здоровье:</b> Тонус.<br>❤️ <b>Любовь:</b> Стабильность.", 
-            week: "📅 <b>Вибрации недели:</b> Неделя важных финансовых решений.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Финансовая мощь и статус.<br>👩 <b>Для Женщин:</b> Деловая мудрость." 
-        },
-        9: { 
-            energy: "Энергия мудрости, духовного опыта и завершения циклов.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год подведения итогов и духовного роста.<br><br>💼 <b>Работа и бизнес:</b> Консультирование, наука, завершение проектов.<br>🏠 <b>Дом и семья:</b> Переосмысление связей.<br>🌿 <b>Здоровье:</b> Восстановление сил.<br>❤️ <b>Любовь и отношения:</b> Глубокое духовное единение.", 
-            month: "🌙 <b>Энергетика месяца:</b> Месяц очищения от старого.<br><br>💼 <b>Работа:</b> Аналитика.<br>🏠 <b>Дом:</b> Избавление от лишнего.<br>🌿 <b>Здоровье:</b> Сон.<br>❤️ <b>Любовь:</b> Искренность.", 
-            week: "📅 <b>Вибрации недели:</b> Неделя уединения и мудрых выводов.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Мудрый советник и философ.<br>👩 <b>Для Женщин:</b> Интуитивная проницательность." 
-        },
-        11: { 
-            energy: "Энергия высшего просветления и интуиции.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год мощных интуитивных прорывов.<br><br>💼 <b>Работа и бизнес:</b> Инновации и публичность.<br>🏠 <b>Дом и семья:</b> Духовная связь с близкими.<br>🌿 <b>Здоровье:</b> Баланс энергии.<br>❤️ <b>Любовь и отношения:</b> Кармический союз.", 
-            month: "🌙 <b>Энергетика месяца:</b> Озарения и идеи.", 
-            week: "📅 <b>Вибрации недели:</b> Вдохновение.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Харизма провидца.<br>👩 <b>Для Женщин:</b> Космический магнетизм." 
-        },
-        22: { 
-            energy: "Энергия свободы и безграничных возможностей.", 
-            year: "🚀 <b>Макро-цикл года:</b> Год созидания и свободы от рамок.<br><br>💼 <b>Работа и бизнес:</b> Уникальные проекты.<br>🏠 <b>Дом и семья:</b> Радость и доверие.<br>🌿 <b>Здоровье:</b> Бодрость.<br>❤️ <b>Любовь и отношения:</b> Легкость.", 
-            month: "🌙 <b>Энергетика месяца:</b> Прорыв.", 
-            week: "📅 <b>Вибрации недели:</b> Счастливые случаи.", 
-            gender: "👥 <b>Мужчина и Женщина:</b><br>🧔 <b>Для Мужчин:</b> Новатор.<br>👩 <b>Для Женщин:</b> Оптимизм." 
-        }
-    };
+    <div class="footer">Оракул Звёзд © 2026 • Все права защищены</div>
 
-    window.addEventListener('DOMContentLoaded', () => {
-        initCustomSelects();
-        initAdsgram();
-        checkAccessOnLoad();
-    });
-
-    function initAdsgram() {
-        if (typeof window.Adsgram !== 'undefined') {
-            try {
-                adController = window.Adsgram.init({ blockId: "int-53984", debug: false });
-            } catch (e) {
-                console.log("Adsgram init error:", e);
+    <script>
+        const data = {
+            year: {
+                title: "🚀 Макро-цикл текущего года (Год Фундамента):",
+                intro: "Этот год является ключевым 9-летним этапом строительства вашей материальной базы. Все решения, принятые сейчас, определят уровень вашего дохода и устойчивости на ближайшие годы. Время спонтанных действий прошло — наступила эра системного масштабирования.",
+                blocks: [
+                    { h: "💼 Работа и бизнес:", d: "Максимально благоприятный период для заключения масштабных контрактов, расширения штата, внедрения автоматизации и перехода на новые уровни управления. Ваш авторитет растет, если вы берете на себя полную ответственность." },
+                    { h: "💰 Финансовый потенциал:", d: "Высокая вероятность крупных приобретений (недвижимость, земля, активы). Денежный поток стабилизируется за счет упорядочивания расходов и грамотного инвестирования в долгосрочные проекты." },
+                    { h: "🏠 Дом и семья:", d: "Год укрепления семейных устоев. Благоприятен ремонт, покупка собственного жилья, реорганизация быта и поддержка младших или старших родственников." },
+                    { h: "🌱 Здоровье и ресурс:", d: "Требуется системный подход к организму. Обратите внимание на опорно-двигательный аппарат и суставы. Необходим жесткий распорядок дня и полноценный сон." },
+                    { h: "❤️ Любовь и отношения:", d: "Отношения проверяются на прочность и зрелость. Поверхностные связи отсекаются, а настоящие союзы скрепляются глубоким доверием и совместными финансовыми целями." }
+                ]
+            },
+            day: {
+                title: "🌟 Энергетика и совет на сегодня:",
+                intro: "Сегодня вибрации дня требуют от вас предельной концентрации, собранности и честности перед самим собой. День не терпит хаоса и пустых разговоров — каждая минута должна работать на ваш результат.",
+                blocks: [
+                    { h: "⚡ Главный вектор дня:", d: "Наведите идеальный порядок в документах, рабочих столах и личных финансах. Все незавершенные мелкие задачи сегодня забирают вашу жизненную энергию." },
+                    { h: "📈 Бизнес и решения:", d: "Удачное время для переговоров с инвесторами или руководством. Избегайте эмоций — аргументируйте только фактами, цифрами и четкой логикой." },
+                    { h: "🧘 Рекреация и баланс:", d: "Вечером рекомендуется минимизировать информационный шум, отложить гаджеты и провести время на свежем воздухе или за чтением литературы." }
+                ]
+            },
+            month: {
+                title: "🌙 Энергетика текущего месяца:",
+                intro: "Месяц фокусового закрытия хвостов и финансовой инвентаризации. Время анализировать прошлые ошибки, оптимизировать внутренние процессы и избавляться от того, что тянет вниз.",
+                blocks: [
+                    { h: "📊 Финансовый аудит:", d: "Проведите детальный анализ бюджета. Найдите утечки средств и перенаправьте их на погашение обязательств или формирование подушки безопасности." },
+                    { h: "🤝 Деловой кругозор:", d: "В вашем окружении могут появиться люди со сложным характером, но высоким уровнем компетенций. Учитесь взаимодействовать ради общих целей." },
+                    { h: "💡 Внутренний рост:", d: "Месяц идеально подходит для глубокого изучения нумерологии, тайм-менеджмента и стратегий управления личной эффективностью." }
+                ]
+            },
+            love: {
+                title: "👥 Мужчина и Женщина (Психология и карма союза):",
+                intro: "Нумерологический анализ психологической совместимости и распределения ролей. Гармония в паре достигается тогда, когда каждый партнер выполняет свою естественную энергетическую функцию.",
+                blocks: [
+                    { h: "🧔 Для Мужчин (Код Защитника):", d: "Ваш потенциал раскрывается через способность брать ответственность, обеспечивать безопасность и быть твердым оплотом в сложных ситуациях." },
+                    { h: "👩 Для Женщин (Код Хранительницы):", d: "Ваша сила — в мудром направлении мужской энергии, создании атмосферы гармонии, уюта и эмоционального восстановления партнера." },
+                    { h: "🔑 Ключ к процветанию союза:", d: "Открытый разговор о деньгах и совместное планирование крупных покупок укрепляют союз сильнее, чем сентиментальные обещания." }
+                ]
             }
-        }
-    }
-
-    function initCustomSelects() {
-        const daysContainer = document.getElementById('options-day');
-        for (let i = 1; i <= 31; i++) {
-            let opt = document.createElement('div');
-            opt.className = 'custom-option';
-            opt.textContent = i;
-            opt.onclick = () => selectOption('day', i, i);
-            daysContainer.appendChild(opt);
-        }
-        const yearsContainer = document.getElementById('options-year');
-        const currentYear = new Date().getFullYear();
-        for (let i = currentYear; i >= 1940; i--) {
-            let opt = document.createElement('div');
-            opt.className = 'custom-option';
-            opt.textContent = i;
-            opt.onclick = () => selectOption('year', i, i);
-            yearsContainer.appendChild(opt);
-        }
-        document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
-            const trigger = wrapper.querySelector('.custom-select-trigger');
-            trigger.onclick = (e) => {
-                e.stopPropagation();
-                document.querySelectorAll('.custom-select-wrapper').forEach(w => {
-                    if (w !== wrapper) w.classList.remove('open');
-                });
-                wrapper.classList.toggle('open');
-            };
-        });
-        window.onclick = () => {
-            document.querySelectorAll('.custom-select-wrapper').forEach(w => w.classList.remove('open'));
         };
-    }
 
-    function selectOption(type, val, text) {
-        formData[type] = val;
-        document.getElementById('trigger-' + type).textContent = text;
-        document.getElementById('select-' + type).classList.remove('open');
-    }
+        function switchTab(tabKey, btnElement) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
 
-    function checkAccessOnLoad() {
-        const accessUntil = localStorage.getItem('oracle_access_until');
-        const now = new Date().getTime();
-        if (accessUntil && now < parseInt(accessUntil)) {
-            unlockFullForecast();
-        }
-    }
-
-    function calculateForecast() {
-        let sum = formData.day + formData.month + String(formData.year).split('').reduce((a,b)=>a+parseInt(b),0);
-        while(sum > 9 && sum !== 11 && sum !== 22) {
-            sum = String(sum).split('').reduce((a,b)=>a+parseInt(b),0);
-        }
-        currentMatrixNum = sum;
-        let timeNote = "";
-        if (formData.hour !== -1) {
-            timeNote = ` (Час: ${formData.hour}:00 ${formData.ampm})`;
-        }
-        document.getElementById('res-matrix-title').textContent = `⚡ Ваша матрица судьбы: ${sum}${timeNote}`;
-        const data = forecasts[sum] || forecasts[6];
-        document.getElementById('res-energy').textContent = data.energy;
-        switchAspect('year', null);
-        document.getElementById('input-card').classList.add('hidden');
-        document.getElementById('result-card').classList.remove('hidden');
-    }
-
-    function switchAspect(aspect, event) {
-        const buttons = document.querySelectorAll('.aspect-btn');
-        if (event && event.currentTarget) {
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-        } else {
-            buttons.forEach((btn, idx) => {
-                btn.classList.remove('active');
-                if (aspect === 'year' && idx === 0) btn.classList.add('active');
-                if (aspect === 'month' && idx === 1) btn.classList.add('active');
-                if (aspect === 'week' && idx === 2) btn.classList.add('active');
-                if (aspect === 'gender' && idx === 3) btn.classList.add('active');
+            const content = data[tabKey];
+            const container = document.getElementById('tab-content');
+            
+            let html = `<div class="section-title">${content.title}</div>
+                        <div class="intro-p">${content.intro}</div>`;
+            
+            content.blocks.forEach(b => {
+                html += `<div class="info-block">
+                            <div class="info-header">${b.h}</div>
+                            <div class="info-desc">${b.d}</div>
+                         </div>`;
             });
-        }
-        const title = document.getElementById('aspect-title');
-        const text = document.getElementById('aspect-text');
-        const data = forecasts[currentMatrixNum] || forecasts[6];
-        if (aspect === 'year') {
-            title.textContent = "🚀 Макро-цикл текущего года:";
-            text.innerHTML = data.year;
-        } else if (aspect === 'month') {
-            title.textContent = "🌙 Энергетика текущего месяца:";
-            text.innerHTML = data.month;
-        } else if (aspect === 'week') {
-            title.textContent = "📅 Краткосрочные вибрации недели:";
-            text.innerHTML = data.week;
-        } else if (aspect === 'gender') {
-            title.textContent = "👥 Мужчина и Женщина (Психология союза):";
-            text.innerHTML = data.gender;
-        }
-    }
 
-    function watchAd() {
-        if (adController) {
-            adController.show().then(() => {
-                grant24HoursAccess();
-            }).catch((err) => {
-                console.log("Adsgram error, using fallback:", err);
-                grant24HoursAccess(); // Надежный резерв для монетизации
-            });
-        } else {
-            grant24HoursAccess();
+            container.innerHTML = html;
         }
-    }
 
-    function grant24HoursAccess() {
-        const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);
-        localStorage.setItem('oracle_access_until', expiryTime);
-        unlockFullForecast();
-        alert("✨ Полный доступ к Оракулу успешно активирован на 24 часа!");
-    }
-
-    function unlockFullForecast() {
-        document.querySelectorAll('#deep-forecast-block .blurred').forEach(el => {
-            el.classList.remove('blurred');
-        });
-        const overlay = document.getElementById('paywall-overlay');
-        if (overlay) overlay.style.display = 'none';
-    }
-
-    function resetForm() {
-        const accessUntil = localStorage.getItem('oracle_access_until');
-        const now = new Date().getTime();
-        if (!accessUntil || now >= parseInt(accessUntil)) {
-            document.querySelectorAll('#deep-forecast-block .aspect-buttons, #deep-forecast-block .text-block').forEach(el => {
-                el.classList.add('blurred');
-            });
-            const overlay = document.getElementById('paywall-overlay');
-            if (overlay) overlay.style.display = 'flex';
+        function resetDate() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+            }
+            alert("Для сброса и ввода новой даты перейдите в диалог с ботом!");
         }
-        document.getElementById('result-card').classList.add('hidden');
-        document.getElementById('input-card').classList.remove('hidden');
-    }
-</script>
+
+        window.onload = function() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+            switchTab('year', document.querySelectorAll('.tab-btn')[1]);
+        };
+    </script>
 </body>
 </html>
