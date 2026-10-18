@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v9.0 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v9.1 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js" async></script>
     <style>
@@ -50,7 +50,6 @@
         .form-label { color: var(--gold); font-size: 13px; font-weight: 600; margin-bottom: 6px; display: block; text-align: center; }
         .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; margin-bottom: 10px; }
         
-        /* Надежные и стабильные выпадающие списки */
         select {
             width: 100%;
             background: #0b0f19;
@@ -94,9 +93,9 @@
         .btn-ads:active { transform: scale(0.98); }
 
         .locked-content {
-            opacity: 0.3;
+            opacity: 0.25;
             pointer-events: none;
-            filter: blur(3px);
+            filter: blur(4px);
             transition: all 0.4s ease;
         }
         .unlocked-content {
@@ -105,8 +104,8 @@
             filter: none;
         }
 
-        .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; }
-        .tab-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border-gold); color: var(--text-muted); padding: 10px 2px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; }
+        .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
+        .tab-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border-gold); color: var(--text-muted); padding: 10px 4px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; }
         .tab-btn.active { background: rgba(212, 175, 55, 0.22); color: var(--gold); border-color: var(--gold); box-shadow: 0 0 12px rgba(212, 175, 55, 0.3); }
         
         .content-card { background: rgba(0,0,0,0.3); border-radius: 14px; padding: 18px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; }
@@ -148,7 +147,7 @@
             </div>
 
             <div class="form-group">
-            <label class="form-label">⏰ ВРЕМЯ РОЖДЕНИЯ</label>
+                <label class="form-label">⏰ ВРЕМЯ РОЖДЕНИЯ</label>
                 <div class="select-row">
                     <select id="sel-hour">
                         <option value="unknown">Не знаю</option>
@@ -170,7 +169,7 @@
             <button class="btn-action" onclick="showResults()" style="margin-top: 10px;">✨ Узнать прогноз судьбы</button>
         </div>
 
-        <!-- ЭКРАН 2: ПРОГНОЗ НА СЕГОДНЯ + РЕКЛАМА ДЛЯ РАСШИРЕННОГО ВАРИАНТА -->
+        <!-- ЭКРАН 2: РЕЗУЛЬТАТЫ (ПРОГНОЗ НА СЕГОДНЯ + РЕКЛАМА + РАСШИРЕННЫЙ БЛОК) -->
         <div id="screen-result" class="screen">
             <div class="matrix-badge">
                 <div class="matrix-title" id="matrix-title">⚡ Ваша матрица судьбы: 4 (Император)</div>
@@ -179,7 +178,7 @@
                 </div>
             </div>
 
-            <!-- Базовый прогноз на сегодня (доступен сразу) -->
+            <!-- 1. ОТКРЫТЫЙ ПРОГНОЗ НА СЕГОДНЯ -->
             <div class="content-card">
                 <div class="section-title">🌟 Энергетика и совет на сегодня:</div>
                 <div class="intro-p">Сегодняшний день требует от вас предельной собранности, дисциплины и холодного рассудка. Энергия числа 4 не прощает хаоса и импульсивных трат.</div>
@@ -189,18 +188,17 @@
                 </div>
             </div>
 
-            <!-- РЕКЛАМНЫЙ БЛОК ADSGRAM ДЛЯ РАЗБЛОКИРОВКИ РАСШИРЕННОГО ВАРИАНТА -->
+            <!-- 2. РЕКЛАМНЫЙ БЛОК ADSGRAM -->
             <div class="ads-banner" id="ads-banner-box">
                 <h3>💎 Премиум-разбор (Год, Месяц, М & Ж)</h3>
-                <p>Получите полный расширенный нумерологический код судьбы и финансовый прогноз на год.</p>
+                <p>Получите полный расширенный нумерологический код судьбы и финансовый прогноз.</p>
                 <button class="btn-ads" onclick="showAdsgramReward()">▶ Смотреть рекламу и разблокировать</button>
             </div>
 
-            <!-- РАСШИРЕННЫЙ ВАРИАНТ (ЗАКРЫТ ДО ПРОСМОТРА РЕКЛАМЫ) -->
+            <!-- 3. ЗАКРЫТЫЙ (РАСШИРЕННЫЙ) ВАРИАНТ -->
             <div id="extended-section" class="locked-content">
                 <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('day', this)">🌍 День</button>
-                    <button class="tab-btn" onclick="switchTab('year', this)">🚀 Год</button>
+                    <button class="tab-btn active" onclick="switchTab('year', this)">🚀 Год</button>
                     <button class="tab-btn" onclick="switchTab('month', this)">🌙 Месяц</button>
                     <button class="tab-btn" onclick="switchTab('love', this)">👥 М & Ж</button>
                 </div>
@@ -216,16 +214,6 @@
 
     <script>
         const data = {
-            day: {
-                title: "🌟 Глубокая энергетика и совет на сегодня:",
-                intro: "Сегодняшний день требует от вас предельной собранности, дисциплины и холодного рассудка. Энергия числа 4 не прощает хаоса.",
-                blocks: [
-                    { h: "💼 Карьера и финансы:", d: "Идеальный момент для аудита бюджета, работы с документами, закрытия задолженностей и подписания важных договоров." },
-                    { h: "🏠 Пространство и дом:", d: "Наведите идеальный порядок на рабочем месте и дома. Чистота внешнего пространства привлекает денежную энергию." },
-                    { h: "🌱 Здоровье и ресурс:", d: "Уделите внимание осанке и суставам. Полезны статические физические нагрузки и строгий режим питания." },
-                    { h: "❤️ Отношения:", d: "Проявите заботу не словами, а надежными практическими поступками. Близкие нуждаются в чувстве безопасности." }
-                ]
-            },
             year: {
                 title: "🚀 Развернутый макро-цикл текущего года:",
                 intro: "Этот год закладывает фундамент вашего благополучия на целое десятилетие вперед. Время стратегических решений и активов.",
@@ -275,7 +263,7 @@
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
             }
-            switchTab('day', document.querySelector('.tab-btn'));
+            switchTab('year', document.querySelector('.tab-btn'));
         }
 
         function showForm() {
@@ -295,7 +283,6 @@
                     alert("Реклама не была досмотрена. Попробуйте еще раз.");
                 });
             } else {
-                // Тестовый режим в браузере или если SDK еще грузится
                 unlockExtendedContent();
             }
         }
