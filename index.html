@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v8.3 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v8.4 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js" async></script>
     <style>
@@ -45,26 +45,50 @@
         .screen.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
         .form-group { margin-bottom: 14px; }
-        .form-label { color: var(--gold); font-size: 13px; font-weight: 600; margin-bottom: 6px; display: block; text-align: center; }
+        .form-label { color: var(--gold); font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block; text-align: center; }
         .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; margin-bottom: 10px; }
-        select { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); color: var(--text-main); padding: 12px 8px; border-radius: 10px; font-size: 14px; outline: none; text-align: center; }
-        select option { background: #131b2e; color: var(--text-main); }
+        
+        /* Стилизованные компактные селекторы в тон дизайна */
+        select {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid var(--border-gold);
+            color: var(--gold-light);
+            padding: 10px 6px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            outline: none;
+            text-align: center;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.367%22%20height%3D%22292.47%22%3E%3Cpath%20fill%3D%22%23d4af37%22%20d%3D%22M287.283%20191.965c-3.59%203.6-7.925%205.4-13.003%205.4H18.084c-5.076%200-9.414-1.8-13.018-5.4-3.604-3.6-5.405-7.942-5.405-13.017%200-5.076%201.8-9.413%205.405-13.015L130.643%2039.29c3.6-3.61%207.94-5.412%2013.018-5.412%205.078%200%209.416%201.802%2013.016%205.412l125.608%20126.643c3.603%203.602%205.405%207.938%205.405%2013.015%200%205.075-1.802%209.414-5.405%2013.017z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+            background-size: 9px;
+            padding-right: 18px;
+        }
+        select option { background: #0b0f19; color: var(--text-main); }
+
         .matrix-badge { background: rgba(212, 175, 55, 0.12); border: 1px solid var(--border-gold); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
         .matrix-title { color: var(--gold); font-size: 15px; font-weight: 600; margin-bottom: 6px; }
         .matrix-text { font-size: 13.5px; line-height: 1.6; color: var(--text-main); }
+        
         .ads-banner { background: linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(11,15,25,0.8) 100%); border: 1px dashed var(--gold); border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 16px; }
         .ads-banner h3 { color: var(--gold); font-size: 14px; margin-bottom: 6px; }
         .ads-banner p { color: var(--text-muted); font-size: 12px; margin-bottom: 10px; }
         .btn-ads { background: var(--gold); color: #0b0f19; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(212,175,55,0.3); }
+        
         .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; }
         .tab-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border-gold); color: var(--text-muted); padding: 10px 2px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; }
         .tab-btn.active { background: rgba(212, 175, 55, 0.22); color: var(--gold); border-color: var(--gold); box-shadow: 0 0 12px rgba(212, 175, 55, 0.3); }
+        
         .content-card { background: rgba(0,0,0,0.3); border-radius: 14px; padding: 18px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; }
         .section-title { color: var(--gold-light); font-size: 15px; font-weight: 700; margin-bottom: 10px; border-bottom: 1px dashed var(--border-gold); padding-bottom: 6px; }
         .intro-p { font-size: 13.5px; line-height: 1.65; color: #cbd5e1; margin-bottom: 14px; }
         .info-block { margin-bottom: 12px; background: rgba(255,255,255,0.025); padding: 10px 12px; border-radius: 10px; border-left: 3px solid var(--gold); }
         .info-header { color: var(--gold); font-size: 13.5px; font-weight: 600; margin-bottom: 4px; }
         .info-desc { font-size: 13px; line-height: 1.55; color: var(--text-main); }
+        
         .btn-action { width: 100%; background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); border: none; color: #0b0f19; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
         .btn-action:active { transform: scale(0.98); }
         .btn-outline { width: 100%; background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; }
@@ -149,6 +173,7 @@
     </div>
 
     <div class="footer">Оракул Звёзд © 2026 • Все права защищены</div>
+
     <script>
         const data = {
             day: {
@@ -227,7 +252,7 @@
                 adController.show().then((result) => {
                     document.getElementById('ads-container').innerHTML = '<h3 style="color: #4ade80;">✅ Премиум-доступ успешно разблокирован!</h3><p style="color: #cbd5e1;">Вам доступны все тайные нумерологические коды судьбы.</p>';
                     if (window.Telegram && window.Telegram.WebApp) {
-                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                        window.Telegram.WebApp.notificationOccurred('success');
                     }
                 }).catch((err) => {
                     alert("Реклама не была досмотрена. Попробуйте еще раз.");
