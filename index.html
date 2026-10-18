@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v8.1 — Элитный портал судьбы</title>
+    <title>Оракул Звёзд v8.2 — Элитный портал судьбы</title>
     <script src="https://telegram.org/js/telegram-web-app.js" async></script>
     <style>
         :root {
@@ -56,6 +56,39 @@
             font-size: 12.5px;
             line-height: 1.4;
         }
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-group { margin-bottom: 14px; }
+        .form-label {
+            color: var(--gold);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .select-row {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr 1fr;
+            gap: 8px;
+        }
+        select {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-gold);
+            color: var(--text-main);
+            padding: 12px 8px;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            text-align: center;
+        }
+        select option { background: #131b2e; color: var(--text-main); }
         .matrix-badge {
             background: rgba(212, 175, 55, 0.12);
             border: 1px solid var(--border-gold);
@@ -104,11 +137,6 @@
             padding: 18px;
             border: 1px solid rgba(255,255,255,0.08);
             margin-bottom: 16px;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .section-title {
             color: var(--gold-light);
@@ -144,6 +172,21 @@
         }
         .btn-action {
             width: 100%;
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+            border: none;
+            color: #0b0f19;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.2s;
+        }
+        .btn-action:active { transform: scale(0.98); }
+        .btn-outline {
+            width: 100%;
             background: transparent;
             border: 1px solid var(--gold);
             color: var(--gold);
@@ -154,8 +197,8 @@
             cursor: pointer;
             text-align: center;
         }
-        .btn-action:active { background: rgba(212, 175, 55, 0.2); }
-        .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.7; }
+        .btn-outline:active { background: rgba(212, 175, 55, 0.2); }
+        .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.7; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -163,26 +206,48 @@
         <div class="header">
             <div class="crystal-icon">🔮</div>
             <h1>Оракул Звёзд</h1>
-            <p class="subtitle">Элитный портал судьбы, нумерологических откровений и глубокой трансформации</p>
+            <p class="subtitle">Элитный портал судьбы и глубоких нумерологических откровений</p>
         </div>
 
-        <div class="matrix-badge">
-            <div class="matrix-title">⚡ Ваша матрица судьбы: 4 (Император)</div>
-            <div class="matrix-text">
-                Энергия структуры, материального порядка, контроля и надежности. Ваша жизненная миссия — выстраивать прочные системы, управлять ресурсами и создавать абсолютную стабильность для себя и близких.
+        <!-- ЭКРАН 1: ВВОД ДАТЫ -->
+        <div id="screen-form" class="screen active">
+            <div class="form-group">
+                <label class="form-label">📅 ДАТА ВАШЕГО РОЖДЕНИЯ</label>
+                <div class="select-row">
+                    <select id="sel-day">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
+                    </select>
+                    <select id="sel-month">
+                        <option value="1">Январь</option><option value="2">Февраль</option><option value="3">Март</option><option value="4" selected>Апрель</option><option value="5">Май</option><option value="6">Июнь</option><option value="7">Июль</option><option value="8">Август</option><option value="9">Сентябрь</option><option value="10">Октябрь</option><option value="11">Ноябрь</option><option value="12">Декабрь</option>
+                    </select>
+                    <select id="sel-year">
+                        <option value="1985">1985</option><option value="1988">1988</option><option value="1990">1990</option><option value="1995">1995</option><option value="2000" selected>2000</option><option value="2005">2005</option><option value="2010">2010</option>
+                    </select>
+                </div>
             </div>
+            <button class="btn-action" onclick="showResults()" style="margin-top: 10px;">✨ Узнать прогноз судьбы</button>
         </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('day', this)">🌍 День</button>
-            <button class="tab-btn" onclick="switchTab('year', this)">🚀 Год</button>
-            <button class="tab-btn" onclick="switchTab('month', this)">🌙 Месяц</button>
-            <button class="tab-btn" onclick="switchTab('love', this)">👥 М & Ж</button>
+        <!-- ЭКРАН 2: РЕЗУЛЬТАТЫ И ВКЛАДКИ -->
+        <div id="screen-result" class="screen">
+            <div class="matrix-badge">
+                <div class="matrix-title" id="matrix-title">⚡ Ваша матрица судьбы: 4 (Император)</div>
+                <div class="matrix-text" id="matrix-desc">
+                    Энергия структуры, материального порядка, контроля и надежности. Ваша жизненная миссия — выстраивать прочные системы, управлять ресурсами и создавать абсолютную стабильность.
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('day', this)">🌍 День</button>
+                <button class="tab-btn" onclick="switchTab('year', this)">🚀 Год</button>
+                <button class="tab-btn" onclick="switchTab('month', this)">🌙 Месяц</button>
+                <button class="tab-btn" onclick="switchTab('love', this)">👥 М & Ж</button>
+            </div>
+
+            <div id="tab-content" class="content-card"></div>
+
+            <button class="btn-outline" onclick="showForm()">🔄 Ввести другую дату</button>
         </div>
-
-        <div id="tab-content" class="content-card"></div>
-
-        <button class="btn-action" onclick="resetDate()">🔄 Ввести другую дату</button>
     </div>
 
     <div class="footer">Оракул Звёзд © 2026 • Все права защищены</div>
@@ -191,43 +256,73 @@
         const data = {
             day: {
                 title: "🌟 Глубокая энергетика и совет на сегодня:",
-                intro: "Сегодняшний день требует от вас предельной собранности, дисциплины и холодного рассудка. Энергия числа 4 не прощает хаоса и импульсивных трат.",
+                intro: "Сегодняшний день требует от вас предельной собранности, дисциплины и холодного рассудка. Энергия числа 4 не прощает хаоса.",
                 blocks: [
-                    { h: "💼 Карьера и финансы:", d: "Идеальный момент для аудита бюджета, работы с документами, закрытия задолженностей и подписания важных договоров. Избегайте рискованных инвестиций." },
-                    { h: "🏠 Пространство и дом:", d: "Наведите идеальный порядок на рабочем месте и дома. Чистота внешнего пространства мгновенно упорядочивает мысли и привлекает денежную энергию." },
-                    { h: "🌱 Здоровье и ресурс:", d: "Уделите внимание осанке и суставам. Полезны статические физические нагрузки, йога и строгий режим питания." },
-                    { h: "❤️ Отношения:", d: "Проявите заботу не словами, а надежными практическими поступками. Близкие нуждаются в вашем чувстве безопасности." }
+                    { h: "💼 Карьера и финансы:", d: "Идеальный момент для аудита бюджета, работы с документами, закрытия задолженностей и подписания важных договоров." },
+                    { h: "🏠 Пространство и дом:", d: "Наведите идеальный порядок на рабочем месте и дома. Чистота внешнего пространства привлекает денежную энергию." },
+                    { h: "🌱 Здоровье и ресурс:", d: "Уделите внимание осанке и суставам. Полезны статические физические нагрузки и строгий режим питания." },
+                    { h: "❤️ Отношения:", d: "Проявите заботу не словами, а надежными практическими поступками. Близкие нуждаются в чувстве безопасности." }
                 ]
             },
             year: {
                 title: "🚀 Развернутый макро-цикл текущего года:",
-                intro: "Этот год закладывает фундамент вашего благополучия на целое десятилетие вперед. Время масштабных стратегических решений, строительства бизнеса и накопления активов.",
+                intro: "Этот год закладывает фундамент вашего благополучия на целое десятилетие вперед. Время стратегических решений и активов.",
                 blocks: [
-                    { h: "📈 Финансовый прорыв:", d: "Переход на новый уровень дохода через системность, делегирование и создание пассивных источников. Инвестируйте в недвижимость и долгосрочные активы." },
-                    { h: "🏛 Статус и влияние:", d: "Укрепление деловой репутации, возможно получение руководящей должности или официального статуса владельца крупного проекта." },
-                    { h: "🏠 Семья и недвижимость:", d: "Благоприятнейший период для покупки жилья, масштабного ремонта, строительства или укрепления родовых связей." },
-                    { h: "🧠 Личная эволюция:", d: "Отказ от иллюзий в пользу прагматизма. Изучение законов управления финансами, структуры капитала и психологии больших денег." }
+                    { h: "📈 Финансовый прорыв:", d: "Переход на новый уровень дохода через системность, делегирование и создание пассивных источников." },
+                    { h: "🏛 Статус и влияние:", d: "Укрепление деловой репутации, возможно получение руководящей должности или статуса владельца проекта." },
+                    { h: "🏠 Семья и недвижимость:", d: "Благоприятнейший период для покупки жилья, масштабного ремонта или строительства." },
+                    { h: "🧠 Личная эволюция:", d: "Изучение законов управления финансами, структуры капитала и психологии больших денег." }
                 ]
             },
             month: {
                 title: "🌙 Анализ энергетики текущего месяца:",
-                intro: "Месяц структурной инвентаризации вашей жизни. Все старые незавершенные дела потребуют закрытия, прежде чем откроются новые денежные потоки.",
+                intro: "Месяц структурной инвентаризации вашей жизни. Все старые дела требуют закрытия.",
                 blocks: [
-                    { h: "📊 Аудит обязательств:", d: "Сведите дебет с кредитом, закройте мелкие долги, разберите юридические вопросы и налоговые декларации." },
-                    { h: "🤝 Деловые связи:", d: "Проверка окружения на преданность и надежность. В вашем поле останутся только те, кто разделяет ваши долгосрочные цели." },
-                    { h: "💡 Внутренний фокус:", d: "Используйте этот месяц для глубокого погружения в нумерологию, планирование и выстраивание четких алгоритмов работы." }
+                    { h: "📊 Аудит обязательств:", d: "Сведите дебет с кредитом, закройте мелкие долги, разберите юридические вопросы." },
+                    { h: "🤝 Деловые связи:", d: "Проверка окружения на надежность и преданность вашим долгосрочным целям." },
+                    { h: "💡 Внутренний фокус:", d: "Погружение в нумерологию, планирование и выстраивание четких алгоритмов работы." }
                 ]
             },
             love: {
                 title: "👥 Мужчина и Женщина (Психология и гармония союза):",
-                intro: "Глубинный разбор ролей в паре через призму нумерологии. Понимание истинных потребностей друг друга исключает конфликты на почве быта и денег.",
+                intro: "Глубинный разбор ролей в паре через призму нумерологии. Понимание потребностей друг друга.",
                 blocks: [
-                    { h: "🧔 Для Мужчин (Архетип Опоры):", d: "Ваша сила — в умении держать слово, обеспечивать финансовую безопасность семьи и быть скалой в любых штормах." },
-                    { h: "👩 Для Женщин (Архетип Хранительницы):", d: "Ваша задача — наполнять пространство теплом, мудро поддерживать амбиции партнера и создавать уютный тыл." },
-                    { h: "🔑 Секрет процветания пары:", d: "Совместное бюджетирование, уважение к личным границам и общие долгосрочные цели в материальном мире." }
+                    { h: "🧔 Для Мужчин (Архетип Опоры):", d: "Ваша сила — в умении держать слово и обеспечивать финансовую безопасность семьи." },
+                    { h: "👩 Для Женщин (Архетип Хранительницы):", d: "Ваша задача — наполнять пространство теплом и мудро поддерживать амбиции партнера." },
+                    { h: "🔑 Секрет процветания пары:", d: "Совместное бюджетирование, уважение к личным границам и общие цели." }
                 ]
             }
         };
+
+        function showResults() {
+            const day = document.getElementById('sel-day').value;
+            const month = document.getElementById('sel-month').value;
+            const year = document.getElementById('sel-year').value;
+            
+            let sum = parseInt(day) + parseInt(month) + parseInt(year);
+            while (sum > 22) {
+                sum = sum.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
+            }
+            if (sum === 0) sum = 4;
+
+            document.getElementById('matrix-title').innerText = `⚡ Ваша матрица судьбы: ${sum}`;
+            
+            document.getElementById('screen-form').classList.remove('active');
+            document.getElementById('screen-result').classList.add('active');
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+            }
+            switchTab('day', document.querySelector('.tab-btn'));
+        }
+
+        function showForm() {
+            document.getElementById('screen-result').classList.remove('active');
+            document.getElementById('screen-form').classList.add('active');
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            }
+        }
 
         function switchTab(tabKey, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -249,21 +344,11 @@
             container.innerHTML = html;
         }
 
-        function resetDate() {
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-                window.Telegram.WebApp.close();
-            } else {
-                alert("Для сброса даты перейдите в чат с ботом!");
-            }
-        }
-
         window.onload = function() {
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
             }
-            switchTab('day', document.querySelector('.tab-btn'));
         };
     </script>
 </body>
