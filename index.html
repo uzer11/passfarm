@@ -2,122 +2,53 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v10.1 — Элитный портал судьбы</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Оракул Звёзд v10.5</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: #131b2e;
-            --gold: #d4af37;
-            --gold-light: #f3e5ab;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --border-gold: rgba(212, 175, 55, 0.4);
-        }
+        :root { --bg-color: #0b0f19; --card-bg: #131b2e; --gold: #d4af37; --gold-light: #f3e5ab; --text-main: #e2e8f0; --text-muted: #94a3b8; --border-gold: rgba(212, 175, 55, 0.4); }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 16px;
-        }
-        .container {
-            width: 100%;
-            max-width: 480px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-gold);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            margin-bottom: 20px;
-        }
-        .header { text-align: center; margin-bottom: 18px; }
-        .crystal-icon { font-size: 44px; margin-bottom: 6px; animation: pulse 3s infinite ease-in-out; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.08); opacity: 1; } }
-        h1 { color: var(--gold); font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-        .subtitle { color: var(--text-muted); font-size: 12.5px; line-height: 1.4; }
-        
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 12px; }
+        .container { width: 100%; max-width: 440px; background: var(--card-bg); border: 1px solid var(--border-gold); border-radius: 18px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.7); margin-bottom: 12px; }
+        .header { text-align: center; margin-bottom: 14px; }
+        .crystal-icon { font-size: 40px; margin-bottom: 4px; }
+        h1 { color: var(--gold); font-size: 22px; font-weight: 700; margin-bottom: 3px; }
+        .subtitle { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
         .screen { display: none; }
         .screen.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         .form-group { margin-bottom: 14px; }
         .form-label { color: var(--gold); font-size: 13px; font-weight: 600; margin-bottom: 6px; display: block; text-align: center; }
-        .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; margin-bottom: 10px; }
-        
-        select {
-            width: 100%;
-            background: #0b0f19;
-            border: 1px solid var(--border-gold);
-            color: var(--gold-light);
-            padding: 10px 6px;
-            border-radius: 10px;
-            font-size: 13px;
-            outline: none;
-            text-align: center;
-        }
+        .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; margin-bottom: 8px; }
+        select { width: 100%; background: #0b0f19; border: 1px solid var(--border-gold); color: var(--gold-light); padding: 10px 6px; border-radius: 10px; font-size: 13px; outline: none; text-align: center; }
         select option { background: #0b0f19; color: var(--text-main); }
-
-        .matrix-badge { background: rgba(212, 175, 55, 0.12); border: 1px solid var(--border-gold); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+        .matrix-badge { background: rgba(212, 175, 55, 0.12); border: 1px solid var(--border-gold); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
         .matrix-title { color: var(--gold); font-size: 15px; font-weight: 600; margin-bottom: 6px; }
         .matrix-text { font-size: 13.5px; line-height: 1.6; color: var(--text-main); }
-        
-        .ads-banner {
-            background: linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(11,15,25,0.9) 100%);
-            border: 1px dashed var(--gold);
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
+        .ads-banner { background: linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(11,15,25,0.9) 100%); border: 1px dashed var(--gold); border-radius: 14px; padding: 16px; text-align: center; margin-bottom: 14px; }
         .ads-banner h3 { color: var(--gold); font-size: 15px; margin-bottom: 6px; }
         .ads-banner p { color: var(--text-muted); font-size: 12.5px; margin-bottom: 12px; line-height: 1.4; }
-        .btn-ads {
-            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
-            color: #0b0f19;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 13.5px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(212,175,55,0.4);
-            width: 100%;
-        }
-        .btn-ads:active { transform: scale(0.98); }
-
-        .locked-content {
-            opacity: 0.25;
-            pointer-events: none;
-            filter: blur(4px);
-            transition: all 0.4s ease;
-        }
-        .unlocked-content {
-            opacity: 1;
-            pointer-events: auto;
-            filter: none;
-        }
-
-        .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
-        .tab-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border-gold); color: var(--text-muted); padding: 10px 4px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; }
-        .tab-btn.active { background: rgba(212, 175, 55, 0.22); color: var(--gold); border-color: var(--gold); box-shadow: 0 0 12px rgba(212, 175, 55, 0.3); }
-        
-        .content-card { background: rgba(0,0,0,0.3); border-radius: 14px; padding: 18px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; }
-        .section-title { color: var(--gold-light); font-size: 15px; font-weight: 700; margin-bottom: 10px; border-bottom: 1px dashed var(--border-gold); padding-bottom: 6px; }
-        .intro-p { font-size: 13.5px; line-height: 1.65; color: #cbd5e1; margin-bottom: 14px; }
-        .info-block { margin-bottom: 12px; background: rgba(255,255,255,0.025); padding: 10px 12px; border-radius: 10px; border-left: 3px solid var(--gold); }
+        .btn-ads { background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); color: #0b0f19; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; }
+        .locked-content { opacity: 0.25; pointer-events: none; filter: blur(4px); transition: all 0.4s ease; }
+        .unlocked-content { opacity: 1; pointer-events: auto; filter: none; }
+        .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 14px; }
+        .tab-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border-gold); color: var(--text-muted); padding: 10px 4px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center; }
+        .tab-btn.active { background: rgba(212, 175, 55, 0.22); color: var(--gold); border-color: var(--gold); }
+        .content-card { background: rgba(0,0,0,0.3); border-radius: 14px; padding: 16px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 14px; }
+        .section-title { color: var(--gold-light); font-size: 15px; font-weight: 700; margin-bottom: 8px; border-bottom: 1px dashed var(--border-gold); padding-bottom: 6px; }
+        .intro-p { font-size: 13.5px; line-height: 1.6; color: #cbd5e1; margin-bottom: 12px; }
+        .info-block { margin-bottom: 10px; background: rgba(255,255,255,0.025); padding: 10px 12px; border-radius: 10px; border-left: 3px solid var(--gold); }
         .info-header { color: var(--gold); font-size: 13.5px; font-weight: 600; margin-bottom: 4px; }
-        .info-desc { font-size: 13px; line-height: 1.55; color: var(--text-main); }
-        
-        .btn-action { width: 100%; background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); border: none; color: #0b0f19; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
-        .btn-action:active { transform: scale(0.98); }
-        .btn-outline { width: 100%; background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; }
-        .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.7; margin-top: 10px; }
+        .info-desc { font-size: 13px; line-height: 1.5; color: var(--text-main); }
+        .btn-action { width: 100%; background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); border: none; color: #0b0f19; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 8px; }
+        .btn-outline { width: 100%; background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; text-align: center; margin-top: 8px; }
+        .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.7; margin-top: 8px; }
+        #ad-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 8, 15, 0.96); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        .ad-box { background: #131b2e; border: 2px solid var(--gold); border-radius: 16px; width: 100%; max-width: 340px; padding: 22px; box-shadow: 0 10px 30px rgba(212,175,55,0.4); }
+        .ad-timer { font-size: 32px; font-weight: 800; color: var(--gold); margin: 12px 0; }
+        .progress-bar-container { width: 100%; background: rgba(255,255,255,0.1); border-radius: 8px; height: 6px; overflow: hidden; margin-bottom: 16px; }
+        #ad-progress { width: 0%; height: 100%; background: linear-gradient(90deg, #d4af37, #f3e5ab); transition: width 1s linear; }
     </style>
 </head>
 <body>
@@ -128,7 +59,6 @@
             <p class="subtitle">Элитный портал судьбы и глубоких нумерологических откровений</p>
         </div>
 
-        <!-- ЭКРАН 1: ВВОД ДАТЫ И ВРЕМЕНИ -->
         <div id="screen-form" class="screen active">
             <div class="form-group">
                 <label class="form-label">📅 ДАТА ВАШЕГО РОЖДЕНИЯ</label>
@@ -144,7 +74,6 @@
                     </select>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="form-label">⏰ ВРЕМЯ РОЖДЕНИЯ</label>
                 <div class="select-row">
@@ -164,20 +93,14 @@
                     </select>
                 </div>
             </div>
-
-            <button class="btn-action" onclick="showResults()" style="margin-top: 10px;">✨ Узнать прогноз судьбы</button>
+            <button class="btn-action" onclick="showResultsPart1()">✨ Узнать прогноз судьбы</button>
         </div>
 
-        <!-- ЭКРАН 2: РЕЗУЛЬТАТЫ -->
-        <div id="screen-result" class="screen">
+        <div id="screen-part1" class="screen">
             <div class="matrix-badge">
                 <div class="matrix-title" id="matrix-title">⚡ Ваша матрица судьбы: 4 (Император)</div>
-                <div class="matrix-text">
-                    Энергия структуры, материального порядка и надежности. Ваша миссия — выстраивать прочные системы и управлять ресурсами.
-                </div>
+                <div class="matrix-text">Энергия структуры, материального порядка и надежности. Ваша миссия — выстраивать прочные системы и управлять ресурсами.</div>
             </div>
-
-            <!-- 1. ПРОГНОЗ НА СЕГОДНЯ -->
             <div class="content-card">
                 <div class="section-title">🌟 Энергетика и совет на сегодня:</div>
                 <div class="intro-p">Сегодняшний день требует от вас предельной собранности, дисциплины и холодного рассудка. Энергия числа 4 не прощает хаоса и импульсивных трат.</div>
@@ -186,150 +109,166 @@
                     <div class="info-desc">Идеальный момент для аудита бюджета, работы с документами и закрытия задолженностей.</div>
                 </div>
             </div>
+            <button class="btn-action" onclick="goToStep2()">💎 Перейти к глубокому прогнозу на Год</button>
+            <button class="btn-outline" onclick="showForm()">🔄 Ввести другую дату</button>
+        </div>
 
-            <!-- 2. РЕКЛАМНЫЙ БЛОК ADSGRAM (ID 54290) -->
+        <div id="screen-part2" class="screen">
             <div class="ads-banner" id="ads-banner-box">
-                <h3>💎 Премиум-разбор (Год, Месяц, М & Ж)</h3>
-                <p>Получите полный расширенный нумерологический код судьбы и финансовый прогноз.</p>
+                <h3>💎 Глубокий разбор (Год, Месяц, М & Ж)</h3>
+                <p>Посмотрите короткую рекламу партнера, чтобы разблокировать полный макро-цикл и финансовый код.</p>
                 <button class="btn-ads" onclick="showAdsgramReward()">▶ Смотреть рекламу и разблокировать</button>
             </div>
-
-            <!-- 3. РАСШИРЕННЫЙ ВАРИАНТ (ЗАКРЫТ) -->
             <div id="extended-section" class="locked-content">
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('year', this)">🚀 Год</button>
                     <button class="tab-btn" onclick="switchTab('month', this)">🌙 Месяц</button>
                     <button class="tab-btn" onclick="switchTab('love', this)">👥 М & Ж</button>
                 </div>
-
                 <div id="tab-content" class="content-card"></div>
             </div>
-
-            <button class="btn-outline" onclick="showForm()" style="margin-top: 16px;">🔄 Ввести другую дату</button>
+            <button class="btn-outline" onclick="showPart1()" style="margin-top: 10px;">⬅ Назад к прогнозу на сегодня</button>
         </div>
     </div>
 
+    <div id="ad-modal">
+        <div class="ad-box">
+            <h3 style="color: var(--gold); font-size: 16px; margin-bottom: 6px;">📺 Просмотр рекламы</h3>
+            <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">Adsgram • Награда за просмотр</p>
+            <div class="ad-timer" id="ad-counter">15</div>
+            <div class="progress-bar-container"><div id="ad-progress"></div></div>
+            <p style="color: var(--text-muted); font-size: 11px;">Пожалуйста, досмотрите ролик до конца для разблокировки.</p>
+        </div>
+    </div>
     <div class="footer">Оракул Звёзд © 2026 • Все права защищены</div>
-
-    <script>
-        const data = {
-            year: {
-                title: "🚀 Развернутый макро-цикл текущего года:",
-                intro: "Этот год закладывает фундамент вашего благополучия на целое десятилетие вперед. Время стратегических решений и активов.",
-                blocks: [
-                    { h: "📈 Финансовый прорыв:", d: "Переход на новый уровень дохода через системность, делегирование и создание пассивных источников." },
-                    { h: "🏛 Статус и влияние:", d: "Укрепление деловой репутации, возможно получение руководящей должности или статуса владельца проекта." },
-                    { h: "🏠 Семья и недвижимость:", d: "Благоприятнейший период для покупки жилья, масштабного ремонта или строительства." },
-                    { h: "🧠 Личная эволюция:", d: "Изучение законов управления финансами, структуры капитала и психологии больших денег." }
-                ]
-            },
-            month: {
-                title: "🌙 Анализ энергетики текущего месяца:",
-                intro: "Месяц структурной инвентаризации вашей жизни. Все старые дела требуют закрытия.",
-                blocks: [
-                    { h: "📊 Аудит обязательств:", d: "Сведите дебет с кредитом, закройте мелкие долги, разберите юридические вопросы." },
-                    { h: "🤝 Деловые связи:", d: "Проверка окружения на надежность и преданность вашим долгосрочным целям." },
-                    { h: "💡 Внутренний фокус:", d: "Погружение в нумерологию, планирование и выстраивание четких алгоритмов работы." }
-                ]
-            },
-            love: {
-                title: "👥 Мужчина и Женщина (Психология и гармония союза):",
-                intro: "Глубинный разбор ролей в паре через призму нумерологии. Понимание потребностей друг друга.",
-                blocks: [
-                    { h: "🧔 Для Мужчин (Архетип Опоры):", d: "Ваша сила — в умении держать слово и обеспечивать финансовую безопасность семьи." },
-                    { h: "👩 Для Женщин (Архетип Хранительницы):", d: "Ваша задача — наполнять пространство теплом и мудро поддерживать амбиции партнера." },
-                    { h: "🔑 Секрет процветания пары:", d: "Совместное бюджетирование, уважение к личным границам и общие цели." }
-                ]
-            }
-        };
-
-        function showResults() {
-            const day = document.getElementById('sel-day').value;
-            const month = document.getElementById('sel-month').value;
-            const year = document.getElementById('sel-year').value;
-            
-            let sum = parseInt(day) + parseInt(month) + parseInt(year);
-            while (sum > 22) {
-                sum = sum.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
-            }
-            if (sum === 0) sum = 4;
-
-            document.getElementById('matrix-title').innerText = `⚡ Ваша матрица судьбы: ${sum}`;
-            
-            document.getElementById('screen-form').classList.remove('active');
-            document.getElementById('screen-result').classList.add('active');
-            
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-            }
-            switchTab('year', document.querySelector('.tab-btn'));
+<script>
+    const data = {
+        year: {
+            title: "🚀 Развернутый макро-цикл текущего года:",
+            intro: "Этот год закладывает фундамент вашего благополучия на целое десятилетие вперед. Время стратегических решений и активов.",
+            blocks: [
+                { h: "📈 Финансовый прорыв:", d: "Переход на новый уровень дохода через системность, делегирование и создание пассивных источников." },
+                { h: "🏛 Статус и влияние:", d: "Укрепление деловой репутации, возможно получение руководящей должности или статуса владельца проекта." },
+                { h: "🏠 Семья и недвижимость:", d: "Благоприятнейший период для покупки жилья, масштабного ремонта или строительства." },
+                { h: "🧠 Личная эволюция:", d: "Изучение законов управления финансами, структуры капитала и психологии больших денег." }
+            ]
+        },
+        month: {
+            title: "🌙 Анализ энергетики текущего месяца:",
+            intro: "Месяц структурной инвентаризации вашей жизни. Все старые дела требуют закрытия.",
+            blocks: [
+                { h: "📊 Аудит обязательств:", d: "Сведите дебет с кредитом, закройте мелкие долги, разберите юридические вопросы." },
+                { h: "🤝 Деловые связи:", d: "Проверка окружения на надежность и преданность вашим долгосрочным целям." },
+                { h: "💡 Внутренний фокус:", d: "Погружение в нумерологию, планирование и выстраивание четких алгоритмов работы." }
+            ]
+        },
+        love: {
+            title: "👥 Мужчина и Женщина (Психология и гармония союза):",
+            intro: "Глубинный разбор ролей в паре через призму нумерологии. Понимание потребностей друг друга.",
+            blocks: [
+                { h: "🧔 Для Мужчин (Архетип Опоры):", d: "Ваша сила — в умении держать слово и обеспечивать финансовую безопасность семьи." },
+                { h: "👩 Для Женщин (Архетип Хранительницы):", d: "Ваша задача — наполнять пространство теплом и мудро поддерживать амбиции партнера." },
+                { h: "🔑 Секрет процветания пары:", d: "Совместное бюджетирование, уважение к личным границам и общие цели." }
+            ]
         }
+    };
 
-        function showForm() {
-            document.getElementById('screen-result').classList.remove('active');
-            document.getElementById('screen-form').classList.add('active');
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-            }
-        }
+    function showResultsPart1() {
+        const day = document.getElementById('sel-day').value;
+        const month = document.getElementById('sel-month').value;
+        const year = document.getElementById('sel-year').value;
+        let sum = parseInt(day) + parseInt(month) + parseInt(year);
+        while (sum > 22) { sum = sum.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0); }
+        if (sum === 0) sum = 4;
+        document.getElementById('matrix-title').innerText = `⚡ Ваша матрица судьбы: ${sum}`;
+        document.getElementById('screen-form').classList.remove('active');
+        document.getElementById('screen-part1').classList.add('active');
+        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); }
+    }
 
-        function showAdsgramReward() {
-            if (window.Adsgram && typeof window.Adsgram.init === 'function') {
-                try {
-                    const adController = window.Adsgram.init({ blockId: "54290", debug: true });
-                    adController.show().then((result) => {
-                        unlockExtendedContent();
-                    }).catch((err) => {
-                        console.warn("Adsgram no-fill or error, falling back to simulated completion:", err);
-                        // Защитный механизм для новых блоков: если реклама отсутствует, разблокируем контент через короткую задержку
-                        setTimeout(unlockExtendedContent, 600);
-                    });
-                } catch (e) {
-                    console.error("Adsgram exception:", e);
-                    setTimeout(unlockExtendedContent, 600);
-                }
-            } else {
-                // Если SDK по какой-то причине не загрузился в Telegram WebView, разблокируем контент
-                setTimeout(unlockExtendedContent, 600);
+    function showForm() {
+        document.getElementById('screen-part1').classList.remove('active');
+        document.getElementById('screen-form').classList.add('active');
+        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
+    }
+
+    function goToStep2() {
+        document.getElementById('screen-part1').classList.remove('active');
+        document.getElementById('screen-part2').classList.add('active');
+        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
+        switchTab('year', document.querySelector('.tab-btn'));
+    }
+
+    function showPart1() {
+        document.getElementById('screen-part2').classList.remove('active');
+        document.getElementById('screen-part1').classList.add('active');
+        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
+    }
+
+    function showAdsgramReward() {
+        if (window.Adsgram && typeof window.Adsgram.init === 'function') {
+            try {
+                const adController = window.Adsgram.init({ blockId: "54290", debug: true });
+                adController.show().then((result) => {
+                    unlockExtendedContent();
+                }).catch((err) => {
+                    console.warn("Adsgram fallback:", err);
+                    startSimulatedAd();
+                });
+                return;
+            } catch (e) {
+                console.warn("Adsgram exception:", e);
             }
         }
+        startSimulatedAd();
+    }
 
-        function unlockExtendedContent() {
-            document.getElementById('ads-banner-box').innerHTML = '<h3 style="color: #4ade80;">✅ Премиум-разбор успешно разблокирован!</h3><p style="color: #cbd5e1;">Вам доступны все вкладки Год, Месяц и М & Ж.</p>';
-            const ext = document.getElementById('extended-section');
-            ext.classList.remove('locked-content');
-            ext.classList.add('unlocked-content');
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+    function startSimulatedAd() {
+        const modal = document.getElementById('ad-modal');
+        const counter = document.getElementById('ad-counter');
+        const progressBar = document.getElementById('ad-progress');
+        modal.style.display = 'flex';
+        let timeLeft = 15;
+        counter.innerText = timeLeft;
+        progressBar.style.width = '0%';
+        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy'); }
+        const interval = setInterval(() => {
+            timeLeft--;
+            counter.innerText = timeLeft;
+            progressBar.style.width = (((15 - timeLeft) / 15) * 100) + '%';
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                modal.style.display = 'none';
+                unlockExtendedContent();
             }
+        }, 1000);
+    }
+
+    function unlockExtendedContent() {
+        document.getElementById('ads-banner-box').innerHTML = '<h3 style="color: #4ade80; font-size:15px;">✅ Глубокий разбор разблокирован!</h3><p style="color: #cbd5e1; font-size:12px;">Вам доступны все вкладки ниже.</p>';
+        const ext = document.getElementById('extended-section');
+        ext.classList.remove('locked-content');
+        ext.classList.add('unlocked-content');
+        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.notificationOccurred('success'); }
+    }
+
+    function switchTab(tabKey, btnElement) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        if(btnElement) btnElement.classList.add('active');
+        const content = data[tabKey];
+        const container = document.getElementById('tab-content');
+        let html = `<div class="section-title">${content.title}</div><div class="intro-p">${content.intro}</div>`;
+        content.blocks.forEach(b => {
+            html += `<div class="info-block"><div class="info-header">${b.h}</div><div class="info-desc">${b.d}</div></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    window.onload = function() {
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
         }
-
-        function switchTab(tabKey, btnElement) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
-
-            const content = data[tabKey];
-            const container = document.getElementById('tab-content');
-            
-            let html = `<div class="section-title">${content.title}</div>
-                        <div class="intro-p">${content.intro}</div>`;
-            
-            content.blocks.forEach(b => {
-                html += `<div class="info-block">
-                            <div class="info-header">${b.h}</div>
-                            <div class="info-desc">${b.d}</div>
-                         </div>`;
-            });
-
-            container.innerHTML = html;
-        }
-
-        window.onload = function() {
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.ready();
-                window.Telegram.WebApp.expand();
-            }
-        };
-    </script>
-</body>
+    };
+</script>
 </html>
