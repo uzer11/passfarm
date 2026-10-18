@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оракул Звёзд v9.6 — Элитный портал судьбы</title>
-    <script src="https://telegram.org/js/telegram-web-app.js" async></script>
-    <script src="https://sad.adsgram.ai/js/adsgram.min.js" async></script>
+    <title>Оракул Звёзд v9.7 — Элитный портал судьбы</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -275,17 +275,26 @@
 
         function showAdsgramReward() {
             if (window.Adsgram) {
-                // Прямой вызов init().show() по клику согласно официальной документации Adsgram
-                const adController = window.Adsgram.init({ blockId: "54290", debug: true });
-                adController.show().then((result) => {
-                    // Успешный просмотр до конца
+                try {
+                    const adController = window.Adsgram.init({ blockId: "54290", debug: true });
+                    adController.show().then((result) => {
+                        unlockExtendedContent();
+                    }).catch((err) => {
+                        console.warn("Adsgram error or no ad fill:", err);
+                        // Если реклама еще не заполнена в новом блоке, даем пользователю доступ с уведомлением
+                        if (confirm("В рекламном блоке пока нет доступных роликов (новый блок). Разблокировать премиум-разбор?")) {
+                            unlockExtendedContent();
+                        }
+                    });
+                } catch (e) {
+                    console.error("Adsgram init exception:", e);
                     unlockExtendedContent();
-                }).catch((err) => {
-                    console.error("Adsgram error:", err);
-                    alert("Реклама закрыта или не найдена. Попробуйте еще раз.");
-                });
+                }
             } else {
-                alert("Рекламный модуль Adsgram еще не загрузился. Проверьте подключение к интернету.");
+                // Если SDK по какой-то причине заблокирован (например, блокировщиком рекламы)
+                if (confirm("Рекламный модуль недоступен. Разблокировать премиум-разбор?")) {
+                    unlockExtendedContent();
+                }
             }
         }
 
