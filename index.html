@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд v11.7 (OnClickA VAST Direct)</title>
+    <title>Оракул Звёзд v11.8 (Custom UI Pickers)</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -45,11 +45,15 @@
         .form-group { margin-bottom: 16px; }
         .form-label { color: var(--gold); font-size: 12.5px; font-weight: 600; margin-bottom: 6px; display: block; text-align: center; }
         .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; }
-        select {
+        
+        /* Кастомные элементы выбора взамен селекторов */
+        .custom-picker-btn {
             width: 100%; background: #070913; border: 1px solid var(--card-border);
-            color: var(--gold-light); padding: 11px 8px; border-radius: 12px; font-size: 13.5px; outline: none; text-align: center;
+            color: var(--gold-light); padding: 11px 8px; border-radius: 12px; font-size: 13.5px; 
+            outline: none; text-align: center; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 4px;
         }
-        select option { background: #101728; color: var(--text-main); }
+        .custom-picker-btn:active { background: rgba(212, 175, 55, 0.15); }
+
         .matrix-badge {
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(16, 23, 40, 0.8) 100%);
             border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 16px;
@@ -90,15 +94,26 @@
         }
         .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.6; margin-top: 10px; }
         
-        #ad-modal {
+        /* Модальные окна для выбора и рекламы */
+        .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(4, 6, 12, 0.96); backdrop-filter: blur(8px); z-index: 9999;
+            background: rgba(4, 6, 12, 0.92); backdrop-filter: blur(8px); z-index: 9999;
             display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center;
         }
-        .ad-box {
+        .modal-box {
             background: var(--card-bg); border: 2px solid var(--gold); border-radius: 20px;
-            width: 100%; max-width: 360px; padding: 24px; box-shadow: 0 15px 40px rgba(212,175,55,0.3);
+            width: 100%; max-width: 360px; padding: 20px; box-shadow: 0 15px 40px rgba(212,175,55,0.3);
+            max-height: 80vh; display: flex; flex-direction: column;
         }
+        .modal-title { color: var(--gold); font-size: 17px; font-weight: 700; margin-bottom: 12px; }
+        .picker-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; overflow-y: auto; max-height: 50vh; padding: 4px;
+        }
+        .picker-item {
+            background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); color: var(--text-main);
+            padding: 12px 6px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center;
+        }
+        .picker-item:active, .picker-item.selected { background: var(--gold); color: #070913; border-color: var(--gold); }
         .ad-timer { font-size: 36px; font-weight: 800; color: var(--gold); margin: 14px 0; }
         .progress-bar-container { width: 100%; background: rgba(255,255,255,0.08); border-radius: 8px; height: 6px; overflow: hidden; margin-bottom: 18px; }
         #ad-progress { width: 0%; height: 100%; background: linear-gradient(90deg, #d4af37, #f3e5ab); transition: width 1s linear; }
@@ -116,35 +131,18 @@
             <div class="form-group">
                 <label class="form-label">📅 ДАТА ВАШЕГО РОЖДЕНИЯ</label>
                 <div class="select-row">
-                    <select id="sel-day">
-                        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
-                    </select>
-                    <select id="sel-month">
-                        <option value="1">Январь</option><option value="2">Февраль</option><option value="3">Март</option><option value="4" selected>Апрель</option><option value="5">Май</option><option value="6">Июнь</option><option value="7">Июль</option><option value="8">Август</option><option value="9">Сентябрь</option><option value="10">Октябрь</option><option value="11">Ноябрь</option><option value="12">Декабрь</option>
-                    </select>
-                    <select id="sel-year">
-                        <option value="1985">1985</option><option value="1988">1988</option><option value="1990">1990</option><option value="1995">1995</option><option value="2000" selected>2000</option><option value="2005">2005</option><option value="2010">2010</option>
-                    </select>
+                    <div class="custom-picker-btn" id="btn-day" onclick="openPicker('day')">4</div>
+                    <div class="custom-picker-btn" id="btn-month" onclick="openPicker('month')">Апрель</div>
+                    <div class="custom-picker-btn" id="btn-year" onclick="openPicker('year')">2000</div>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">⏰ ВРЕМЯ РОЖДЕНИЯ</label>
                 <div class="select-row">
-                    <select id="sel-hour">
-                        <option value="unknown">Не знаю</option>
-                        <option value="1">1 ч</option><option value="2">2 ч</option><option value="3">3 ч</option><option value="4">4 ч</option><option value="5">5 ч</option><option value="6">6 ч</option><option value="7">7 ч</option><option value="8">8 ч</option><option value="9">9 ч</option><option value="10">10 ч</option><option value="11">11 ч</option><option value="12" selected>12 ч</option>
-                    </select>
-                    <select id="sel-ampm">
-                        <option value="AM">AM (Утро)</option>
-                        <option value="PM" selected>PM (Вечер)</option>
-                    </select>
-                    <select id="sel-min">
-                        <option value="00" selected>~00 мин</option>
-                        <option value="15">~15 мин</option>
-                        <option value="30">~30 мин</option>
-                        <option value="45">~45 мин</option>
-                    </select>
+                    <div class="custom-picker-btn" id="btn-hour" onclick="openPicker('hour')">12 ч</div>
+                    <div class="custom-picker-btn" id="btn-ampm" onclick="openPicker('ampm')">PM</div>
+                    <div class="custom-picker-btn" id="btn-min" onclick="openPicker('min')">00 мин</div>
                 </div>
             </div>
 
@@ -186,14 +184,104 @@
         </div>
     </div>
 
-    <div id="ad-modal">
-        <div class="ad-box" id="ad-box-content">
-            <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 6px;">📺 Загрузка рекламы...</h3>
-            <div class="ad-timer" id="ad-counter">...</div>
+    <!-- Модальное окно выбора параметров -->
+    <div id="picker-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-title" id="picker-modal-title">Выберите значение</div>
+            <div class="picker-grid" id="picker-grid-content"></div>
+            <button class="btn-outline" style="margin-top: 14px;" onclick="closePicker()">Закрыть</button>
         </div>
     </div>
+
+    <!-- Модальное окно рекламы -->
+    <div id="ad-modal" class="modal-overlay">
+        <div class="modal-box" id="ad-box-content">
+            <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 6px;">📺 Загрузка рекламы OnClickA</h3>
+            <div class="ad-timer" id="ad-counter">⏳</div>
+            <p style="color: var(--text-muted); font-size: 11.5px;">Получение видеопотока...</p>
+        </div>
+    </div>
+
     <div class="footer">Оракул Звёзд © 2026 • Все права защищены</div>
 <script>
+    // Хранилище выбранных пользователем данных
+    const userData = {
+        day: 4,
+        month: 4,
+        monthName: "Апрель",
+        year: 2000,
+        hour: 12,
+        ampm: "PM",
+        min: "00"
+    };
+
+    const monthsList = [
+        {val: 1, name: "Январь"}, {val: 2, name: "Февраль"}, {val: 3, name: "Март"},
+        {val: 4, name: "Апрель"}, {val: 5, name: "Май"}, {val: 6, name: "Июнь"},
+        {val: 7, name: "Июль"}, {val: 8, name: "Август"}, {val: 9, name: "Сентябрь"},
+        {val: 10, name: "Октябрь"}, {val: 11, name: "Ноябрь"}, {val: 12, name: "Декабрь"}
+    ];
+
+    function openPicker(type) {
+        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
+        const modal = document.getElementById('picker-modal');
+        const title = document.getElementById('picker-modal-title');
+        const grid = document.getElementById('picker-grid-content');
+        grid.innerHTML = '';
+
+        if (type === 'day') {
+            title.innerText = "Выберите день рождения";
+            for (let i = 1; i <= 31; i++) {
+                grid.innerHTML += `<div class="picker-item ${userData.day === i ? 'selected' : ''}" onclick="selectValue('day', ${i}, '${i}')">${i}</div>`;
+            }
+        } else if (type === 'month') {
+            title.innerText = "Выберите месяц рождения";
+            monthsList.forEach(m => {
+                grid.innerHTML += `<div class="picker-item ${userData.month === m.val ? 'selected' : ''}" onclick="selectValue('month', ${m.val}, '${m.name}')">${m.name}</div>`;
+            });
+        } else if (type === 'year') {
+            title.innerText = "Выберите год рождения";
+            const years = [1980, 1982, 1985, 1988, 1990, 1992, 1995, 1998, 2000, 2002, 2005, 2008, 2010];
+            years.forEach(y => {
+                grid.innerHTML += `<div class="picker-item ${userData.year === y ? 'selected' : ''}" onclick="selectValue('year', ${y}, '${y}')">${y}</div>`;
+            });
+        } else if (type === 'hour') {
+            title.innerText = "Выберите час";
+            for (let i = 1; i <= 12; i++) {
+                grid.innerHTML += `<div class="picker-item ${userData.hour === i ? 'selected' : ''}" onclick="selectValue('hour', ${i}, '${i} ч')">${i} ч</div>`;
+            }
+        } else if (type === 'ampm') {
+            title.innerText = "Время суток";
+            ['AM', 'PM'].forEach(ap => {
+                grid.innerHTML += `<div class="picker-item ${userData.ampm === ap ? 'selected' : ''}" onclick="selectValue('ampm', '${ap}', '${ap}')">${ap}</div>`;
+            });
+        } else if (type === 'min') {
+            title.innerText = "Минуты";
+            ['00', '15', '30', '45'].forEach(mn => {
+                grid.innerHTML += `<div class="picker-item ${userData.min === mn ? 'selected' : ''}" onclick="selectValue('min', '${mn}', '${mn} мин')">${mn} мин</div>`;
+            });
+        }
+
+        modal.style.display = 'flex';
+    }
+
+    function selectValue(type, val, label) {
+        userData[type] = val;
+        if (type === 'day') document.getElementById('btn-day').innerText = label;
+        if (type === 'month') document.getElementById('btn-month').innerText = label;
+        if (type === 'year') document.getElementById('btn-year').innerText = label;
+        if (type === 'hour') document.getElementById('btn-hour').innerText = label;
+        if (type === 'ampm') document.getElementById('btn-ampm').innerText = label;
+        if (type === 'min') document.getElementById('btn-min').innerText = label;
+
+        closePicker();
+        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.selectionChanged(); }
+    }
+
+    function closePicker() {
+        document.getElementById('picker-modal').style.display = 'none';
+    }
+
     const data = {
         year: {
             title: "🚀 Развернутый макро-цикл текущего года:",
@@ -226,10 +314,7 @@
     };
 
     function showResultsPart1() {
-        const day = document.getElementById('sel-day').value;
-        const month = document.getElementById('sel-month').value;
-        const year = document.getElementById('sel-year').value;
-        let sum = parseInt(day) + parseInt(month) + parseInt(year);
+        let sum = parseInt(userData.day) + parseInt(userData.month) + parseInt(userData.year);
         while (sum > 22) { sum = sum.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0); }
         if (sum === 0) sum = 4;
         
@@ -258,7 +343,7 @@
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
     }
 
-    // ИНТЕГРАЦИЯ ONCLICKA VAST С ОБХОДОМ CORS (spot_id=6153907)
+    // ИНТЕГРАЦИЯ ONCLICKA VAST (spot_id=6153907) с обходом CORS
     async function showOnClickAReward() {
         const rawVastUrl = "https://bid.onclckstr.com/vast?spot_id=6153907";
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); }
@@ -274,13 +359,11 @@
 
         let xmlText = null;
 
-        // Попытка 1: Прямой запрос
         try {
             const response = await fetch(rawVastUrl, { mode: 'cors' });
             if (response.ok) xmlText = await response.text();
         } catch(e) {}
 
-        // Попытка 2: Запрос через прокси-обход CORS
         if (!xmlText) {
             try {
                 const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(rawVastUrl);
@@ -289,7 +372,6 @@
             } catch(err) {}
         }
 
-        // Парсинг VAST и запуск видео
         if (xmlText) {
             try {
                 const parser = new DOMParser();
@@ -303,7 +385,6 @@
             } catch(parseErr) {}
         }
         
-        // Если видео не найдено в ответе — включаем страховочный таймер
         startSimulatedAd();
     }
 
@@ -355,7 +436,6 @@
 
             if (timeLeft <= 0) {
                 clearInterval(interval);
-                modal.style.display = '0';
                 modal.style.display = 'none';
                 unlockExtendedContent();
             }
