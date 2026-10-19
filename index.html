@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд v11.3</title>
+    <title>Оракул Звёзд v11.4</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
     <style>
@@ -62,7 +62,7 @@
             border: 1px dashed var(--gold); border-radius: 16px; padding: 18px; text-align: center; margin-bottom: 16px;
         }
         .ads-banner h3 { color: var(--gold); font-size: 15.5px; margin-bottom: 6px; font-weight: 700; }
-        .ads-banner p { color: var(--text-muted); font-size: 12.5px; margin-bottom: 14px; line-height: 1.45; }
+        .ads-banner p { color: var(--text-muted); font-size: 12.5px; margin-bottom: 10px; line-height: 1.45; }
         .btn-ads {
             background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); color: #070913; border: none;
             padding: 13px 20px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%;
@@ -90,6 +90,7 @@
             padding: 13px; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; margin-top: 8px;
         }
         .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.6; margin-top: 10px; }
+        .sdk-status { font-size: 11px; margin-top: 8px; text-align: center; color: var(--text-muted); padding: 4px; background: rgba(0,0,0,0.2); border-radius: 6px; }
         
         #ad-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -172,8 +173,9 @@
         <div id="screen-part2" class="screen">
             <div class="ads-banner" id="ads-banner-box">
                 <h3>💎 Глубокий разбор (Год, Месяц, М & Ж)</h3>
-                <p>Посмотрите тестовую рекламу Adsgram для разблокировки.</p>
-                <button class="btn-ads" onclick="showAdsgramReward()">▶ Смотреть рекламу (Test Mode)</button>
+                <p>Посмотрите рекламу для разблокировки контента.</p>
+                <button class="btn-ads" onclick="showAdsgramReward()">▶ Смотреть рекламу</button>
+                <div id="sdk-status" class="sdk-status">Проверка связи с Adsgram...</div>
             </div>
             <div id="extended-section" class="locked-content">
                 <div class="tabs">
@@ -254,6 +256,7 @@
         document.getElementById('screen-part2').classList.add('active');
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
         switchTab('year', document.querySelector('.tab-btn'));
+        checkAdsgramStatus();
     }
 
     function showPart1() {
@@ -262,16 +265,26 @@
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
     }
 
-    // ТЕСТОВЫЙ РЕЖИМ: ВКЛЮЧАЕМ debug: true, ЧТОБЫ УВИДЕТЬ ТЕСТОВЫЙ ПЛЕЕР РЕКЛАМЫ
+    // ПРОВЕРКА ДОСТУПНОСТИ SDK В РЕАЛЬНОМ ВРЕМЕНИ
+    function checkAdsgramStatus() {
+        const statusEl = document.getElementById('sdk-status');
+        setTimeout(() => {
+            if (window.Adsgram && typeof window.Adsgram.init === 'function') {
+                statusEl.innerHTML = "Статус: <span style='color:#4ade80;'>✅ Adsgram SDK доступен</span>";
+            } else {
+                statusEl.innerHTML = "Статус: <span style='color:#f87171;'>❌ Скрипт заблокирован сетью (работает страховка)</span>";
+            }
+        }, 800);
+    }
+
     function showAdsgramReward() {
         if (window.Adsgram && typeof window.Adsgram.init === 'function') {
             try {
-                // debug: true принудительно заставляет Adsgram показать тестовый рекламный ролик
                 const adController = window.Adsgram.init({ blockId: "54290", debug: true });
                 adController.show().then((result) => {
                     unlockExtendedContent();
                 }).catch((err) => {
-                    console.warn("Adsgram test show failed, falling back to timer:", err);
+                    console.warn("Adsgram show error:", err);
                     startSimulatedAd();
                 });
                 return;
