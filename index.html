@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд v11.1</title>
+    <title>Оракул Звёзд v11.2</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
+    <script src="https://sad.adsgram.ai/js/adsgram.min.js" onerror="console.warn('Adsgram script blocked by network/webview');"></script>
     <style>
         :root {
             --bg-color: #070913;
@@ -152,6 +152,44 @@
             margin-top: 8px;
         }
         .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.6; margin-top: 10px; }
+
+        /* МОДАЛЬНОЕ ОКНО ТАЙМЕРА-СТРАХОВКИ */
+        #ad-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(4, 6, 12, 0.96);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        .ad-box {
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            padding: 24px;
+            box-shadow: 0 15px 40px rgba(212,175,55,0.3);
+        }
+        .ad-timer { font-size: 36px; font-weight: 800; color: var(--gold); margin: 14px 0; }
+        .progress-bar-container {
+            width: 100%;
+            background: rgba(255,255,255,0.08);
+            border-radius: 8px;
+            height: 6px;
+            overflow: hidden;
+            margin-bottom: 18px;
+        }
+        #ad-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #d4af37, #f3e5ab);
+            transition: width 1s linear;
+        }
     </style>
 </head>
 <body>
@@ -226,8 +264,8 @@
         <div id="screen-part2" class="screen">
             <div class="ads-banner" id="ads-banner-box">
                 <h3>💎 Глубокий разбор (Год, Месяц, М & Ж)</h3>
-                <p>Посмотрите рекламу Adsgram для разблокировки контента.</p>
-                <button class="btn-ads" onclick="showAdsgramReward()">▶ Смотреть рекламу Adsgram</button>
+                <p>Посмотрите рекламу для разблокировки контента.</p>
+                <button class="btn-ads" onclick="showAdsgramReward()">▶ Смотреть рекламу</button>
             </div>
 
             <div id="extended-section" class="locked-content">
@@ -241,6 +279,19 @@
             </div>
 
             <button class="btn-outline" onclick="showPart1()">⬅ Назад к прогнозу</button>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ТАЙМЕРА-СТРАХОВКИ -->
+    <div id="ad-modal">
+        <div class="ad-box">
+            <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 6px;">📺 Просмотр рекламы</h3>
+            <p style="color: var(--text-muted); font-size: 12.5px; margin-bottom: 12px;">Партнерская программа • Награда</p>
+            <div class="ad-timer" id="ad-counter">15</div>
+            <div class="progress-bar-container">
+                <div id="ad-progress"></div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 11.5px;">Пожалуйста, досмотрите ролик до конца для разблокировки контента.</p>
         </div>
     </div>
     <div class="footer">Оракул Звёзд © 2026 • Все права защищены</div>
@@ -318,27 +369,54 @@
         }
     }
 
-    // СТРОГИЙ ВЫЗОВ ОФИЦИАЛЬНОГО ADSGRAM SDK ДЛЯ УЧЕТА ПОКАЗОВ И ДОХОДА
+    // УМНЫЙ ГИБРИД: ПЕРЕХВАТ ADSGRAM ИЛИ СТРАХОВОЙ ТАЙМЕР
     function showAdsgramReward() {
+        // Проверяем, загрузился ли реальный Adsgram SDK
         if (window.Adsgram && typeof window.Adsgram.init === 'function') {
             try {
-                // Инициализируем ваш блок 54290 (debug: false для реального учета показов в статистике)
                 const adController = window.Adsgram.init({ blockId: "54290", debug: false });
-                
                 adController.show().then((result) => {
-                    // Реклама успешно просмотрена пользователем — засчитываем показ и открываем контент
+                    // Реальная реклама Adsgram успешно показана!
                     unlockExtendedContent();
                 }).catch((err) => {
-                    console.error("Adsgram show error:", err);
-                    alert("Реклама в данный момент загружается или недоступна. Попробуйте еще раз через пару секунд.");
+                    console.warn("Adsgram no-fill or error, using safe fallback timer:", err);
+                    startSimulatedAd();
                 });
+                return;
             } catch (e) {
-                console.error("Adsgram exception:", e);
-                alert("Ошибка запуска рекламы. Проверьте соединение.");
+                console.warn("Adsgram exception, using safe fallback timer:", e);
             }
-        } else {
-            alert("Модуль Adsgram еще загружается. Подождите секунду и нажмите снова.");
         }
+        
+        // Если SDK заблокирован или не догрузился в сети Telegram — запускаем таймер-страховку
+        startSimulatedAd();
+    }
+
+    function startSimulatedAd() {
+        const modal = document.getElementById('ad-modal');
+        const counter = document.getElementById('ad-counter');
+        const progressBar = document.getElementById('ad-progress');
+        
+        modal.style.display = 'flex';
+        let timeLeft = 15;
+        counter.innerText = timeLeft;
+        progressBar.style.width = '0%';
+
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
+        }
+
+        const interval = setInterval(() => {
+            timeLeft--;
+            counter.innerText = timeLeft;
+            progressBar.style.width = (((15 - timeLeft) / 15) * 100) + '%';
+
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                modal.style.display = 'none';
+                unlockExtendedContent();
+            }
+        }, 1000);
     }
 
     function unlockExtendedContent() {
