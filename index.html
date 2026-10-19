@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд v11.8.1 (Full Years Range)</title>
+    <title>Оракул Звёзд v11.9 (Full Tabs Restored)</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -71,12 +71,15 @@
         }
         .locked-content { opacity: 0.25; pointer-events: none; filter: blur(4px); transition: all 0.4s ease; }
         .unlocked-content { opacity: 1; pointer-events: auto; filter: none; }
-        .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
+        
+        /* Сетка вкладок 2х2 */
+        .tabs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
         .tab-btn {
             background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); color: var(--text-muted);
-            padding: 10px 4px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; text-align: center;
+            padding: 11px 8px; border-radius: 10px; font-size: 12.5px; font-weight: 600; cursor: pointer; text-align: center;
         }
         .tab-btn.active { background: rgba(212, 175, 55, 0.22); color: var(--gold); border-color: var(--gold); }
+        
         .content-card { background: rgba(0,0,0,0.25); border-radius: 16px; padding: 18px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 16px; }
         .section-title { color: var(--gold-light); font-size: 15px; font-weight: 700; margin-bottom: 10px; border-bottom: 1px dashed var(--card-border); padding-bottom: 8px; }
         .intro-p { font-size: 13.5px; line-height: 1.65; color: #cbd5e1; margin-bottom: 14px; }
@@ -167,14 +170,15 @@
 
         <div id="screen-part2" class="screen">
             <div class="ads-banner" id="ads-banner-box">
-                <h3>💎 Глубокий разбор (Год, Месяц, М & Ж)</h3>
+                <h3>💎 Глубокий разбор (Неделя, Месяц, Год, М & Ж)</h3>
                 <p>Посмотрите рекламный ролик для разблокировки полного макро-цикла.</p>
                 <button class="btn-ads" onclick="showOnClickAReward()">▶ Смотреть рекламу</button>
             </div>
             <div id="extended-section" class="locked-content">
                 <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('year', this)">🚀 Год</button>
+                    <button class="tab-btn active" onclick="switchTab('week', this)">📅 Неделя</button>
                     <button class="tab-btn" onclick="switchTab('month', this)">🌙 Месяц</button>
+                    <button class="tab-btn" onclick="switchTab('year', this)">🚀 Год</button>
                     <button class="tab-btn" onclick="switchTab('love', this)">👥 М & Ж</button>
                 </div>
                 <div id="tab-content" class="content-card"></div>
@@ -226,7 +230,7 @@
         const title = document.getElementById('picker-modal-title');
         const grid = document.getElementById('picker-grid-content');
         grid.innerHTML = '';
-        grid.className = 'picker-grid'; // Сброс классов сетки
+        grid.className = 'picker-grid';
 
         if (type === 'day') {
             title.innerText = "Выберите день рождения";
@@ -241,7 +245,6 @@
         } else if (type === 'year') {
             title.innerText = "Выберите год рождения";
             grid.classList.add('years-grid');
-            // Генерация полного диапазона от 1940 до 2026
             for (let y = 2026; y >= 1940; y--) {
                 grid.innerHTML += `<div class="picker-item ${userData.year === y ? 'selected' : ''}" onclick="selectValue('year', ${y}, '${y}')">${y}</div>`;
             }
@@ -283,23 +286,32 @@
     }
 
     const data = {
+        week: {
+            title: "📅 Прогноз энергетики на текущую неделю:",
+            intro: "Эта неделя задает темп текущему этапу вашей жизни. Используйте сильные дни с максимальной эффективностью.",
+            blocks: [
+                { h: "⚡ Понедельник — Среда:", d: "Время активных решений, закрытия финансовых вопросов и структурирования дел." },
+                { h: "🧘 Четверг — Пятница:", d: "Период переосмысления планов, общения с важными людьми и накопления ресурса." },
+                { h: "🌟 Суббота — Воскресенье:", d: "Идеальные дни для отдыха, восстановления сил, гармонии и планирования следующего цикла." }
+            ]
+        },
+        month: {
+            title: "🌙 Анализ энергетики текущего месяца:",
+            intro: "Месяц структурной инвентаризации вашей жизни. Все старые дела требуют завершения.",
+            blocks: [
+                { h: "📊 Аудит обязательств:", d: "Сведите дебет с кредитом, закройте мелкие долги, разберите юридические вопросы." },
+                { h: "🤝 Деловые связи:", d: "Проверка окружения на надежность и преданность вашим долгосрочным целям." },
+                { h: "💡 Внутренний фокус:", d: "Погружение в нумерологию, планирование и выстраивание четких алгоритмов работы." }
+            ]
+        },
         year: {
             title: "🚀 Развернутый макро-цикл текущего года:",
-            intro: "Этот год закладывает фундамент вашего благополучия на целое десятилетие вперед. Время стратегических решений и активов.",
+            intro: "Этот год закладывает фундамент вашего благополучия на целое десятилетие вперед. Время стратегических решений.",
             blocks: [
                 { h: "📈 Финансовый прорыв:", d: "Переход на новый уровень дохода через системность, делегирование и создание пассивных источников." },
                 { h: "🏛 Статус и влияние:", d: "Укрепление деловой репутации, возможно получение руководящей должности или статуса владельца проекта." },
                 { h: "🏠 Семья и недвижимость:", d: "Благоприятнейший период для покупки жилья, масштабного ремонта или строительства." },
                 { h: "🧠 Личная эволюция:", d: "Изучение законов управления финансами, структуры капитала и психологии больших денег." }
-            ]
-        },
-        month: {
-            title: "🌙 Анализ энергетики текущего месяца:",
-            intro: "Месяц структурной инвентаризации вашей жизни. Все старые дела требуют закрытия.",
-            blocks: [
-                { h: "📊 Аудит обязательств:", d: "Сведите дебет с кредитом, закройте мелкие долги, разберите юридические вопросы." },
-                { h: "🤝 Деловые связи:", d: "Проверка окружения на надежность и преданность вашим долгосрочным целям." },
-                { h: "💡 Внутренний фокус:", d: "Погружение в нумерологию, планирование и выстраивание четких алгоритмов работы." }
             ]
         },
         love: {
@@ -334,7 +346,7 @@
         document.getElementById('screen-part1').classList.remove('active');
         document.getElementById('screen-part2').classList.add('active');
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
-        switchTab('year', document.querySelector('.tab-btn'));
+        switchTab('week', document.querySelector('.tab-btn'));
     }
 
     function showPart1() {
