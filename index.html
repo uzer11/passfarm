@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд v11.0</title>
+    <title>Оракул Звёзд v11.1</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
     <style>
         :root {
             --bg-color: #070913;
@@ -33,12 +34,12 @@
             border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 18px;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.05);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.8);
             margin-bottom: 12px;
         }
         .header { text-align: center; margin-bottom: 16px; }
         .crystal-icon { font-size: 44px; margin-bottom: 6px; filter: drop-shadow(0 0 10px rgba(212,175,55,0.4)); }
-        h1 { color: var(--gold); font-size: 22px; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.5px; }
+        h1 { color: var(--gold); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
         .subtitle { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
         
         .screen { display: none; }
@@ -46,7 +47,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         .form-group { margin-bottom: 16px; }
-        .form-label { color: var(--gold); font-size: 12.5px; font-weight: 600; margin-bottom: 6px; display: block; text-align: center; letter-spacing: 0.3px; }
+        .form-label { color: var(--gold); font-size: 12.5px; font-weight: 600; margin-bottom: 6px; display: block; text-align: center; }
         .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; }
         
         select {
@@ -59,7 +60,6 @@
             font-size: 13.5px;
             outline: none;
             text-align: center;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
         select option { background: #101728; color: var(--text-main); }
 
@@ -69,7 +69,6 @@
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         .matrix-title { color: var(--gold); font-size: 15px; font-weight: 700; margin-bottom: 6px; }
         .matrix-text { font-size: 13.5px; line-height: 1.6; color: var(--text-main); }
@@ -81,7 +80,6 @@
             padding: 18px;
             text-align: center;
             margin-bottom: 16px;
-            box-shadow: 0 4px 20px var(--accent-glow);
         }
         .ads-banner h3 { color: var(--gold); font-size: 15.5px; margin-bottom: 6px; font-weight: 700; }
         .ads-banner p { color: var(--text-muted); font-size: 12.5px; margin-bottom: 14px; line-height: 1.45; }
@@ -96,21 +94,11 @@
             cursor: pointer;
             width: 100%;
             box-shadow: 0 6px 20px rgba(212,175,55,0.35);
-            transition: transform 0.1s ease;
         }
         .btn-ads:active { transform: scale(0.98); }
 
-        .locked-content {
-            opacity: 0.25;
-            pointer-events: none;
-            filter: blur(4px);
-            transition: all 0.4s ease;
-        }
-        .unlocked-content {
-            opacity: 1;
-            pointer-events: auto;
-            filter: none;
-        }
+        .locked-content { opacity: 0.25; pointer-events: none; filter: blur(4px); transition: all 0.4s ease; }
+        .unlocked-content { opacity: 1; pointer-events: auto; filter: none; }
 
         .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px; }
         .tab-btn {
@@ -123,13 +111,11 @@
             font-weight: 600;
             cursor: pointer;
             text-align: center;
-            transition: all 0.2s;
         }
         .tab-btn.active {
             background: rgba(212, 175, 55, 0.22);
             color: var(--gold);
             border-color: var(--gold);
-            box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
         }
         
         .content-card { background: rgba(0,0,0,0.25); border-radius: 16px; padding: 18px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 16px; }
@@ -150,11 +136,8 @@
             font-weight: 700;
             cursor: pointer;
             text-align: center;
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
             margin-top: 6px;
         }
-        .btn-action:active { transform: scale(0.98); }
-        
         .btn-outline {
             width: 100%;
             background: transparent;
@@ -167,49 +150,8 @@
             cursor: pointer;
             text-align: center;
             margin-top: 8px;
-            transition: background 0.2s;
         }
-        .btn-outline:active { background: rgba(212,175,55,0.05); }
-
         .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.6; margin-top: 10px; }
-
-        /* ЭЛЕГАНТНОЕ МОДАЛЬНОЕ ОКНО РЕКЛАМНОГО ТАЙМЕРА */
-        #ad-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(4, 6, 12, 0.96);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-        }
-        .ad-box {
-            background: var(--card-bg);
-            border: 2px solid var(--gold);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 360px;
-            padding: 24px;
-            box-shadow: 0 15px 40px rgba(212,175,55,0.3);
-        }
-        .ad-timer { font-size: 36px; font-weight: 800; color: var(--gold); margin: 14px 0; }
-        .progress-bar-container {
-            width: 100%;
-            background: rgba(255,255,255,0.08);
-            border-radius: 8px;
-            height: 6px;
-            overflow: hidden;
-            margin-bottom: 18px;
-        }
-        #ad-progress {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #d4af37, #f3e5ab);
-            transition: width 1s linear;
-        }
     </style>
 </head>
 <body>
@@ -220,7 +162,7 @@
             <p class="subtitle">Элитный портал судьбы и глубоких нумерологических откровений</p>
         </div>
 
-        <!-- ЭКРАН 1: ВВОД ДАТЫ И ВРЕМЕНИ -->
+        <!-- ЭКРАН 1 -->
         <div id="screen-form" class="screen active">
             <div class="form-group">
                 <label class="form-label">📅 ДАТА ВАШЕГО РОЖДЕНИЯ</label>
@@ -260,13 +202,11 @@
             <button class="btn-action" onclick="showResultsPart1()">✨ Узнать прогноз судьбы</button>
         </div>
 
-        <!-- ЭКРАН 2: БАЗОВЫЙ ПРОГНОЗ -->
+        <!-- ЭКРАН 2 -->
         <div id="screen-part1" class="screen">
             <div class="matrix-badge">
                 <div class="matrix-title" id="matrix-title">⚡ Ваша матрица судьбы: 4 (Император)</div>
-                <div class="matrix-text">
-                    Энергия структуры, материального порядка и надежности. Ваша миссия — выстраивать прочные системы и управлять ресурсами.
-                </div>
+                <div class="matrix-text">Энергия структуры, материального порядка и надежности. Ваша миссия — выстраивать прочные системы и управлять ресурсами.</div>
             </div>
 
             <div class="content-card">
@@ -282,12 +222,12 @@
             <button class="btn-outline" onclick="showForm()">🔄 Ввести другую дату</button>
         </div>
 
-        <!-- ЭКРАН 3: ПРЕМИУМ-РАЗБОР И РЕКЛАМА -->
+        <!-- ЭКРАН 3 -->
         <div id="screen-part2" class="screen">
             <div class="ads-banner" id="ads-banner-box">
                 <h3>💎 Глубокий разбор (Год, Месяц, М & Ж)</h3>
-                <p>Посмотрите короткий рекламный ролик для разблокировки полного макро-цикла.</p>
-                <button class="btn-ads" onclick="startSimulatedAd()">▶ Смотреть рекламу</button>
+                <p>Посмотрите рекламу Adsgram для разблокировки контента.</p>
+                <button class="btn-ads" onclick="showAdsgramReward()">▶ Смотреть рекламу Adsgram</button>
             </div>
 
             <div id="extended-section" class="locked-content">
@@ -303,20 +243,6 @@
             <button class="btn-outline" onclick="showPart1()">⬅ Назад к прогнозу</button>
         </div>
     </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО РЕКЛАМЫ -->
-    <div id="ad-modal">
-        <div class="ad-box">
-            <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 6px;">📺 Просмотр рекламы</h3>
-            <p style="color: var(--text-muted); font-size: 12.5px; margin-bottom: 12px;">Партнерская программа • Награда</p>
-            <div class="ad-timer" id="ad-counter">15</div>
-            <div class="progress-bar-container">
-                <div id="ad-progress"></div>
-            </div>
-            <p style="color: var(--text-muted); font-size: 11.5px;">Пожалуйста, досмотрите ролик до конца для разблокировки контента.</p>
-        </div>
-    </div>
-
     <div class="footer">Оракул Звёзд © 2026 • Все права защищены</div>
 <script>
     const data = {
@@ -392,31 +318,27 @@
         }
     }
 
-    function startSimulatedAd() {
-        const modal = document.getElementById('ad-modal');
-        const counter = document.getElementById('ad-counter');
-        const progressBar = document.getElementById('ad-progress');
-        
-        modal.style.display = 'flex';
-        let timeLeft = 15;
-        counter.innerText = timeLeft;
-        progressBar.style.width = '0%';
-
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
-        }
-
-        const interval = setInterval(() => {
-            timeLeft--;
-            counter.innerText = timeLeft;
-            progressBar.style.width = (((15 - timeLeft) / 15) * 100) + '%';
-
-            if (timeLeft <= 0) {
-                clearInterval(interval);
-                modal.style.display = 'none';
-                unlockExtendedContent();
+    // СТРОГИЙ ВЫЗОВ ОФИЦИАЛЬНОГО ADSGRAM SDK ДЛЯ УЧЕТА ПОКАЗОВ И ДОХОДА
+    function showAdsgramReward() {
+        if (window.Adsgram && typeof window.Adsgram.init === 'function') {
+            try {
+                // Инициализируем ваш блок 54290 (debug: false для реального учета показов в статистике)
+                const adController = window.Adsgram.init({ blockId: "54290", debug: false });
+                
+                adController.show().then((result) => {
+                    // Реклама успешно просмотрена пользователем — засчитываем показ и открываем контент
+                    unlockExtendedContent();
+                }).catch((err) => {
+                    console.error("Adsgram show error:", err);
+                    alert("Реклама в данный момент загружается или недоступна. Попробуйте еще раз через пару секунд.");
+                });
+            } catch (e) {
+                console.error("Adsgram exception:", e);
+                alert("Ошибка запуска рекламы. Проверьте соединение.");
             }
-        }, 1000);
+        } else {
+            alert("Модуль Adsgram еще загружается. Подождите секунду и нажмите снова.");
+        }
     }
 
     function unlockExtendedContent() {
