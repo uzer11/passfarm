@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд v11.8 (Custom UI Pickers)</title>
+    <title>Оракул Звёзд v11.9 (Extended Years)</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -46,7 +46,6 @@
         .form-label { color: var(--gold); font-size: 12.5px; font-weight: 600; margin-bottom: 6px; display: block; text-align: center; }
         .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; }
         
-        /* Кастомные элементы выбора взамен селекторов */
         .custom-picker-btn {
             width: 100%; background: #070913; border: 1px solid var(--card-border);
             color: var(--gold-light); padding: 11px 8px; border-radius: 12px; font-size: 13.5px; 
@@ -94,7 +93,6 @@
         }
         .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.6; margin-top: 10px; }
         
-        /* Модальные окна для выбора и рекламы */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(4, 6, 12, 0.92); backdrop-filter: blur(8px); z-index: 9999;
@@ -111,7 +109,7 @@
         }
         .picker-item {
             background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); color: var(--text-main);
-            padding: 12px 6px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center;
+            padding: 12px 4px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;
         }
         .picker-item:active, .picker-item.selected { background: var(--gold); color: #070913; border-color: var(--gold); }
         .ad-timer { font-size: 36px; font-weight: 800; color: var(--gold); margin: 14px 0; }
@@ -133,7 +131,7 @@
                 <div class="select-row">
                     <div class="custom-picker-btn" id="btn-day" onclick="openPicker('day')">4</div>
                     <div class="custom-picker-btn" id="btn-month" onclick="openPicker('month')">Апрель</div>
-                    <div class="custom-picker-btn" id="btn-year" onclick="openPicker('year')">2000</div>
+                    <div class="custom-picker-btn" id="btn-year" onclick="openPicker('year')">1975</div>
                 </div>
             </div>
 
@@ -184,7 +182,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно выбора параметров -->
     <div id="picker-modal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-title" id="picker-modal-title">Выберите значение</div>
@@ -193,7 +190,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно рекламы -->
     <div id="ad-modal" class="modal-overlay">
         <div class="modal-box" id="ad-box-content">
             <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 6px;">📺 Загрузка рекламы OnClickA</h3>
@@ -204,12 +200,11 @@
 
     <div class="footer">Оракул Звёзд © 2026 • Все права защищены</div>
 <script>
-    // Хранилище выбранных пользователем данных
     const userData = {
         day: 4,
         month: 4,
         monthName: "Апрель",
-        year: 2000,
+        year: 1975,
         hour: 12,
         ampm: "PM",
         min: "00"
@@ -241,10 +236,10 @@
             });
         } else if (type === 'year') {
             title.innerText = "Выберите год рождения";
-            const years = [1980, 1982, 1985, 1988, 1990, 1992, 1995, 1998, 2000, 2002, 2005, 2008, 2010];
-            years.forEach(y => {
+            // Генерация полного диапазона от 2010 до 1950 по убыванию для удобства
+            for (let y = 2010; y >= 1950; y--) {
                 grid.innerHTML += `<div class="picker-item ${userData.year === y ? 'selected' : ''}" onclick="selectValue('year', ${y}, '${y}')">${y}</div>`;
-            });
+            }
         } else if (type === 'hour') {
             title.innerText = "Выберите час";
             for (let i = 1; i <= 12; i++) {
@@ -343,7 +338,6 @@
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
     }
 
-    // ИНТЕГРАЦИЯ ONCLICKA VAST (spot_id=6153907) с обходом CORS
     async function showOnClickAReward() {
         const rawVastUrl = "https://bid.onclckstr.com/vast?spot_id=6153907";
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); }
