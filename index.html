@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд v11.10 (Deep Extended Insights)</title>
+    <title>Оракул Звёзд v11.11 (Cosmic Audio Player)</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -59,6 +59,16 @@
         }
         .matrix-title { color: var(--gold); font-size: 15px; font-weight: 700; margin-bottom: 6px; }
         .matrix-text { font-size: 13.5px; line-height: 1.6; color: var(--text-main); }
+        
+        /* Плеер музыки */
+        .audio-player-card {
+            background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(16,23,40,0.9) 100%);
+            border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 16px; text-align: center;
+        }
+        .audio-title { color: var(--gold); font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
+        .audio-desc { color: var(--text-muted); font-size: 11.5px; margin-bottom: 12px; }
+        audio { width: 100%; height: 36px; border-radius: 8px; outline: none; filter: sepia(20%) hue-rotate(30deg); }
+
         .ads-banner {
             background: linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(16,23,40,0.95) 100%);
             border: 1px dashed var(--gold); border-radius: 16px; padding: 18px; text-align: center; margin-bottom: 16px;
@@ -155,6 +165,17 @@
                 <div class="matrix-title" id="matrix-title">⚡ Ваша матрица судьбы: 4 (Император)</div>
                 <div class="matrix-text">Энергия структуры, материального порядка и надежности. Ваша миссия — выстраивать прочные системы и управлять ресурсами.</div>
             </div>
+
+            <!-- ВСТРОЕННЫЙ КОСМИЧЕСКИЙ АУДИОПЛЕЕР -->
+            <div class="audio-player-card">
+                <div class="audio-title">🎶 Космическая аудио-медитация</div>
+                <div class="audio-desc">Погружение в атмосферу гармонии и баланса</div>
+                <audio controls preload="none">
+                    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=ambient-celestial-110822.mp3" type="audio/mpeg">
+                    Ваш браузер не поддерживает аудио элемент.
+                </audio>
+            </div>
+
             <div class="content-card">
                 <div class="section-title">🌟 Энергетика и совет на сегодня:</div>
                 <div class="intro-p">Сегодняшний день требует от вас предельной собранности, дисциплины и холодного рассудка. Энергия числа 4 не прощает хаоса и импульсивных трат.</div>
