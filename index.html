@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд / Destiny Matrix v11.21</title>
+    <title>Оракул Звёзд / Destiny Matrix v11.22</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Официальный TMA-скрипт OnClickA для видео-рекламы в Telegram Mini App -->
+    <!-- Официальный TMA-скрипт OnClickA -->
     <script src="https://js.onclckvd.com/in-stream-admanager/tma.js"></script>
     <style>
         :root {
@@ -247,14 +247,14 @@
 
 <script>
     let currentLang = 'ru';
-    let adShowFunction = null; // Сюда запишется официальный метод показа от OnClickA
+    let adShowFunction = null;
 
-    // Инициализация официального TMA-модуля OnClickA для Spot ID 6153907
+    // Инициализация TMA-модуля OnClickA с защитой от сбоев
     if (window.initCdTma) {
         window.initCdTma({ id: 6153907 })
             .then(show => {
                 adShowFunction = show;
-                console.log("OnClickA TMA ad initialized successfully.");
+                console.log("OnClickA TMA ad initialized.");
             })
             .catch(e => console.log("OnClickA TMA init error:", e));
     }
@@ -524,18 +524,16 @@
     function triggerTmaAd() {
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); }
 
-        // Вызываем официальный метод показа OnClickA TMA, если он загрузился
+        // Безопасный вызов TMA рекламы с обработкой ошибок (.catch)
         if (typeof adShowFunction === 'function') {
             adShowFunction().then(() => {
                 console.log('TMA ad played successfully.');
             }).catch(err => {
-                console.log('TMA ad error:', err);
+                console.log('TMA ad skipped or blocked (ERR_CONNECTION_CLOSED handled).');
             });
-        } else {
-            console.log('Ad function not ready yet, proceeding with timer.');
         }
 
-        // Запускаем модальный таймер разблокировки
+        // Запускаем таймер в любом случае, чтобы пользователь не завис на экране
         const modal = document.getElementById('ad-modal');
         modal.style.display = 'flex';
         let timeLeft = 12;
