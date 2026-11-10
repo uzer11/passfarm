@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд / Destiny Matrix v11.19</title>
+    <title>Оракул Звёзд / Destiny Matrix v11.20</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Официальный скрипт OnClickA (Account ID: 468936, Spot ID: 6153907) -->
+    <!-- Официальный глобальный скрипт OnClickA -->
     <script async src="https://js.onclckmn.com/static/onclicka.js" data-admpid="468936"></script>
     <style>
         :root {
@@ -83,7 +83,7 @@
             border-radius: 12px;
             padding: 14px;
             margin-bottom: 14px;
-            min-height: 80px;
+            min-height: 70px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -131,23 +131,7 @@
             width: 100%; max-width: 360px; padding: 18px; box-shadow: 0 15px 40px rgba(212,175,55,0.3);
             max-height: 90vh; display: flex; flex-direction: column;
         }
-        .modal-title { color: var(--gold); font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-        
-        /* Контейнер прямо внутри модального окна для отображения видео-рекламы OnClickA */
-        #ad-video-wrapper {
-            width: 100%;
-            min-height: 140px;
-            background: #000;
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
+        .modal-title { color: var(--gold); font-size: 17px; font-weight: 700; margin-bottom: 12px; }
         .picker-grid {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; overflow-y: auto; max-height: 50vh; padding: 4px;
         }
@@ -157,8 +141,8 @@
             padding: 12px 6px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center;
         }
         .picker-item:active, .picker-item.selected { background: var(--gold); color: #070913; border-color: var(--gold); }
-        .ad-timer { font-size: 28px; font-weight: 800; color: var(--gold); margin: 6px 0; }
-        .progress-bar-container { width: 100%; background: rgba(255,255,255,0.08); border-radius: 8px; height: 5px; overflow: hidden; margin-bottom: 12px; }
+        .ad-timer { font-size: 34px; font-weight: 800; color: var(--gold); margin: 10px 0; }
+        .progress-bar-container { width: 100%; background: rgba(255,255,255,0.08); border-radius: 8px; height: 6px; overflow: hidden; margin-bottom: 16px; }
         #ad-progress { width: 0%; height: 100%; background: linear-gradient(90deg, #d4af37, #f3e5ab); transition: width 1s linear; }
     </style>
 </head>
@@ -222,8 +206,13 @@
         <div id="screen-part2" class="screen">
             <div class="ads-banner" id="ads-banner-box">
                 <h3 id="t-ad-title">💎 Глубокий макро-анализ судьбы</h3>
-                <p id="t-ad-desc">Нажмите кнопку ниже для запуска рекламного сеанса и разблокировки.</p>
-                <button class="btn-ads" id="t-btn-watch-ad" onclick="startAdTimer()">▶ Запустить спонсорский блок</button>
+                <p id="t-ad-desc">Посмотрите рекламный ролик спонсора для разблокировки подробного прогноза.</p>
+                
+                <div class="ad-slot-container">
+                    <span style="font-size: 12px; color: var(--gold-light);" id="t-ad-status">🎬 VAST Video Stream Ready (Spot 6153907)</span>
+                </div>
+
+                <button class="btn-ads" id="t-btn-watch-ad" onclick="triggerAdAndStartTimer()">▶ Смотреть рекламу (12 сек)</button>
             </div>
             <div id="extended-section" class="locked-content">
                 <div class="tabs">
@@ -246,21 +235,12 @@
         </div>
     </div>
 
-    <!-- Модальное окно с таймером И рекламным блоком OnClickA -->
     <div id="ad-modal" class="modal-overlay">
         <div class="modal-box" id="ad-box-content">
-            <h3 style="color: var(--gold);" id="t-modal-ad-title">📺 Спонсорский видео-показ</h3>
-            
-            <!-- Сюда скрипт OnClickA автоматически подгрузит рекламный видео-элемент -->
-            <div id="ad-video-wrapper">
-                <div id="6153907" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-                    <span style="font-size: 11.5px; color: var(--gold-light);" id="t-ad-loading">Загрузка видео-рекламы...</span>
-                </div>
-            </div>
-
+            <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 8px;" id="t-modal-ad-title">📺 Просмотр рекламы OnClickA</h3>
             <div class="ad-timer" id="ad-counter">12</div>
             <div class="progress-bar-container"><div id="ad-progress"></div></div>
-            <p style="color: var(--text-muted); font-size: 11px;" id="t-modal-ad-desc">Досмотрите ролик до конца для разблокировки прогноза.</p>
+            <p style="color: var(--text-muted); font-size: 12px;" id="t-modal-ad-desc">Рекламный поток открыт. Пожалуйста, дождитесь окончания таймера для разблокировки.</p>
         </div>
     </div>
 
@@ -285,14 +265,14 @@
             btnDeep: "💎 Перейти к глубокому прогнозу",
             btnBackForm: "🔄 Ввести другую дату",
             adTitle: "💎 Глубокий макро-анализ судьбы",
-            adDesc: "Нажмите кнопку ниже для запуска рекламного сеанса и разблокировки.",
-            btnWatchAd: "▶ Запустить спонсорский блок",
+            adDesc: "Посмотрите рекламный ролик спонсора для разблокировки подробного прогноза.",
+            adStatus: "🎬 VAST Video Stream Ready (Spot 6153907)",
+            btnWatchAd: "▶ Смотреть рекламу (12 сек)",
             unlockedTitle: "✅ Глубокий разбор разблокирован!",
             unlockedDesc: "Вам доступны все детальные разделы ниже.",
             btnBackP1: "⬅ Назад к прогнозу",
-            modalAdTitle: "📺 Спонсорский видео-показ",
-            adLoading: "Загрузка видео-рекламы...",
-            modalAdDesc: "Досмотрите ролик до конца для разблокировки прогноза.",
+            modalAdTitle: "📺 Просмотр рекламы OnClickA",
+            modalAdDesc: "Рекламный поток открыт. Пожалуйста, дождитесь окончания таймера.",
             tabs: ["Неделя", "Месяц", "Год", "М & Ж"]
         },
         en: {
@@ -310,14 +290,14 @@
             btnDeep: "💎 Unlock Deep Macro-Analysis",
             btnBackForm: "🔄 Enter Another Date",
             adTitle: "💎 Deep Destiny Macro-Analysis",
-            adDesc: "Click below to start the ad session and unlock content.",
-            btnWatchAd: "▶ Start Sponsor Session",
+            adDesc: "Watch the sponsor video ad to unlock your detailed reading.",
+            adStatus: "🎬 VAST Video Stream Ready (Spot 6153907)",
+            btnWatchAd: "▶ Watch Ad (12 sec)",
             unlockedTitle: "✅ Deep Analysis Unlocked!",
             unlockedDesc: "All detailed sections below are now available.",
             btnBackP1: "⬅ Back to Forecast",
-            modalAdTitle: "📺 Sponsor Video Stream",
-            adLoading: "Loading video ad...",
-            modalAdDesc: "Watch the video until the end to unlock the forecast.",
+            modalAdTitle: "📺 OnClickA Ad View",
+            modalAdDesc: "Ad stream opened. Please wait for the timer to finish.",
             tabs: ["Week", "Month", "Year", "Love"]
         }
     };
@@ -426,10 +406,10 @@
         document.getElementById('t-btn-back-form').innerText = t.btnBackForm;
         document.getElementById('t-ad-title').innerText = t.adTitle;
         document.getElementById('t-ad-desc').innerText = t.adDesc;
+        document.getElementById('t-ad-status').innerText = t.adStatus;
         document.getElementById('t-btn-watch-ad').innerText = t.btnWatchAd;
         document.getElementById('t-btn-back-p1').innerText = t.btnBackP1;
         document.getElementById('t-modal-ad-title').innerText = t.modalAdTitle;
-        document.getElementById('t-ad-loading').innerText = t.adLoading;
         document.getElementById('t-modal-ad-desc').innerText = t.modalAdDesc;
 
         const tabs = document.querySelectorAll('.tab-btn');
@@ -531,9 +511,20 @@
         document.getElementById('screen-part1').classList.add('active');
     }
 
-    function startAdTimer() {
+    function triggerAdAndStartTimer() {
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); }
 
+        // Реальный VAST-поток для твоего Spot ID 6153907
+        const vastUrl = "https://bid.onclckstr.com/vast?spot_id=6153907";
+
+        // Открываем рекламный поток для засчета клика и CPM по правилам Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+            window.Telegram.WebApp.openLink(vastUrl);
+        } else {
+            window.open(vastUrl, '_blank');
+        }
+
+        // Запускаем модальный таймер проверки
         const modal = document.getElementById('ad-modal');
         modal.style.display = 'flex';
         let timeLeft = 12;
