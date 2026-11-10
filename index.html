@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд / Destiny Matrix v11.16</title>
+    <title>Оракул Звёзд / Destiny Matrix v11.18</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Фоновый скрипт OnClickA (Spot ID: 6153907) для автоматического учета CPM -->
-    <script src="https://kulinks.net/tag.min.js" data-zone="6153907" async></script>
+    <!-- Официальный скрипт OnClickA (Account ID: 468936, Spot ID: 6153907) -->
+    <script async src="https://js.onclckmn.com/static/onclicka.js" data-admpid="468936"></script>
     <style>
         :root {
             --bg-color: #070913;
@@ -76,6 +76,21 @@
         }
         .ads-banner h3 { color: var(--gold); font-size: 15.5px; margin-bottom: 6px; font-weight: 700; }
         .ads-banner p { color: var(--text-muted); font-size: 12.5px; margin-bottom: 14px; line-height: 1.45; }
+        
+        .ad-slot-container {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 14px;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
         .btn-ads {
             background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); color: #070913; border: none;
             padding: 13px 20px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%;
@@ -135,7 +150,7 @@
     <div class="container">
         <!-- Переключатель языка для RU/KZ и США/Global -->
         <div class="top-bar">
-            <span style="font-size: 11px; color: var(--gold);">🌐 Global CPM Monetized</span>
+            <span style="font-size: 11px; color: var(--gold);">🌐 Global CPM (Spot 6153907)</span>
             <div class="lang-switcher">
                 <button class="lang-btn active" id="btn-ru" onclick="changeLang('ru')">RU / KZ</button>
                 <button class="lang-btn" id="btn-en" onclick="changeLang('en')">EN (US)</button>
@@ -191,8 +206,14 @@
         <div id="screen-part2" class="screen">
             <div class="ads-banner" id="ads-banner-box">
                 <h3 id="t-ad-title">💎 Глубокий макро-анализ судьбы</h3>
-                <p id="t-ad-desc">Нажмите кнопку ниже для активации сеанса и разблокировки подробного прогноза.</p>
-                <button class="btn-ads" id="t-btn-watch-ad" onclick="startAdTimer()">▶ Получить доступ (Активация)</button>
+                <p id="t-ad-desc">Поддержите проект просмотром спонсорского видео для разблокировки разделов.</p>
+                
+                <!-- Контейнер видео-рекламы OnClickA -->
+                <div class="ad-slot-container" id="onclicka-video-container">
+                    <span style="font-size: 11.5px; color: var(--gold-light);" id="t-ad-loading">🎬 Видео-блок OnClickA (Spot 6153907) активен</span>
+                </div>
+
+                <button class="btn-ads" id="t-btn-watch-ad" onclick="startAdTimer()">▶ Подтвердить просмотр (12 сек)</button>
             </div>
             <div id="extended-section" class="locked-content">
                 <div class="tabs">
@@ -217,10 +238,10 @@
 
     <div id="ad-modal" class="modal-overlay">
         <div class="modal-box" id="ad-box-content">
-            <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 6px;" id="t-modal-ad-title">📺 Активация доступа</h3>
+            <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 6px;" id="t-modal-ad-title">📺 Проверка сеанса</h3>
             <div class="ad-timer" id="ad-counter">12</div>
             <div class="progress-bar-container"><div id="ad-progress"></div></div>
-            <p style="color: var(--text-muted); font-size: 11.5px;" id="t-modal-ad-desc">Пожалуйста, подождите завершения таймера для разблокировки.</p>
+            <p style="color: var(--text-muted); font-size: 11.5px;" id="t-modal-ad-desc">Пожалуйста, подождите завершения таймера для разблокировки прогноза.</p>
         </div>
     </div>
 
@@ -245,13 +266,14 @@
             btnDeep: "💎 Перейти к глубокому прогнозу",
             btnBackForm: "🔄 Ввести другую дату",
             adTitle: "💎 Глубокий макро-анализ судьбы",
-            adDesc: "Нажмите кнопку ниже для активации сеанса и разблокировки подробного прогноза.",
-            btnWatchAd: "▶ Получить доступ (Активация)",
+            adDesc: "Поддержите проект просмотром спонсорского видео для разблокировки разделов.",
+            adLoading: "🎬 Видео-блок OnClickA (Spot 6153907) активен",
+            btnWatchAd: "▶ Подтвердить просмотр (12 сек)",
             unlockedTitle: "✅ Глубокий разбор разблокирован!",
             unlockedDesc: "Вам доступны все детальные разделы ниже.",
             btnBackP1: "⬅ Назад к прогнозу",
-            modalAdTitle: "📺 Активация доступа",
-            modalAdDesc: "Пожалуйста, подождите завершения таймера для разблокировки.",
+            modalAdTitle: "📺 Проверка сеанса",
+            modalAdDesc: "Пожалуйста, подождите завершения таймера для разблокировки прогноза.",
             tabs: ["Неделя", "Месяц", "Год", "М & Ж"]
         },
         en: {
@@ -269,13 +291,14 @@
             btnDeep: "💎 Unlock Deep Macro-Analysis",
             btnBackForm: "🔄 Enter Another Date",
             adTitle: "💎 Deep Destiny Macro-Analysis",
-            adDesc: "Click below to activate and unlock your detailed reading.",
-            btnWatchAd: "▶ Get Access (Activate)",
+            adDesc: "Support the project by viewing the sponsor video to unlock sections.",
+            adLoading: "🎬 OnClickA Video Ad (Spot 6153907) Active",
+            btnWatchAd: "▶ Confirm View (12 sec)",
             unlockedTitle: "✅ Deep Analysis Unlocked!",
             unlockedDesc: "All detailed sections below are now available.",
             btnBackP1: "⬅ Back to Forecast",
-            modalAdTitle: "📺 Access Activation",
-            modalAdDesc: "Please wait for the timer to finish unlocking.",
+            modalAdTitle: "📺 Verifying Session",
+            modalAdDesc: "Please wait for the timer to finish unlocking the forecast.",
             tabs: ["Week", "Month", "Year", "Love"]
         }
     };
@@ -384,6 +407,7 @@
         document.getElementById('t-btn-back-form').innerText = t.btnBackForm;
         document.getElementById('t-ad-title').innerText = t.adTitle;
         document.getElementById('t-ad-desc').innerText = t.adDesc;
+        document.getElementById('t-ad-loading').innerText = t.adLoading;
         document.getElementById('t-btn-watch-ad').innerText = t.btnWatchAd;
         document.getElementById('t-btn-back-p1').innerText = t.btnBackP1;
         document.getElementById('t-modal-ad-title').innerText = t.modalAdTitle;
