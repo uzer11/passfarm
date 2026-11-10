@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд / Destiny Matrix v11.22</title>
+    <title>Оракул Звёзд / Destiny Matrix v11.24</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Официальный TMA-скрипт OnClickA -->
-    <script src="https://js.onclckvd.com/in-stream-admanager/tma.js"></script>
+    <!-- Официальный TMA Banner скрипт OnClickA (Используем Spot ID 6153907) -->
+    <script data-onclicka-banner="6153907" async src="https://js.onclckmn.com/banner-admanager/oncbanner.m.js" data-onclicka-banner-ar="c"></script>
     <style>
         :root {
             --bg-color: #070913;
@@ -72,27 +72,28 @@
         
         .ads-banner {
             background: linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(16,23,40,0.95) 100%);
-            border: 1px dashed var(--gold); border-radius: 16px; padding: 18px; text-align: center; margin-bottom: 16px;
+            border: 1px dashed var(--gold); border-radius: 16px; padding: 16px; text-align: center; margin-bottom: 16px;
         }
-        .ads-banner h3 { color: var(--gold); font-size: 15.5px; margin-bottom: 6px; font-weight: 700; }
-        .ads-banner p { color: var(--text-muted); font-size: 12.5px; margin-bottom: 14px; line-height: 1.45; }
+        .ads-banner h3 { color: var(--gold); font-size: 15px; margin-bottom: 4px; font-weight: 700; }
+        .ads-banner p { color: var(--text-muted); font-size: 12px; margin-bottom: 10px; line-height: 1.4; }
         
-        .ad-slot-container {
-            background: rgba(0, 0, 0, 0.5);
+        /* Контейнер для официального баннера OnClickA */
+        .banner-slot-wrapper {
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--card-border);
             border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 14px;
-            min-height: 60px;
+            padding: 10px;
+            margin-bottom: 12px;
+            min-height: 70px;
             display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
+            overflow: hidden;
         }
 
         .btn-ads {
             background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); color: #070913; border: none;
-            padding: 13px 20px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%;
+            padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13.5px; cursor: pointer; width: 100%;
         }
         .locked-content { opacity: 0.25; pointer-events: none; filter: blur(4px); transition: all 0.4s ease; }
         .unlocked-content { opacity: 1; pointer-events: auto; filter: none; }
@@ -149,7 +150,7 @@
     <div class="container">
         <!-- Переключатель языка -->
         <div class="top-bar">
-            <span style="font-size: 11px; color: var(--gold);">🌐 OnClickA TMA (Spot 6153907)</span>
+            <span style="font-size: 11px; color: var(--gold);">🌐 TMA Banner (Spot 6153907)</span>
             <div class="lang-switcher">
                 <button class="lang-btn active" id="btn-ru" onclick="changeLang('ru')">RU / KZ</button>
                 <button class="lang-btn" id="btn-en" onclick="changeLang('en')">EN (US)</button>
@@ -205,13 +206,14 @@
         <div id="screen-part2" class="screen">
             <div class="ads-banner" id="ads-banner-box">
                 <h3 id="t-ad-title">💎 Глубокий макро-анализ судьбы</h3>
-                <p id="t-ad-desc">Посмотрите спонсорский видео-ролик для разблокировки подробного прогноза.</p>
+                <p id="t-ad-desc">Поддержите проект просмотром спонсорского блока.</p>
                 
-                <div class="ad-slot-container">
-                    <span style="font-size: 12px; color: var(--gold-light);" id="t-ad-status">🎬 TMA Video Ad Module Ready</span>
+                <!-- Официальный контейнер баннера OnClickA -->
+                <div class="banner-slot-wrapper">
+                    <div data-banner="6153907"></div>
                 </div>
 
-                <button class="btn-ads" id="t-btn-watch-ad" onclick="triggerTmaAd()">▶ Запустить рекламу и таймер (12 сек)</button>
+                <button class="btn-ads" id="t-btn-watch-ad" onclick="startBannerTimer()">▶ Подтвердить просмотр (12 сек)</button>
             </div>
             <div id="extended-section" class="locked-content">
                 <div class="tabs">
@@ -236,7 +238,7 @@
 
     <div id="ad-modal" class="modal-overlay">
         <div class="modal-box" id="ad-box-content">
-            <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 8px;" id="t-modal-ad-title">📺 Просмотр спонсорского ролика</h3>
+            <h3 style="color: var(--gold); font-size: 17px; margin-bottom: 8px;" id="t-modal-ad-title">📺 Проверка сеанса</h3>
             <div class="ad-timer" id="ad-counter">12</div>
             <div class="progress-bar-container"><div id="ad-progress"></div></div>
             <p style="color: var(--text-muted); font-size: 12px;" id="t-modal-ad-desc">Пожалуйста, подождите завершения таймера для разблокировки прогноза.</p>
@@ -247,17 +249,6 @@
 
 <script>
     let currentLang = 'ru';
-    let adShowFunction = null;
-
-    // Инициализация TMA-модуля OnClickA с защитой от сбоев
-    if (window.initCdTma) {
-        window.initCdTma({ id: 6153907 })
-            .then(show => {
-                adShowFunction = show;
-                console.log("OnClickA TMA ad initialized.");
-            })
-            .catch(e => console.log("OnClickA TMA init error:", e));
-    }
 
     const translations = {
         ru: {
@@ -275,13 +266,12 @@
             btnDeep: "💎 Перейти к глубокому прогнозу",
             btnBackForm: "🔄 Ввести другую дату",
             adTitle: "💎 Глубокий макро-анализ судьбы",
-            adDesc: "Посмотрите спонсорский видео-ролик для разблокировки подробного прогноза.",
-            adStatus: "🎬 TMA Video Ad Module Ready",
-            btnWatchAd: "▶ Запустить рекламу и таймер (12 сек)",
+            adDesc: "Поддержите проект просмотром спонсорского блока.",
+            btnWatchAd: "▶ Подтвердить просмотр (12 сек)",
             unlockedTitle: "✅ Глубокий разбор разблокирован!",
             unlockedDesc: "Вам доступны все детальные разделы ниже.",
             btnBackP1: "⬅ Назад к прогнозу",
-            modalAdTitle: "📺 Просмотр спонсорского ролика",
+            modalAdTitle: "📺 Проверка сеанса",
             modalAdDesc: "Пожалуйста, подождите завершения таймера для разблокировки прогноза.",
             tabs: ["Неделя", "Месяц", "Год", "М & Ж"]
         },
@@ -300,13 +290,12 @@
             btnDeep: "💎 Unlock Deep Macro-Analysis",
             btnBackForm: "🔄 Enter Another Date",
             adTitle: "💎 Deep Destiny Macro-Analysis",
-            adDesc: "Watch the sponsor video ad to unlock your detailed reading.",
-            adStatus: "🎬 TMA Video Ad Module Ready",
-            btnWatchAd: "▶ Run Ad & Timer (12 sec)",
+            adDesc: "Support the project by viewing the sponsor block.",
+            btnWatchAd: "▶ Confirm View (12 sec)",
             unlockedTitle: "✅ Deep Analysis Unlocked!",
             unlockedDesc: "All detailed sections below are now available.",
             btnBackP1: "⬅ Back to Forecast",
-            modalAdTitle: "📺 Sponsor Video Stream",
+            modalAdTitle: "📺 Session Check",
             modalAdDesc: "Please wait for the timer to finish unlocking the forecast.",
             tabs: ["Week", "Month", "Year", "Love"]
         }
@@ -416,7 +405,6 @@
         document.getElementById('t-btn-back-form').innerText = t.btnBackForm;
         document.getElementById('t-ad-title').innerText = t.adTitle;
         document.getElementById('t-ad-desc').innerText = t.adDesc;
-        document.getElementById('t-ad-status').innerText = t.adStatus;
         document.getElementById('t-btn-watch-ad').innerText = t.btnWatchAd;
         document.getElementById('t-btn-back-p1').innerText = t.btnBackP1;
         document.getElementById('t-modal-ad-title').innerText = t.modalAdTitle;
@@ -521,19 +509,9 @@
         document.getElementById('screen-part1').classList.add('active');
     }
 
-    function triggerTmaAd() {
+    function startBannerTimer() {
         if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); }
 
-        // Безопасный вызов TMA рекламы с обработкой ошибок (.catch)
-        if (typeof adShowFunction === 'function') {
-            adShowFunction().then(() => {
-                console.log('TMA ad played successfully.');
-            }).catch(err => {
-                console.log('TMA ad skipped or blocked (ERR_CONNECTION_CLOSED handled).');
-            });
-        }
-
-        // Запускаем таймер в любом случае, чтобы пользователь не завис на экране
         const modal = document.getElementById('ad-modal');
         modal.style.display = 'flex';
         let timeLeft = 12;
