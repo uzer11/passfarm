@@ -1,583 +1,417 @@
 <!DOCTYPE html>
-<!-- ФАЙЛ: index.html | САЙТ. Здесь ТОЛЬКО HTML. Python сюда НЕ вставлять! -->
+<!-- ФАЙЛ: index.html | САЙТ. Только HTML. Python сюда НЕ вставлять! -->
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Оракул Звёзд / Destiny Matrix v12.1</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>window.__ocFailed = false;</script>
-    <script data-onclicka-banner="6153907" async
-            src="https://js.onclckmn.com/banner-admanager/oncbanner.m.js"
-            data-onclicka-banner-ar="c"
-            onerror="window.__ocFailed = true;"></script>
-    <style>
-        :root {
-            --bg-color: #070913; --card-bg: #101728;
-            --card-border: rgba(212, 175, 55, 0.35);
-            --gold: #d4af37; --gold-light: #f3e5ab;
-            --text-main: #f1f5f9; --text-muted: #94a3b8;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: radial-gradient(circle at 50% 0%, #1a233a 0%, var(--bg-color) 70%); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 14px; }
-        .container { width: 100%; max-width: 440px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 18px; box-shadow: 0 12px 35px rgba(0,0,0,0.8); margin-bottom: 12px; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .lang-switcher { display: flex; gap: 6px; }
-        .lang-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); color: var(--text-muted); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
-        .lang-btn.active { background: var(--gold); color: #070913; border-color: var(--gold); }
-        .header { text-align: center; margin-bottom: 16px; }
-        .crystal-icon { font-size: 44px; margin-bottom: 6px; }
-        h1 { color: var(--gold); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-        .subtitle { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
-        .screen { display: none; }
-        .screen.active { display: block; animation: fadeIn 0.35s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .form-group { margin-bottom: 16px; }
-        .form-label { color: var(--gold); font-size: 12.5px; font-weight: 600; margin-bottom: 6px; display: block; text-align: center; }
-        .select-row { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 8px; }
-        .custom-picker-btn { width: 100%; background: #070913; border: 1px solid var(--card-border); color: var(--gold-light); padding: 11px 8px; border-radius: 12px; font-size: 13.5px; outline: none; text-align: center; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 4px; }
-        .custom-picker-btn:active { background: rgba(212, 175, 55, 0.15); }
-        .matrix-badge { background: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(16,23,40,0.8) 100%); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
-        .matrix-title { color: var(--gold); font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-        .matrix-text { font-size: 13.5px; line-height: 1.6; color: var(--text-main); }
-        .ads-banner { background: linear-gradient(135deg, rgba(212,175,55,0.2) 0%, rgba(16,23,40,0.95) 100%); border: 1px dashed var(--gold); border-radius: 16px; padding: 16px; text-align: center; margin-bottom: 16px; }
-        .ads-banner h3 { color: var(--gold); font-size: 15px; margin-bottom: 4px; font-weight: 700; }
-        .ads-banner p { color: var(--text-muted); font-size: 12px; margin-bottom: 10px; line-height: 1.4; }
-        .banner-slot-wrapper { background: rgba(0,0,0,0.4); border: 1px solid var(--card-border); border-radius: 12px; padding: 10px; margin-bottom: 12px; min-height: 70px; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
-        #banner-slot { width: 100%; display: flex; justify-content: center; }
-        .banner-status { color: var(--text-muted); font-size: 11px; margin-top: 6px; }
-        .ad-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .btn-ads { background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); color: #070913; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 13.5px; cursor: pointer; width: 100%; }
-        .btn-ads:disabled { opacity: 0.65; cursor: default; }
-        .fallback-btn { display: block; width: 100%; background: linear-gradient(135deg, #d4af37, #aa8c2c); color: #070913; border: none; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 14px; text-align: center; cursor: pointer; }
-        .locked-content { opacity: 0.25; pointer-events: none; filter: blur(4px); transition: all 0.4s ease; }
-        .unlocked-content { opacity: 1; pointer-events: auto; filter: none; }
-        .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 16px; }
-        .tab-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); color: var(--text-muted); padding: 10px 4px; border-radius: 10px; font-size: 11.5px; font-weight: 600; cursor: pointer; text-align: center; }
-        .tab-btn.active { background: rgba(212,175,55,0.22); color: var(--gold); border-color: var(--gold); }
-        .content-card { background: rgba(0,0,0,0.25); border-radius: 16px; padding: 18px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 16px; max-height: 380px; overflow-y: auto; }
-        .section-title { color: var(--gold-light); font-size: 15px; font-weight: 700; margin-bottom: 10px; border-bottom: 1px dashed var(--card-border); padding-bottom: 8px; }
-        .intro-p { font-size: 13.5px; line-height: 1.65; color: #cbd5e1; margin-bottom: 14px; }
-        .info-block { margin-bottom: 12px; background: rgba(255,255,255,0.025); padding: 12px 14px; border-radius: 10px; border-left: 3px solid var(--gold); }
-        .info-header { color: var(--gold); font-size: 13.5px; font-weight: 600; margin-bottom: 4px; }
-        .info-desc { font-size: 13px; line-height: 1.55; color: var(--text-main); }
-        .btn-action { width: 100%; background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%); border: none; color: #070913; padding: 15px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 6px; }
-        .btn-outline { width: 100%; background: transparent; border: 1px solid var(--card-border); color: var(--gold); padding: 13px; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; margin-top: 8px; }
-        .footer { text-align: center; color: var(--text-muted); font-size: 11px; opacity: 0.6; margin-top: 10px; line-height: 1.5; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4,6,12,0.95); backdrop-filter: blur(8px); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 16px; text-align: center; }
-        .modal-box { background: var(--card-bg); border: 2px solid var(--gold); border-radius: 20px; width: 100%; max-width: 360px; padding: 18px; box-shadow: 0 15px 40px rgba(212,175,55,0.3); max-height: 90vh; display: flex; flex-direction: column; }
-        .modal-title { color: var(--gold); font-size: 17px; font-weight: 700; margin-bottom: 12px; }
-        .picker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; overflow-y: auto; max-height: 50vh; padding: 4px; }
-        .picker-grid.years-grid { grid-template-columns: repeat(3, 1fr); }
-        .picker-item { background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); color: var(--text-main); padding: 12px 6px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; }
-        .picker-item:active, .picker-item.selected { background: var(--gold); color: #070913; border-color: var(--gold); }
-        .progress-bar-container { width: 100%; background: rgba(255,255,255,0.08); border-radius: 8px; height: 6px; overflow: hidden; margin-bottom: 12px; display: none; }
-        #ad-progress { width: 0%; height: 100%; background: linear-gradient(90deg, #d4af37, #f3e5ab); transition: width 1s linear; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Оракул Звёзд / Destiny Matrix v13.0</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>window.__ocFailed=false;</script>
+<script data-onclicka-banner="6153907" async src="https://js.onclckmn.com/banner-admanager/oncbanner.m.js" data-onclicka-banner-ar="c" onerror="window.__ocFailed=true;"></script>
+<style>
+:root{--bg:#070913;--card:#101728;--line:rgba(212,175,55,.35);--gold:#d4af37;--gold-l:#f3e5ab;--txt:#f1f5f9;--mut:#94a3b8;--violet:#7c3aed;--magenta:#db2777;--cyan:#22d3ee;--ok:#4ade80}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+html{scrollbar-width:thin;scrollbar-color:var(--gold) rgba(255,255,255,.06)}
+body{background:radial-gradient(circle at 50% 0%,#1a233a 0%,var(--bg) 70%);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;z-index:0;width:60vmax;height:60vmax;border-radius:50%;filter:blur(90px);opacity:.14;pointer-events:none}
+body::before{background:radial-gradient(circle,var(--violet),transparent 60%);top:-20vmax;left:-15vmax;animation:drift 26s ease-in-out infinite alternate}
+body::after{background:radial-gradient(circle,var(--magenta),transparent 60%);bottom:-25vmax;right:-15vmax;animation:drift 32s ease-in-out infinite alternate-reverse}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(8vmax,6vmax) scale(1.15)}}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.container{position:relative;z-index:1;width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 12px 35px rgba(0,0,0,.8);margin-bottom:12px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.lang-switcher{display:flex;gap:6px}
+.lang-btn{background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--mut);padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
+.lang-btn.active{background:var(--gold);color:#070913;border-color:var(--gold)}
+.header{text-align:center;margin-bottom:16px}
+.crystal-icon{font-size:44px;margin-bottom:6px;filter:drop-shadow(0 0 14px rgba(124,58,237,.55))}
+h1{color:var(--gold);font-size:22px;font-weight:700;margin-bottom:4px}
+.subtitle{color:var(--mut);font-size:12px;line-height:1.4}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.form-group{margin-bottom:16px}
+.form-label{color:var(--gold);font-size:12.5px;font-weight:600;margin-bottom:6px;display:block;text-align:center}
+.select-row{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:8px}
+.custom-picker-btn{width:100%;background:#070913;border:1px solid var(--line);color:var(--gold-l);padding:11px 8px;border-radius:12px;font-size:13.5px;text-align:center;cursor:pointer}
+.custom-picker-btn:active{background:rgba(212,175,55,.15)}
+.matrix-badge{background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(16,23,40,.8));border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
+.matrix-title{color:var(--gold);font-size:15px;font-weight:700;margin-bottom:6px}
+.matrix-text{font-size:13.5px;line-height:1.6}
+.ads-banner{background:linear-gradient(135deg,rgba(212,175,55,.2),rgba(16,23,40,.95));border:1px dashed var(--gold);border-radius:16px;padding:16px;text-align:center;margin-bottom:16px;transition:padding .3s}
+.ads-banner h3{color:var(--gold);font-size:15px;margin-bottom:4px;font-weight:700}
+.ads-banner p{color:var(--mut);font-size:12px;margin-bottom:10px;line-height:1.4}
+.ads-banner.collapsed{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;text-align:left}
+.ads-banner.collapsed h3{font-size:13px;margin:0;color:var(--ok)}
+.ads-banner.collapsed #t-ad-desc,.ads-banner.collapsed #banner-wrap,.ads-banner.collapsed #ad-progress-wrap,.ads-banner.collapsed #t-btn-watch-ad{display:none}
+#sponsor-chip{display:none;background:rgba(212,175,55,.15);border:1px solid var(--line);color:var(--gold-l);padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.ads-banner.collapsed #sponsor-chip{display:inline-block}
+.banner-slot-wrapper{background:rgba(0,0,0,.4);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:12px;min-height:70px;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}
+#banner-slot{width:100%;display:flex;justify-content:center}
+.banner-status{color:var(--mut);font-size:11px;margin-top:6px}
+.ad-label{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.btn-ads{background:linear-gradient(135deg,#d4af37,#aa8c2c);color:#070913;border:none;padding:12px 20px;border-radius:12px;font-weight:700;font-size:13.5px;cursor:pointer;width:100%}
+.btn-ads:disabled{opacity:.65;cursor:default}
+.fallback-btn{display:block;width:100%;background:linear-gradient(135deg,#d4af37,#aa8c2c);color:#070913;border:none;padding:14px;border-radius:12px;font-weight:800;font-size:14px;text-align:center;cursor:pointer}
+.locked-content{opacity:.25;pointer-events:none;filter:blur(4px);transition:all .4s ease}
+.unlocked-content{opacity:1;pointer-events:auto;filter:none}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px}
+.tab-btn{background:rgba(255,255,255,.03);border:1px solid var(--line);color:var(--mut);padding:10px 4px;border-radius:10px;font-size:11.5px;font-weight:600;cursor:pointer;text-align:center}
+.tab-btn.active{background:rgba(212,175,55,.22);color:var(--gold);border-color:var(--gold)}
+.content-card{background:rgba(0,0,0,.25);border-radius:16px;padding:18px;border:1px solid rgba(255,255,255,.06);margin-bottom:16px;max-height:420px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--gold) rgba(255,255,255,.06)}
+.content-card::-webkit-scrollbar,.picker-grid::-webkit-scrollbar{width:8px}
+.content-card::-webkit-scrollbar-track,.picker-grid::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:8px}
+.content-card::-webkit-scrollbar-thumb,.picker-grid::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--gold),#8a6d1f);border-radius:8px}
+.section-title{color:var(--gold-l);font-size:15px;font-weight:700;margin-bottom:10px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.intro-p{font-size:13.5px;line-height:1.65;color:#cbd5e1;margin-bottom:14px}
+.info-block{margin-bottom:12px;background:rgba(255,255,255,.025);padding:12px 14px;border-radius:10px;border-left:3px solid var(--gold);animation:rise .5s ease both}
+.info-block:nth-child(3){animation-delay:.05s}.info-block:nth-child(4){animation-delay:.1s}.info-block:nth-child(5){animation-delay:.15s}.info-block:nth-child(6){animation-delay:.2s}.info-block:nth-child(7){animation-delay:.25s}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.info-header{color:var(--gold);font-size:13.5px;font-weight:600;margin-bottom:4px}
+.info-desc{font-size:13px;line-height:1.55}
+.personal-block{border-left-color:var(--magenta);background:linear-gradient(135deg,rgba(219,39,119,.08),rgba(124,58,237,.08))}
+.meter{margin-top:8px}
+.meter-row{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11px;color:var(--mut)}
+.meter-row b{width:70px;font-weight:600}
+.meter-track{flex:1;height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}
+.meter-fill{height:100%;border-radius:6px}
+.btn-action{width:100%;background:linear-gradient(135deg,#d4af37,#aa8c2c);border:none;color:#070913;padding:15px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;margin-top:6px}
+.btn-outline{width:100%;background:transparent;border:1px solid var(--line);color:var(--gold);padding:13px;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;margin-top:8px}
+.footer{position:relative;z-index:1;text-align:center;color:var(--mut);font-size:11px;opacity:.6;margin-top:10px;line-height:1.5}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(4,6,12,.95);backdrop-filter:blur(8px);z-index:9999;display:none;flex-direction:column;justify-content:center;align-items:center;padding:16px;text-align:center}
+.modal-box{background:var(--card);border:2px solid var(--gold);border-radius:20px;width:100%;max-width:360px;padding:18px;box-shadow:0 15px 40px rgba(212,175,55,.3);max-height:90vh;display:flex;flex-direction:column}
+.modal-title{color:var(--gold);font-size:17px;font-weight:700;margin-bottom:12px}
+.picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;overflow-y:auto;max-height:50vh;padding:4px}
+.picker-grid.years-grid{grid-template-columns:repeat(3,1fr)}
+.picker-item{background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--txt);padding:12px 6px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-align:center}
+.picker-item:active,.picker-item.selected{background:var(--gold);color:#070913;border-color:var(--gold)}
+.progress-bar-container{width:100%;background:rgba(255,255,255,.08);border-radius:8px;height:6px;overflow:hidden;margin-bottom:12px;display:none}
+#ad-progress{width:0%;height:100%;background:linear-gradient(90deg,#d4af37,#f3e5ab);transition:width 1s linear}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="top-bar">
-            <span style="font-size: 11px; color: var(--gold);">✨ v12.1</span>
-            <div class="lang-switcher">
-                <button class="lang-btn active" id="btn-ru" onclick="changeLang('ru')">RU / KZ</button>
-                <button class="lang-btn" id="btn-en" onclick="changeLang('en')">EN (US)</button>
-            </div>
-        </div>
-
-        <div class="header">
-            <div class="crystal-icon">🔮</div>
-            <h1 id="t-title">Оракул Звёзд</h1>
-            <p class="subtitle" id="t-subtitle" style="margin-top:8px; line-height:1.45;">✨ Ваш личный проводник в тайны судьбы и нумерологии.</p>
-        </div>
-
-        <div id="screen-form" class="screen active">
-            <div class="form-group">
-                <label class="form-label" id="t-birth-date">📅 ДАТА ВАШЕГО РОЖДЕНИЯ</label>
-                <div class="select-row">
-                    <div class="custom-picker-btn" id="btn-day" onclick="openPicker('day')">4</div>
-                    <div class="custom-picker-btn" id="btn-month" onclick="openPicker('month')">Апрель</div>
-                    <div class="custom-picker-btn" id="btn-year" onclick="openPicker('year')">2000</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label" id="t-birth-time">⏰ ВРЕМЯ РОЖДЕНИЯ</label>
-                <div class="select-row">
-                    <div class="custom-picker-btn" id="btn-hour" onclick="openPicker('hour')">12 ч</div>
-                    <div class="custom-picker-btn" id="btn-ampm" onclick="openPicker('ampm')">PM</div>
-                    <div class="custom-picker-btn" id="btn-min" onclick="openPicker('min')">00 мин</div>
-                </div>
-            </div>
-            <button class="btn-action" id="t-btn-predict" onclick="showResultsPart1()">✨ Узнать прогноз судьбы</button>
-        </div>
-
-        <div id="screen-part1" class="screen">
-            <div class="matrix-badge">
-                <div class="matrix-title" id="matrix-title">⚡ Ваша матрица судьбы: 4</div>
-                <div class="matrix-text" id="matrix-desc"></div>
-            </div>
-            <div class="content-card">
-                <div class="section-title" id="t-sec-advice">🌟 Энергетика и совет на сегодня:</div>
-                <div class="intro-p" id="t-day-intro"></div>
-                <div class="info-block">
-                    <div class="info-header" id="t-fin-header">💼 Карьера и финансы:</div>
-                    <div class="info-desc" id="t-fin-desc"></div>
-                </div>
-            </div>
-            <button class="btn-action" id="t-btn-deep" onclick="goToStep2()">💎 Перейти к глубокому прогнозу</button>
-            <button class="btn-outline" id="t-btn-back-form" onclick="showForm()">🔄 Ввести другую дату</button>
-        </div>
-
-        <div id="screen-part2" class="screen">
-            <div class="ads-banner" id="ads-banner-box">
-                <h3 id="t-ad-title">💎 Глубокий макро-анализ судьбы</h3>
-                <p id="t-ad-desc">Поддержите проект просмотром спонсорского блока.</p>
-                <div class="banner-slot-wrapper" id="banner-wrap">
-                    <div id="banner-slot"><div data-banner="6153907" id="oc-banner"></div></div>
-                    <div class="banner-status" id="banner-status"></div>
-                </div>
-                <div class="progress-bar-container" id="ad-progress-wrap"><div id="ad-progress"></div></div>
-                <button class="btn-ads" id="t-btn-watch-ad" onclick="startAdFlow()">▶ Открыть доступ</button>
-            </div>
-            <div id="extended-section" class="locked-content">
-                <div class="tabs">
-                    <button class="tab-btn active" id="tab-w" onclick="switchTab('week', this)">Неделя</button>
-                    <button class="tab-btn" id="tab-m" onclick="switchTab('month', this)">Месяц</button>
-                    <button class="tab-btn" id="tab-y" onclick="switchTab('year', this)">Год</button>
-                    <button class="tab-btn" id="tab-l" onclick="switchTab('love', this)">М & Ж</button>
-                </div>
-                <div id="tab-content" class="content-card"></div>
-            </div>
-            <button class="btn-outline" id="t-btn-back-p1" onclick="showPart1()">⬅ Назад к прогнозу</button>
-        </div>
+<canvas id="stars"></canvas>
+<div class="container">
+  <div class="top-bar">
+    <span style="font-size:11px;color:var(--gold)">✨ v13.0</span>
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btn-ru" onclick="changeLang('ru')">RU / KZ</button>
+      <button class="lang-btn" id="btn-en" onclick="changeLang('en')">EN (US)</button>
     </div>
+  </div>
+  <div class="header">
+    <div class="crystal-icon">🔮</div>
+    <h1 id="t-title">Оракул Звёзд</h1>
+    <p class="subtitle" id="t-subtitle" style="margin-top:8px;line-height:1.45">✨ Ваш личный проводник в тайны судьбы и нумерологии.</p>
+  </div>
 
-    <div id="picker-modal" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-title" id="picker-modal-title">Выберите значение</div>
-            <div class="picker-grid" id="picker-grid-content"></div>
-            <button class="btn-outline" style="margin-top: 14px;" onclick="closePicker()">Закрыть</button>
-        </div>
+  <div id="screen-form" class="screen active">
+    <div class="form-group">
+      <label class="form-label" id="t-birth-date">📅 ДАТА ВАШЕГО РОЖДЕНИЯ</label>
+      <div class="select-row">
+        <div class="custom-picker-btn" id="btn-day" onclick="openPicker('day')">4</div>
+        <div class="custom-picker-btn" id="btn-month" onclick="openPicker('month')">Апрель</div>
+        <div class="custom-picker-btn" id="btn-year" onclick="openPicker('year')">2000</div>
+      </div>
     </div>
+    <div class="form-group">
+      <label class="form-label" id="t-birth-time">⏰ ВРЕМЯ РОЖДЕНИЯ</label>
+      <div class="select-row">
+        <div class="custom-picker-btn" id="btn-hour" onclick="openPicker('hour')">12 ч</div>
+        <div class="custom-picker-btn" id="btn-ampm" onclick="openPicker('ampm')">PM</div>
+        <div class="custom-picker-btn" id="btn-min" onclick="openPicker('min')">00 мин</div>
+      </div>
+    </div>
+    <button class="btn-action" id="t-btn-predict" onclick="showResultsPart1()">✨ Узнать прогноз судьбы</button>
+  </div>
 
-    <div class="footer">
-        Оракул Звёзд / Destiny Matrix © <span id="footer-year">2026</span><br>
-        <span id="t-disclaimer">Развлекательный контент • 18+</span>
+  <div id="screen-part1" class="screen">
+    <div class="matrix-badge">
+      <div class="matrix-title" id="matrix-title">⚡ Ваша матрица судьбы: 4</div>
+      <div class="matrix-text" id="matrix-desc"></div>
     </div>
+    <div class="content-card">
+      <div class="section-title" id="t-sec-advice">🌟 Энергетика и совет на сегодня:</div>
+      <div class="intro-p" id="t-day-intro"></div>
+      <div class="info-block">
+        <div class="info-header" id="t-fin-header">💼 Карьера и финансы:</div>
+        <div class="info-desc" id="t-fin-desc"></div>
+      </div>
+    </div>
+    <button class="btn-action" id="t-btn-deep" onclick="goToStep2()">💎 Перейти к глубокому прогнозу</button>
+    <button class="btn-outline" id="t-btn-back-form" onclick="showForm()">🔄 Ввести другую дату</button>
+  </div>
+
+  <div id="screen-part2" class="screen">
+    <div class="ads-banner" id="ads-banner-box">
+      <h3 id="t-ad-title">💎 Глубокий макро-анализ судьбы</h3>
+      <button id="sponsor-chip" onclick="openFallback()">🎁 Спонсор</button>
+      <p id="t-ad-desc">Поддержите проект просмотром спонсорского блока.</p>
+      <div class="banner-slot-wrapper" id="banner-wrap">
+        <div id="banner-slot"><div data-banner="6153907" id="oc-banner"></div></div>
+        <div class="banner-status" id="banner-status"></div>
+      </div>
+      <div class="progress-bar-container" id="ad-progress-wrap"><div id="ad-progress"></div></div>
+      <button class="btn-ads" id="t-btn-watch-ad" onclick="startAdFlow()">▶ Открыть доступ</button>
+    </div>
+    <div id="extended-section" class="locked-content">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-w" onclick="switchTab('week',this)">Неделя</button>
+        <button class="tab-btn" id="tab-m" onclick="switchTab('month',this)">Месяц</button>
+        <button class="tab-btn" id="tab-y" onclick="switchTab('year',this)">Год</button>
+        <button class="tab-btn" id="tab-l" onclick="switchTab('love',this)">М & Ж</button>
+      </div>
+      <div id="tab-content" class="content-card"></div>
+    </div>
+    <button class="btn-outline" id="t-btn-back-p1" onclick="showPart1()">⬅ Назад к прогнозу</button>
+  </div>
+</div>
+
+<div id="picker-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title" id="picker-modal-title">Выберите значение</div>
+    <div class="picker-grid" id="picker-grid-content"></div>
+    <button class="btn-outline" style="margin-top:14px" onclick="closePicker()">Закрыть</button>
+  </div>
+</div>
+
+<div class="footer">Оракул Звёзд / Destiny Matrix © <span id="footer-year">2026</span><br><span id="t-disclaimer">Развлекательный контент • 18+</span></div>
 
 <script>
-    // ===== НАСТРОЙКИ МОНЕТИЗАЦИИ =====
-    const FALLBACK_URL = 'https://t.me/CapNeum'; // ЗАМЕНИТЕ на свою CPA/партнёрскую ссылку. Блок помечен как реклама.
-    const AD_WAIT_LOADED_SEC = 8;
-    const AD_WAIT_FALLBACK_SEC = 5;
-    const BANNER_PROBE_MS = 3000;
-    const CURRENT_YEAR = new Date().getFullYear();
+const FALLBACK_URL='https://t.me/CapNeum'; // ЗАМЕНИТЕ на свою CPA-ссылку (блок помечен как реклама)
+const AD_WAIT_LOADED_SEC=8, AD_WAIT_FALLBACK_SEC=5, BANNER_PROBE_MS=3000;
+const CURRENT_YEAR=new Date().getFullYear();
+let currentLang='ru',currentTabKey='week',currentMatrix=4,adFlowRunning=false,unlocked=false,fallbackShown=false;
+const tg=(window.Telegram&&window.Telegram.WebApp)?window.Telegram.WebApp:null;
+const $id=i=>document.getElementById(i);
+function haptic(t){if(!tg)return;try{if(t==='select')tg.HapticFeedback.selectionChanged();else if(t==='success')tg.HapticFeedback.notificationOccurred('success');else tg.HapticFeedback.impactOccurred(t);}catch(e){}}
+function getUnlocked(){try{return sessionStorage.getItem('om_unlocked')==='1'}catch(e){return false}}
+function setUnlocked(){try{sessionStorage.setItem('om_unlocked','1')}catch(e){}}
 
-    let currentLang = 'ru';
-    let currentTabKey = 'week';
-    let adFlowRunning = false;
-    let unlocked = false;
-    let fallbackShown = false;
+const translations={
+ru:{title:"Оракул Звёзд",subtitle:"✨ Ваш личный проводник в тайны судьбы и нумерологии. Узнайте свой потенциал и код даты рождения.",birthDate:"📅 ДАТА ВАШЕГО РОЖДЕНИЯ",birthTime:"⏰ ВРЕМЯ РОЖДЕНИЯ",btnPredict:"✨ Узнать прогноз судьбы",matrixTitle:"⚡ Ваша матрица судьбы: ",secAdvice:"🌟 Энергетика и совет на сегодня:",dayIntro:"Сегодняшний день требует собранности и ясных решений. Действуйте по плану, а не по импульсу.",finHeader:"💼 Карьера и финансы:",finDesc:"Хороший момент для аудита бюджета, работы с документами и закрытия задолженностей.",btnDeep:"💎 Перейти к глубокому прогнозу",btnBackForm:"🔄 Ввести другую дату",adTitle:"💎 Глубокий макро-анализ судьбы",adDesc:"Поддержите проект просмотром спонсорского блока.",btnWatchAd:"▶ Открыть доступ",adsChecking:"⏳ Проверяем спонсорский блок…",waitTpl:"⏳ Доступ откроется через {s} с",bannerLoading:"Загрузка спонсорского блока…",bannerOk:"Спонсорский блок загружен. Не закрывайте экран.",fallbackLabel:"Реклама • партнёрское предложение",fallbackTitle:"💰 Специальное предложение партнёра",fallbackDesc:"Пока спонсорский блок недоступен — посмотрите предложение партнёра проекта.",fallbackBtn:"Смотреть предложение →",unlockedShort:"✅ Доступ открыт",sponsorChip:"🎁 Спонсор",btnBackP1:"⬅ Назад к прогнозу",disclaimer:"Развлекательный контент • 18+",tabs:["Неделя","Месяц","Год","М & Ж"],hourSuffix:"ч",minSuffix:"мин",personalTitle:"🔑 Персональный ключ",focus:"Фокус",money:"Финансы",love:"Отношения",caution:"Осторожно",meters:["Энергия","Финансы","Гармония"],lens:"Ваш аркан добавляет фокус:"},
+en:{title:"Destiny Matrix",subtitle:"✨ Your personal guide to destiny and numerology. Unlock your potential and birth code.",birthDate:"📅 YOUR BIRTH DATE",birthTime:"⏰ BIRTH TIME",btnPredict:"✨ Reveal Destiny Reading",matrixTitle:"⚡ Your Destiny Matrix: ",secAdvice:"🌟 Energy & Daily Advice:",dayIntro:"Today calls for focus and clear decisions. Act by plan, not by impulse.",finHeader:"💼 Career & Finances:",finDesc:"A good moment for budget audits, paperwork, and settling obligations.",btnDeep:"💎 Unlock Deep Macro-Analysis",btnBackForm:"🔄 Enter Another Date",adTitle:"💎 Deep Destiny Macro-Analysis",adDesc:"Support the project by viewing the sponsor block.",btnWatchAd:"▶ Unlock Access",adsChecking:"⏳ Checking sponsor block…",waitTpl:"⏳ Access unlocks in {s}s",bannerLoading:"Loading sponsor block…",bannerOk:"Sponsor block loaded. Keep this screen open.",fallbackLabel:"Ad • partner offer",fallbackTitle:"💰 Special Partner Offer",fallbackDesc:"The sponsor block is unavailable — check out our partner's offer instead.",fallbackBtn:"View Offer →",unlockedShort:"✅ Access unlocked",sponsorChip:"🎁 Sponsor",btnBackP1:"⬅ Back to Forecast",disclaimer:"For entertainment purposes • 18+",tabs:["Week","Month","Year","Love"],hourSuffix:"h",minSuffix:"m",personalTitle:"🔑 Personal Key",focus:"Focus",money:"Money",love:"Relationships",caution:"Caution",meters:["Energy","Money","Harmony"],lens:"Your arcana adds focus:"}
+};
 
-    const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
-    function haptic(type) {
-        if (!tg) return;
-        try {
-            if (type === 'select') tg.HapticFeedback.selectionChanged();
-            else if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
-            else tg.HapticFeedback.impactOccurred(type);
-        } catch (e) {}
-    }
-    function getUnlocked() { try { return sessionStorage.getItem('om_unlocked') === '1'; } catch (e) { return false; } }
-    function setUnlocked() { try { sessionStorage.setItem('om_unlocked', '1'); } catch (e) {} }
-    const $id = (id) => document.getElementById(id);
+const arcana={
+ru:[{n:"Маг",d:"Воля, инициатива и лидерство. Время начинать собственные проекты."},{n:"Жрица",d:"Интуиция и тайные знания. Доверяйте внутреннему голосу."},{n:"Императрица",d:"Изобилие, забота и творчество. Энергия роста и достатка."},{n:"Император",d:"Структура, порядок и надёжность. Стройте прочные системы."},{n:"Иерофант",d:"Традиции и наставничество. Учитесь и передавайте знания."},{n:"Влюблённые",d:"Выбор и партнёрство. Гармония в отношениях — ваш ключ."},{n:"Колесница",d:"Движение и победа. Ставьте цели и держите курс."},{n:"Справедливость",d:"Баланс и честность. Всё возвращается причинно-следственной связью."},{n:"Отшельник",d:"Мудрость и глубина. Время анализа и уединения."},{n:"Колесо Фортуны",d:"Циклы и удача. Ловите поток возможностей."},{n:"Сила",d:"Внутренняя мощь и страсть. Мягкость побеждает давление."},{n:"Повешенный",d:"Иной взгляд. Пауза ради нового понимания."},{n:"Трансформация",d:"Завершение и обновление. Отпускайте старое."},{n:"Умеренность",d:"Гармония и мера. Исцеление через баланс."},{n:"Искушение",d:"Энергия желаний. Управляйте страстями осознанно."},{n:"Башня",d:"Слом отжившего. Освобождение через перемены."},{n:"Звезда",d:"Надежда и вдохновение. Верьте в свой путь."},{n:"Луна",d:"Подсознание и сны. Проверяйте факты."},{n:"Солнце",d:"Успех и жизненная сила. Делитесь теплом."},{n:"Пробуждение",d:"Призвание и родовая сила. Время важного решения."},{n:"Мир",d:"Целостность и признание. Завершение большого цикла."},{n:"Шут",d:"Свобода и новые начала. Лёгкость открывает двери."}],
+en:[{n:"The Magician",d:"Will, initiative and leadership. Start your own ventures."},{n:"The Priestess",d:"Intuition and hidden knowledge. Trust your inner voice."},{n:"The Empress",d:"Abundance, care and creativity. Growth and prosperity."},{n:"The Emperor",d:"Structure, order and reliability. Build robust systems."},{n:"The Hierophant",d:"Tradition and mentorship. Learn and teach."},{n:"The Lovers",d:"Choice and partnership. Harmony is your key."},{n:"The Chariot",d:"Movement and victory. Set goals, hold course."},{n:"Justice",d:"Balance and honesty. Cause and effect returns."},{n:"The Hermit",d:"Wisdom and depth. Analysis and solitude."},{n:"Wheel of Fortune",d:"Cycles and luck. Catch the flow."},{n:"Strength",d:"Inner power and passion. Softness wins."},{n:"The Hanged Man",d:"A new perspective. Pause for understanding."},{n:"Transformation",d:"Completion and renewal. Let go."},{n:"Temperance",d:"Harmony and moderation. Healing through balance."},{n:"Temptation",d:"Desire energy. Manage passions consciously."},{n:"The Tower",d:"Breaking the outdated. Liberation through change."},{n:"The Star",d:"Hope and inspiration. Believe in your path."},{n:"The Moon",d:"Subconscious and dreams. Check facts."},{n:"The Sun",d:"Success and vitality. Share warmth."},{n:"Awakening",d:"Calling and ancestral strength. A major decision."},{n:"The World",d:"Wholeness and recognition. A great cycle completes."},{n:"The Fool",d:"Freedom and new beginnings. Lightness opens doors."}]
+};
 
-    const translations = {
-        ru: {
-            title: "Оракул Звёзд",
-            subtitle: "✨ Ваш личный проводник в тайны судьбы и нумерологии. Узнайте свой потенциал и код даты рождения.",
-            birthDate: "📅 ДАТА ВАШЕГО РОЖДЕНИЯ", birthTime: "⏰ ВРЕМЯ РОЖДЕНИЯ",
-            btnPredict: "✨ Узнать прогноз судьбы",
-            matrixTitle: "⚡ Ваша матрица судьбы: ",
-            secAdvice: "🌟 Энергетика и совет на сегодня:",
-            dayIntro: "Сегодняшний день требует от вас предельной собранности, дисциплины и холодного рассудка.",
-            finHeader: "💼 Карьера и финансы:",
-            finDesc: "Идеальный момент для аудита бюджета, работы с документами и закрытия задолженностей.",
-            btnDeep: "💎 Перейти к глубокому прогнозу", btnBackForm: "🔄 Ввести другую дату",
-            adTitle: "💎 Глубокий макро-анализ судьбы",
-            adDesc: "Поддержите проект просмотром спонсорского блока.",
-            btnWatchAd: "▶ Открыть доступ",
-            adsChecking: "⏳ Проверяем спонсорский блок…",
-            waitTpl: "⏳ Доступ откроется через {s} с",
-            bannerLoading: "Загрузка спонсорского блока…",
-            bannerOk: "Спонсорский блок загружен. Не закрывайте экран.",
-            fallbackLabel: "Реклама • партнёрское предложение",
-            fallbackTitle: "💰 Специальное предложение партнёра",
-            fallbackDesc: "Пока спонсорский блок недоступен — посмотрите предложение партнёра проекта.",
-            fallbackBtn: "Смотреть предложение →",
-            unlockedTitle: "✅ Глубокий разбор разблокирован!",
-            unlockedDesc: "Вам доступны все детальные разделы ниже.",
-            btnBackP1: "⬅ Назад к прогнозу",
-            disclaimer: "Развлекательный контент • 18+",
-            tabs: ["Неделя", "Месяц", "Год", "М & Ж"],
-            hourSuffix: "ч", minSuffix: "мин"
-        },
-        en: {
-            title: "Destiny Matrix",
-            subtitle: "✨ Your personal guide to the secrets of destiny and numerology. Unlock your potential and birth code.",
-            birthDate: "📅 YOUR BIRTH DATE", birthTime: "⏰ BIRTH TIME",
-            btnPredict: "✨ Reveal Destiny Reading",
-            matrixTitle: "⚡ Your Destiny Matrix: ",
-            secAdvice: "🌟 Energy & Daily Advice:",
-            dayIntro: "Today's energy requires maximum focus, discipline, and a clear, rational mindset.",
-            finHeader: "💼 Career & Finances:",
-            finDesc: "An ideal moment for budget audits, paperwork, and settling obligations.",
-            btnDeep: "💎 Unlock Deep Macro-Analysis", btnBackForm: "🔄 Enter Another Date",
-            adTitle: "💎 Deep Destiny Macro-Analysis",
-            adDesc: "Support the project by viewing the sponsor block.",
-            btnWatchAd: "▶ Unlock Access",
-            adsChecking: "⏳ Checking sponsor block…",
-            waitTpl: "⏳ Access unlocks in {s}s",
-            bannerLoading: "Loading sponsor block…",
-            bannerOk: "Sponsor block loaded. Keep this screen open.",
-            fallbackLabel: "Ad • partner offer",
-            fallbackTitle: "💰 Special Partner Offer",
-            fallbackDesc: "The sponsor block is unavailable right now — check out our partner's offer instead.",
-            fallbackBtn: "View Offer →",
-            unlockedTitle: "✅ Deep Analysis Unlocked!",
-            unlockedDesc: "All detailed sections below are now available.",
-            btnBackP1: "⬅ Back to Forecast",
-            disclaimer: "For entertainment purposes • 18+",
-            tabs: ["Week", "Month", "Year", "Love"],
-            hourSuffix: "h", minSuffix: "m"
-        }
-    };
+// Профили арканов: [фокус, финансы, отношения, осторожность]
+const profiles={
+ru:[
+["инициатива и личная сила","деньги приходят через активные действия и самопрезентацию","вы задаёте тон отношениям — ведите мягко","не распыляйтесь на десять дел сразу"],
+["интуиция и скрытые знания","доход растёт через анализ и тихие переговоры","слушайте больше, чем говорите","не додумывайте за партнёра — проверяйте факты"],
+["изобилие и забота","прибыльны проекты, связанные с комфортом и красотой","тепло и щедрость укрепляют союз","не опекайте чрезмерно"],
+["структура и власть","стабильность через дисциплину и долгосрочные контракты","надёжность важнее романтики","избегайте жёсткого контроля"],
+["традиции и наставничество","доход через обучение и экспертность","общие ценности — фундамент","не превращайте принципы в догмы"],
+["выбор и союз","выгода через партнёрства и переговоры","гармония через честный выбор","не избегайте решений"],
+["воля и движение","рост через амбиции и скорость","не превращайте отношения в гонку","контролируйте импульсивность"],
+["баланс и закон","честные сделки и прозрачные условия","равный вклад обоих","не судите строго"],
+["мудрость и глубина","деньги через экспертизу и консультации","личное пространство необходимо","не изолируйтесь полностью"],
+["циклы и удача","ловите окна возможностей, диверсифицируйте","принимайте перемены вместе","не полагайтесь только на случай"],
+["страсть и мягкая мощь","энергия продаж и харизмы","терпение усмиряет конфликты","не давите"],
+["пауза и новый взгляд","пересмотрите стратегию, не спешите с тратами","посмотрите на партнёра его глазами","не зависайте в ожидании"],
+["обновление","закройте старое, освободите ресурс для нового","отпустите отжившие сценарии","не держитесь за прошлое"],
+["гармония и мера","стабильный рост без крайностей","исцеление через диалог","не торопите события"],
+["желания и магнетизм","крупные деньги, но проверяйте условия","страсть сильна — добавьте честность","избегайте зависимостей и рискованных схем"],
+["освобождение","перестройка бюджета после кризиса","честность вскрывает старое — стройте заново","не разрушайте импульсивно"],
+["надежда и вдохновение","доход через творчество и публику","верьте в союз, делитесь мечтами","не идеализируйте"],
+["подсознание и сны","проверяйте документы дважды","говорите о страхах вслух","не живите иллюзиями"],
+["успех и витальность","публичность приносит прибыль","радость и щедрость укрепляют","не выгорайте на отдаче"],
+["призвание и род","семейные проекты и возвращение к истокам прибыльны","важный разговор созревает","не игнорируйте зов"],
+["целостность","международные и онлайн-направления","союз выходит на новый уровень","не останавливайтесь на достигнутом"],
+["свобода и начало","новые ниши и лёгкие старты","лёгкость и юмор оживляют","избегайте безответственности"]],
+en:[
+["initiative and personal power","money comes through action and self-presentation","you set the tone — lead gently","don't scatter across ten tasks"],
+["intuition and hidden knowledge","income grows via analysis and quiet negotiation","listen more than you speak","verify facts, don't assume"],
+["abundance and care","projects of comfort and beauty are profitable","warmth and generosity strengthen bonds","don't over-protect"],
+["structure and authority","stability via discipline and long contracts","reliability beats romance","avoid rigid control"],
+["tradition and mentorship","income through teaching and expertise","shared values are the foundation","don't turn principles into dogma"],
+["choice and union","gain through partnerships","harmony via honest choice","don't avoid decisions"],
+["will and movement","growth via ambition and speed","don't turn love into a race","control impulsiveness"],
+["balance and law","fair deals, transparent terms","equal contribution","don't judge harshly"],
+["wisdom and depth","money via expertise and consulting","personal space is needed","don't isolate fully"],
+["cycles and luck","catch windows, diversify","accept change together","don't rely on chance alone"],
+["passion and soft power","sales energy and charisma","patience calms conflict","don't push"],
+["pause and new view","review strategy, delay spending","see through your partner's eyes","don't freeze in waiting"],
+["renewal","close the old, free resources","release outdated scripts","don't cling to the past"],
+["harmony and measure","steady growth without extremes","healing through dialogue","don't rush events"],
+["desire and magnetism","big money, but check terms","strong passion — add honesty","avoid risky schemes"],
+["liberation","rebuild the budget after crisis","honesty reveals the old — rebuild","don't destroy impulsively"],
+["hope and inspiration","income via creativity and audience","share dreams, believe in the union","don't idealize"],
+["subconscious and dreams","double-check documents","speak fears aloud","don't live in illusions"],
+["success and vitality","visibility brings profit","joy and generosity strengthen","don't burn out giving"],
+["calling and ancestry","family projects profit","a key conversation ripens","don't ignore the call"],
+["wholeness","international and online directions","the union levels up","don't stop at achieved"],
+["freedom and beginning","new niches, easy starts","lightness and humor revive","avoid irresponsibility"]]
+};
 
-    const arcana = {
-        ru: [
-            {n:"Маг",d:"Воля, инициатива и лидерство. Время начинать собственные проекты."},
-            {n:"Жрица",d:"Интуиция и тайные знания. Доверяйте внутреннему голосу."},
-            {n:"Императрица",d:"Изобилие, забота и творчество. Энергия роста и достатка."},
-            {n:"Император",d:"Структура, порядок и надёжность. Ваша миссия — выстраивать прочные системы."},
-            {n:"Иерофант",d:"Традиции и наставничество. Учитесь и передавайте знания."},
-            {n:"Влюблённые",d:"Выбор и партнёрство. Гармония в отношениях — ваш ключ."},
-            {n:"Колесница",d:"Движение и победа. Ставьте цели и уверенно держите курс."},
-            {n:"Справедливость",d:"Баланс и честность. Всё возвращается причинно-следственной связью."},
-            {n:"Отшельник",d:"Мудрость и глубина. Время анализа и спокойного уединения."},
-            {n:"Колесо Фортуны",d:"Циклы и удача. Ловите поток возможностей, не сидите на месте."},
-            {n:"Сила",d:"Внутренняя мощь и страсть. Мягкость побеждает давление."},
-            {n:"Повешенный",d:"Иной взгляд на вещи. Пауза ради нового понимания."},
-            {n:"Трансформация",d:"Завершение и обновление. Отпускайте старое без страха."},
-            {n:"Умеренность",d:"Гармония и мера. Исцеление через баланс во всём."},
-            {n:"Искушение",d:"Мощная энергия желаний. Управляйте страстями осознанно."},
-            {n:"Башня",d:"Слом отжившего. Освобождение через внезапные перемены."},
-            {n:"Звезда",d:"Надежда и вдохновение. Верьте в свой путь — он верный."},
-            {n:"Луна",d:"Подсознание и сны. Проверяйте факты, не поддавайтесь иллюзиям."},
-            {n:"Солнце",d:"Успех и жизненная сила. Делитесь теплом и радостью."},
-            {n:"Пробуждение",d:"Призвание и родовая сила. Время важного решения."},
-            {n:"Мир",d:"Целостность и признание. Завершение большого цикла."},
-            {n:"Шут",d:"Свобода и новые начала. Лёгкость открывает любые двери."}
-        ],
-        en: [
-            {n:"The Magician",d:"Will, initiative and leadership. Time to start your own ventures."},
-            {n:"The Priestess",d:"Intuition and hidden knowledge. Trust your inner voice."},
-            {n:"The Empress",d:"Abundance, care and creativity. Energy of growth and prosperity."},
-            {n:"The Emperor",d:"Structure, order and reliability. Your mission is to build robust systems."},
-            {n:"The Hierophant",d:"Tradition and mentorship. Learn and pass on knowledge."},
-            {n:"The Lovers",d:"Choice and partnership. Harmony in relationships is your key."},
-            {n:"The Chariot",d:"Movement and victory. Set goals and hold your course."},
-            {n:"Justice",d:"Balance and honesty. Everything returns through cause and effect."},
-            {n:"The Hermit",d:"Wisdom and depth. A time for analysis and quiet solitude."},
-            {n:"Wheel of Fortune",d:"Cycles and luck. Catch the flow of opportunities."},
-            {n:"Strength",d:"Inner power and passion. Softness overcomes pressure."},
-            {n:"The Hanged Man",d:"A different perspective. Pause for new understanding."},
-            {n:"Transformation",d:"Completion and renewal. Let go of the old without fear."},
-            {n:"Temperance",d:"Harmony and moderation. Healing through balance."},
-            {n:"Temptation",d:"Powerful energy of desire. Manage passions consciously."},
-            {n:"The Tower",d:"Breaking the outdated. Liberation through sudden change."},
-            {n:"The Star",d:"Hope and inspiration. Believe in your path — it is true."},
-            {n:"The Moon",d:"Subconscious and dreams. Check facts, resist illusions."},
-            {n:"The Sun",d:"Success and vitality. Share warmth and joy."},
-            {n:"Awakening",d:"Calling and ancestral strength. Time for a major decision."},
-            {n:"The World",d:"Wholeness and recognition. Completion of a great cycle."},
-            {n:"The Fool",d:"Freedom and new beginnings. Lightness opens every door."}
-        ]
-    };
+const data={
+ru:{
+week:{title:"📅 Детальный прогноз на текущую неделю:",intro:"Ритм недели складывается из трёх волн: импульс, реализация и восстановление. Ниже — карта семи дней с акцентом на ваш аркан.",blocks:[
+{h:"⚡ Понедельник — Вторник (Импульс):",d:"Открывайте неделю с одной главной задачи, а не с десяти мелких. Время подписания бумаг, запуска переговоров и возвращения к отложенным решениям: энергия первых дней поддерживает инициативу и помогает сдвинуть то, что стояло месяцами."},
+{h:"📈 Среда — Четверг (Реализация и финансы):",d:"Пик деловой активности. Возможны неожиданные поступления, возврат долга или выгодное предложение — проверяйте условия дважды и фиксируйте договорённости письменно. Хорошее окно для покупок, инвестиций в обучение и пересмотра цен на свои услуги."},
+{h:"🤝 Пятница (Контакты и связи):",d:"День нетворкинга: знакомства, примирения и командные обсуждения дадут больше, чем одиночная работа. Вечером благоприятны лёгкие встречи без повестки — именно они часто приносят полезные связи и неожиданные приглашения."},
+{h:"🌙 Суббота — Воскресенье (Баланс):",d:"Восстановление важнее подвигов. Сон, вода, прогулка и цифровая тишина вернут ясность; спокойное планирование следующей недели заложит фундамент удачи. Избегайте крупных трат и острых разговоров на усталости."}]},
+month:{title:"🌙 Глубинный анализ текущего месяца:",intro:"Месяц работает как коридор возможностей: первые две недели — вход и выбор, последние — закрепление результата. Карта ниже показывает, где включать скорость, а где — осторожность.",blocks:[
+{h:"💼 Деловая сфера:",d:"Выход на новый уровень ответственности: возможны предложение о повышении, новый проект или роль наставника. Берите обязательства, которые можете закрыть за 30 дней, и фиксируйте зоны ответственности письменно — это защитит от перегруза."},
+{h:"💰 Денежные потоки:",d:"Благоприятный период для долгосрочного планирования: подушка безопасности, закрытие дорогих долгов, пересмотр подписок и тарифов. Крупные покупки лучше делать во второй половине месяца, сравнив минимум три варианта условий."},
+{h:"❤️ Отношения и окружение:",d:"Круг общения очищается: старые контакты могут отпасть, зато появятся люди «вашей волны». В паре важны совместные планы и честный разговор о деньгах — недосказанность этого месяца превращается в обиды."},
+{h:"🧠 Здоровье и энергия:",d:"Ресурс тела — главный актив месяца. Режим сна, вода и умеренная нагрузка дадут больше, чем стимуляторы; следите за спиной и глазами при сидячей работе. Профилактический чек-ап закроет вопрос, который давно откладывался."},
+{h:"🔮 Интуиция и знаки:",d:"Интуиция обострена: сны, повторяющиеся числа и «случайные» встречи несут подсказки. Записывайте идеи сразу — среди них есть зерно проекта, который выстрелит в следующем цикле."}]},
+year:{title:"🚀 Масштабный макро-цикл года:",intro:"Год — поворотная точка матрицы: закладывается фундамент на 7–9 лет вперёд. Ниже — карта фундаментов, испытаний и окон возможностей.",blocks:[
+{h:"🏛 Фундамент:",d:"Время строить прочные структуры: команда, продукт, репутация, финансовая подушка. Всё, что оформлено документально и системно в этом году, будет кормить вас следующие циклы; хаотичные начинания, наоборот, рассеются."},
+{h:"⚡ Испытания и точки роста:",d:"Год проверяет дисциплину: возможны задержки, бюрократия или конкуренция. Это не «невезение», а фильтр — выигрывает тот, кто опирается на факты, режим и доведение дел до конца, а не на вдохновение."},
+{h:"🚀 Окна возможностей:",d:"Два окна роста: весна — запуски и знакомства, осень — масштабирование и переговоры о доходах. Готовьте материалы заранее: возможность приходит к тем, у кого уже есть портфолио, расчёты и команда."},
+{h:"🌟 Главный урок:",d:"Мыслить масштабно и делегировать рутину. Ваша задача — стать архитектором системы, а не её единственным винтиком; наставничество и передача знаний усилят собственный статус и доход."}]},
+love:{title:"👥 Мужчина и Женщина: гармония союза:",intro:"Разбор союза через призму нумерологии: два архетипа, их притяжение, зоны конфликтов и код процветания. Это карта диалога, а не приговор.",blocks:[
+{h:"🧔 Мужская энергия:",d:"Опора, защита и финансовая безопасность семьи. В плюсе — надёжность и слово-дело; в минусе — контроль и молчание. Рост начинается там, где сила становится заботой, а не давлением."},
+{h:"👩 Женская энергия:",d:"Мудрое наполнение пространства любовью и созиданием. В плюсе — вдохновение и мягкая сила; в минусе — тревога и гиперопека. Баланс возвращается через собственные интересы и личные границы."},
+{h:"🔥 Притяжение и страсть:",d:"Страсть живёт на новизне и внимании: совместные поездки, проекты и ритуалы вдвоём обновляют магнетизм. Рутина гасит огонь — планируйте «свидания без быта» минимум раз в две недели."},
+{h:"🕊 Конфликты и их исцеление:",d:"Большинство ссор — не о предмете спора, а о признании и безопасности. Правило месяца: сначала услышать, потом отвечать; претензию переводить в просьбу. Пауза в 20 минут спасает от слов, которые не забываются."},
+{h:"🔑 Код процветания союза:",d:"Искренний диалог, общие долгосрочные цели и прозрачность в деньгах. Союз крепнет, когда оба вкладываются и оба имеют право на мечту; общий план на год превращает пару в команду."}]}
+},
+en:{
+week:{title:"📅 Detailed Forecast for the Week:",intro:"The week moves in three waves: impulse, execution, recovery. Below is a seven-day map tuned to your arcana.",blocks:[
+{h:"⚡ Monday — Tuesday (Momentum):",d:"Open the week with one main task, not ten small ones. A strong window for signing papers, starting negotiations and reviving stalled decisions — early-day energy supports initiative."},
+{h:"📈 Wednesday — Thursday (Execution & Money):",d:"Peak business activity. Unexpected inflows, a returned debt or a profitable offer are possible — double-check terms and put agreements in writing. Good for purchases, learning investments and repricing your services."},
+{h:"🤝 Friday (Contacts):",d:"Networking day: introductions, reconciliations and team talks beat solo work. Light evening meetings without an agenda often bring useful connections and unexpected invitations."},
+{h:"🌙 Saturday — Sunday (Balance):",d:"Recovery beats heroics. Sleep, water, walks and digital quiet restore clarity; calm planning sets next week's luck. Avoid big spending and sharp talks while tired."}]},
+month:{title:"🌙 In-depth Analysis of the Month:",intro:"The month is a corridor of opportunity: the first half is entry and choice, the second half is consolidation. The map shows where to speed up and where to slow down.",blocks:[
+{h:"💼 Career:",d:"A step up in responsibility: a promotion offer, a new project or a mentor role. Commit only to what you can close in 30 days and define responsibilities in writing to avoid overload."},
+{h:"💰 Money Flows:",d:"Good for long-term planning: an emergency fund, closing expensive debts, reviewing subscriptions. Major purchases fit the second half of the month after comparing at least three options."},
+{h:"❤️ Relationships & Circle:",d:"Your circle refreshes: old contacts may fade while aligned people appear. In couples, shared plans and an honest money talk matter — unspoken things turn into resentment this month."},
+{h:"🧠 Health & Energy:",d:"Your body is the month's main asset. Sleep rhythm, water and moderate load beat stimulants; watch your back and eyes during desk work. A preventive check-up closes a postponed question."},
+{h:"🔮 Intuition & Signs:",d:"Intuition is sharp: dreams, repeating numbers and 'chance' meetings carry hints. Write ideas down immediately — one holds the seed of a project that fires next cycle."}]},
+year:{title:"🚀 Macro-Cycle of the Year:",intro:"A turning point of the matrix: a 7–9 year foundation is laid now. Below — foundations, tests and windows of opportunity.",blocks:[
+{h:"🏛 Foundation:",d:"Build durable structures: team, product, reputation, financial cushion. What is documented and systematized this year feeds later cycles; chaotic starts dissolve."},
+{h:"⚡ Tests & Growth:",d:"The year tests discipline: delays, bureaucracy or competition may appear. It's a filter, not bad luck — winners rely on facts, rhythm and completion, not inspiration."},
+{h:"🚀 Windows:",d:"Two growth windows: spring for launches and meetings, autumn for scaling and income talks. Prepare materials early — opportunity favors those with a portfolio, numbers and a team."},
+{h:"🌟 Main Lesson:",d:"Think big and delegate routine. Become the architect of the system, not its only cog; mentoring and sharing knowledge raise your status and income."}]},
+love:{title:"👥 Harmony in Union (Male & Female):",intro:"A numerology lens on the union: two archetypes, attraction, conflict zones and a prosperity code. A map for dialogue, not a verdict.",blocks:[
+{h:"🧔 Male Energy:",d:"Support, protection and financial safety. In balance — reliability and word-kept; in shadow — control and silence. Growth begins where strength becomes care, not pressure."},
+{h:"👩 Female Energy:",d:"Wise filling of space with love and creation. In balance — inspiration and soft power; in shadow — anxiety and over-care. Balance returns via own interests and boundaries."},
+{h:"🔥 Attraction & Passion:",d:"Passion lives on novelty and attention: trips, projects and couple rituals renew magnetism. Routine douses the fire — schedule 'dates without chores' every two weeks."},
+{h:"🕊 Conflict & Healing:",d:"Most fights are about recognition and safety, not the topic. Rule: hear first, answer second; turn complaints into requests. A 20-minute pause prevents unforgettable words."},
+{h:"🔑 Prosperity Code:",d:"Sincere dialogue, shared long-term goals and money transparency. The union strengthens when both invest and both keep the right to dream; a yearly plan turns a couple into a team."}]}
+}
+};
 
-    const data = {
-        ru: {
-            week: { title: "📅 Детальный прогноз на текущую неделю:", intro: "Энергетический ритм этих семи дней требует осознанности в каждом шаге.", blocks: [
-                { h: "⚡ Понедельник — Вторник (Импульс):", d: "Отличное время для решения застарелых задач и подписания важных бумаг." },
-                { h: "📈 Среда — Четверг (Финансы):", d: "Возможны неожиданные денежные поступления или выгодные предложения." },
-                { h: "🌙 Пятница — Воскресенье (Баланс):", d: "Время уделить внимание здоровью и ментальному отдыху." } ] },
-            month: { title: "🌙 Глубинный анализ текущего месяца:", intro: "Этот месяц открывает коридор новых возможностей.", blocks: [
-                { h: "💼 Деловая сфера:", d: "Выход на новый уровень ответственности и рост доходов." },
-                { h: "💰 Денежные потоки:", d: "Благоприятный период для долгосрочного планирования бюджета." },
-                { h: "🧠 Интуиция:", d: "Ваша интуиция обострена. Обращайте внимание на знаки." } ] },
-            year: { title: "🚀 Масштабный макро-цикл года:", intro: "Год является поворотным в вашей нумерологической матрице.", blocks: [
-                { h: "🏛 Фундамент:", d: "Время строить прочные структуры и запускать проекты." },
-                { h: "⚡ Испытания:", d: "Откажитесь от иллюзий, полагайтесь на факты и дисциплину." },
-                { h: "🌟 Главный урок:", d: "Научиться мыслить масштабно и делегировать рутину." } ] },
-            love: { title: "👥 Мужчина и Женщина: Гармония союза:", intro: "Разбор психотипов через призму нумерологии.", blocks: [
-                { h: "🧔 Мужская энергия:", d: "Опора, защита и финансовая безопасность семьи." },
-                { h: "👩 Женская энергия:", d: "Мудрое наполнение пространства энергией любви и созидания." },
-                { h: "🔑 Код процветания:", d: "Искренний диалог и общие долгосрочные цели." } ] }
-        },
-        en: {
-            week: { title: "📅 Detailed Forecast for the Week:", intro: "The energetic rhythm of these seven days demands mindfulness in every step.", blocks: [
-                { h: "⚡ Monday — Tuesday (Momentum):", d: "Great time for solving backlog tasks and signing key papers." },
-                { h: "📈 Wednesday — Thursday (Finances):", d: "Unexpected financial inflows or profitable offers are possible." },
-                { h: "🌙 Friday — Sunday (Balance):", d: "Time to focus on health, loved ones, and mental recharge." } ] },
-            month: { title: "🌙 In-depth Analysis of the Month:", intro: "This month opens a corridor of new opportunities.", blocks: [
-                { h: "💼 Career Sphere:", d: "Stepping up to a new level of responsibility and income growth." },
-                { h: "💰 Money Flows:", d: "Favorable period for long-term budget planning." },
-                { h: "🧠 Intuition:", d: "Your intuition is heightened. Pay attention to signs." } ] },
-            year: { title: "🚀 Macro-Cycle of the Year:", intro: "This year is a turning point in your numerological matrix.", blocks: [
-                { h: "🏛 Foundation:", d: "Building solid structures and launching ventures." },
-                { h: "⚡ Challenges:", d: "Drop illusions and rely on discipline and facts." },
-                { h: "🌟 Main Lesson:", d: "Learn to think globally and delegate routine." } ] },
-            love: { title: "👥 Harmony in Union (Male & Female):", intro: "Analysis of interaction archetypes through numerology.", blocks: [
-                { h: "🧔 Male Archetype:", d: "Strength in keeping word, responsibility, and security." },
-                { h: "👩 Female Archetype:", d: "Wisdom, inspiration, and nurturing family space." },
-                { h: "🔑 Harmony Code:", d: "Sincere dialogue and shared long-term goals." } ] }
-        }
-    };
+const userData={day:4,month:4,year:2000,hour:12,ampm:"PM",min:"00"};
+const monthsRu=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+const monthsEn=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const tabIds={week:'tab-w',month:'tab-m',year:'tab-y',love:'tab-l'};
 
-    const userData = { day: 4, month: 4, year: 2000, hour: 12, ampm: "PM", min: "00" };
-    const monthsListRu = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
-    const monthsListEn = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-    const tabIds = { week: 'tab-w', month: 'tab-m', year: 'tab-y', love: 'tab-l' };
-
-    function changeLang(lang) {
-        currentLang = lang;
-        $id('btn-ru').classList.toggle('active', lang === 'ru');
-        $id('btn-en').classList.toggle('active', lang === 'en');
-        const t = translations[lang];
-        const set = (id, txt) => { const el = $id(id); if (el) el.innerText = txt; };
-        set('t-title', t.title); set('t-subtitle', t.subtitle);
-        set('t-birth-date', t.birthDate); set('t-birth-time', t.birthTime);
-        set('t-btn-predict', t.btnPredict); set('t-sec-advice', t.secAdvice);
-        set('t-day-intro', t.dayIntro); set('t-fin-header', t.finHeader); set('t-fin-desc', t.finDesc);
-        set('t-btn-deep', t.btnDeep); set('t-btn-back-form', t.btnBackForm);
-        set('t-btn-back-p1', t.btnBackP1); set('t-disclaimer', t.disclaimer);
-        t.tabs.forEach((name, i) => { const el = $id(Object.values(tabIds)[i]); if (el) el.innerText = name; });
-        const months = lang === 'ru' ? monthsListRu : monthsListEn;
-        set('btn-month', months[userData.month - 1]);
-        set('btn-hour', userData.hour + ' ' + t.hourSuffix);
-        set('btn-min', userData.min + ' ' + t.minSuffix);
-        refreshAdsTexts();
-        if (fallbackShown && !unlocked) renderFallback();
-        switchTab(currentTabKey);
-        haptic('select');
-    }
-
-    function refreshAdsTexts() {
-        const t = translations[currentLang];
-        const title = $id('t-ad-title');
-        const status = $id('banner-status');
-        if (unlocked) {
-            title.innerText = t.unlockedTitle; title.style.color = '#4ade80';
-            $id('t-ad-desc').innerText = t.unlockedDesc;
-        } else {
-            title.innerText = t.adTitle; title.style.color = '';
-            $id('t-ad-desc').innerText = t.adDesc;
-            if (!adFlowRunning) $id('t-btn-watch-ad').innerText = t.btnWatchAd;
-            if (status) status.innerText = fallbackShown ? t.fallbackLabel : t.bannerLoading;
-        }
-    }
-
-    function openPicker(type) {
-        haptic('light');
-        const t = translations[currentLang];
-        const title = $id('picker-modal-title');
-        const grid = $id('picker-grid-content');
-        grid.innerHTML = ''; grid.className = 'picker-grid';
-        const item = (label, sel, onclick) => `<div class="picker-item ${sel ? 'selected' : ''}" onclick="${onclick}">${label}</div>`;
-
-        if (type === 'day') {
-            title.innerText = currentLang === 'ru' ? "Выберите день" : "Select day";
-            for (let i = 1; i <= 31; i++) grid.innerHTML += item(i, userData.day === i, `selectValue('day', ${i}, '${i}')`);
-        } else if (type === 'month') {
-            title.innerText = currentLang === 'ru' ? "Выберите месяц" : "Select month";
-            const list = currentLang === 'ru' ? monthsListRu : monthsListEn;
-            list.forEach((name, idx) => { const v = idx + 1; grid.innerHTML += item(name, userData.month === v, `selectValue('month', ${v}, '${name}')`); });
-        } else if (type === 'year') {
-            title.innerText = currentLang === 'ru' ? "Выберите год" : "Select year";
-            grid.classList.add('years-grid');
-            for (let y = CURRENT_YEAR; y >= 1940; y--) grid.innerHTML += item(y, userData.year === y, `selectValue('year', ${y}, '${y}')`);
-        } else if (type === 'hour') {
-            title.innerText = currentLang === 'ru' ? "Выберите час" : "Select hour";
-            for (let i = 1; i <= 12; i++) { const lbl = i + ' ' + t.hourSuffix; grid.innerHTML += item(lbl, userData.hour === i, `selectValue('hour', ${i}, '${lbl}')`); }
-        } else if (type === 'ampm') {
-            title.innerText = "AM / PM";
-            ['AM', 'PM'].forEach(ap => grid.innerHTML += item(ap, userData.ampm === ap, `selectValue('ampm', '${ap}', '${ap}')`));
-        } else if (type === 'min') {
-            title.innerText = currentLang === 'ru' ? "Минуты" : "Minutes";
-            ['00', '15', '30', '45'].forEach(mn => { const lbl = mn + ' ' + t.minSuffix; grid.innerHTML += item(lbl, userData.min === mn, `selectValue('min', '${mn}', '${lbl}')`); });
-        }
-        $id('picker-modal').style.display = 'flex';
-    }
-
-    function selectValue(type, val, label) {
-        userData[type] = val;
-        $id('btn-' + type).innerText = label;
-        closePicker(); haptic('select');
-    }
-    function closePicker() { $id('picker-modal').style.display = 'none'; }
-
-    function calcMatrixNumber() {
-        let sum = parseInt(userData.day) + parseInt(userData.month) + parseInt(userData.year);
-        while (sum > 22) sum = sum.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
-        if (sum < 1) sum = 22;
-        return sum;
-    }
-
-    function showResultsPart1() {
-        const num = calcMatrixNumber();
-        const t = translations[currentLang];
-        const arc = arcana[currentLang][num - 1];
-        $id('matrix-title').innerText = t.matrixTitle + num + ' — ' + arc.n;
-        $id('matrix-desc').innerText = arc.d;
-        $id('screen-form').classList.remove('active');
-        $id('screen-part1').classList.add('active');
-        haptic('medium');
-    }
-
-    function showForm() {
-        $id('screen-part1').classList.remove('active');
-        $id('screen-form').classList.add('active');
-    }
-    function goToStep2() {
-        $id('screen-part1').classList.remove('active');
-        $id('screen-part2').classList.add('active');
-        if (unlocked) applyUnlockedUI();
-        switchTab(unlocked ? currentTabKey : 'week');
-    }
-    function showPart1() {
-        $id('screen-part2').classList.remove('active');
-        $id('screen-part1').classList.add('active');
-    }
-
-    function probeBanner() {
-        return new Promise(resolve => {
-            const start = Date.now();
-            const check = () => {
-                const b = $id('oc-banner');
-                const ok = !window.__ocFailed && b && b.innerHTML.trim().length > 0 && b.offsetHeight > 8;
-                if (ok) return resolve(true);
-                if (Date.now() - start >= BANNER_PROBE_MS) return resolve(false);
-                setTimeout(check, 300);
-            };
-            check();
-        });
-    }
-
-    function renderFallback() {
-        fallbackShown = true;
-        const t = translations[currentLang];
-        $id('banner-slot').innerHTML = `
-            <div style="width:100%">
-                <div class="ad-label">${t.fallbackLabel}</div>
-                <div style="color: var(--gold-light); font-weight:700; font-size:14px; margin-bottom:4px;">${t.fallbackTitle}</div>
-                <div style="color: var(--text-muted); font-size:11.5px; margin-bottom:10px;">${t.fallbackDesc}</div>
-                <button class="fallback-btn" onclick="openFallback()">${t.fallbackBtn}</button>
-            </div>`;
-        const status = $id('banner-status');
-        if (status) status.innerText = t.fallbackLabel;
-    }
-
-    function openFallback() {
-        haptic('medium');
-        if (tg) {
-            if (FALLBACK_URL.startsWith('https://t.me/')) tg.openTelegramLink(FALLBACK_URL);
-            else tg.openLink(FALLBACK_URL);
-        } else { window.open(FALLBACK_URL, '_blank', 'noopener'); }
-    }
-
-    async function startAdFlow() {
-        if (adFlowRunning || unlocked) return;
-        adFlowRunning = true;
-        haptic('medium');
-        const t = translations[currentLang];
-        const btn = $id('t-btn-watch-ad');
-        const status = $id('banner-status');
-        const progressWrap = $id('ad-progress-wrap');
-        const progressBar = $id('ad-progress');
-
-        btn.disabled = true;
-        btn.innerText = t.adsChecking;
-
-        const loaded = await probeBanner();
-        let total;
-        if (loaded) {
-            total = AD_WAIT_LOADED_SEC;
-            if (status) status.innerText = t.bannerOk;
-        } else {
-            renderFallback();
-            total = AD_WAIT_FALLBACK_SEC;
-        }
-
-        progressWrap.style.display = 'block';
-        progressBar.style.width = '0%';
-        let left = total;
-        btn.innerText = t.waitTpl.replace('{s}', left);
-
-        const iv = setInterval(() => {
-            left--;
-            btn.innerText = translations[currentLang].waitTpl.replace('{s}', Math.max(left, 0));
-            progressBar.style.width = (((total - left) / total) * 100) + '%';
-            if (left <= 0) {
-                clearInterval(iv);
-                adFlowRunning = false;
-                unlockExtendedContent();
-            }
-        }, 1000);
-    }
-
-    function applyUnlockedUI() {
-        const t = translations[currentLang];
-        const title = $id('t-ad-title');
-        title.innerText = t.unlockedTitle; title.style.color = '#4ade80';
-        $id('t-ad-desc').innerText = t.unlockedDesc;
-        $id('t-btn-watch-ad').style.display = 'none';
-        $id('ad-progress-wrap').style.display = 'none';
-        const status = $id('banner-status');
-        if (status) status.style.display = 'none';
-        const ext = $id('extended-section');
-        ext.classList.remove('locked-content');
-        ext.classList.add('unlocked-content');
-    }
-
-    function unlockExtendedContent() {
-        unlocked = true;
-        setUnlocked();
-        applyUnlockedUI();
-        haptic('success');
-    }
-
-    function switchTab(tabKey, btnElement) {
-        currentTabKey = tabKey;
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        const el = btnElement || $id(tabIds[tabKey]);
-        if (el) el.classList.add('active');
-        const content = data[currentLang][tabKey];
-        let html = `<div class="section-title">${content.title}</div><div class="intro-p">${content.intro}</div>`;
-        content.blocks.forEach(b => { html += `<div class="info-block"><div class="info-header">${b.h}</div><div class="info-desc">${b.d}</div></div>`; });
-        $id('tab-content').innerHTML = html;
-    }
-
-    window.onload = function () {
-        unlocked = getUnlocked();
-        $id('footer-year').innerText = CURRENT_YEAR;
-        const status = $id('banner-status');
-        if (status) status.innerText = translations[currentLang].bannerLoading;
-        switchTab('week');
-        if (tg) {
-            tg.ready(); tg.expand();
-            const tgLang = tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code;
-            if (tgLang && tgLang.startsWith('en')) changeLang('en');
-        }
-    };
+function changeLang(lang){
+currentLang=lang;
+$id('btn-ru').classList.toggle('active',lang==='ru');
+$id('btn-en').classList.toggle('active',lang==='en');
+const t=translations[lang],set=(i,x)=>{const e=$id(i);if(e)e.innerText=x};
+set('t-title',t.title);set('t-subtitle',t.subtitle);set('t-birth-date',t.birthDate);set('t-birth-time',t.birthTime);
+set('t-btn-predict',t.btnPredict);set('t-sec-advice',t.secAdvice);set('t-day-intro',t.dayIntro);set('t-fin-header',t.finHeader);set('t-fin-desc',t.finDesc);
+set('t-btn-deep',t.btnDeep);set('t-btn-back-form',t.btnBackForm);set('t-btn-back-p1',t.btnBackP1);set('t-disclaimer',t.disclaimer);
+t.tabs.forEach((n,i)=>{const e=$id(Object.values(tabIds)[i]);if(e)e.innerText=n});
+set('btn-month',(lang==='ru'?monthsRu:monthsEn)[userData.month-1]);
+set('btn-hour',userData.hour+' '+t.hourSuffix);set('btn-min',userData.min+' '+t.minSuffix);
+refreshAdsTexts();if(fallbackShown&&!unlocked)renderFallback();
+if($id('screen-part1').classList.contains('active'))showResultsPart1(false);
+switchTab(currentTabKey);haptic('select');
+}
+function refreshAdsTexts(){
+const t=translations[currentLang],title=$id('t-ad-title'),status=$id('banner-status');
+if(unlocked){title.innerText=t.unlockedShort;$id('sponsor-chip').innerText=t.sponsorChip;}
+else{title.innerText=t.adTitle;$id('t-ad-desc').innerText=t.adDesc;if(!adFlowRunning)$id('t-btn-watch-ad').innerText=t.btnWatchAd;if(status)status.innerText=fallbackShown?t.fallbackLabel:t.bannerLoading;}
+}
+function openPicker(type){
+haptic('light');const t=translations[currentLang],title=$id('picker-modal-title'),grid=$id('picker-grid-content');
+grid.innerHTML='';grid.className='picker-grid';
+const item=(l,s,o)=>'<div class="picker-item '+(s?'selected':'')+'" onclick="'+o+'">'+l+'</div>';
+if(type==='day'){title.innerText=currentLang==='ru'?"Выберите день":"Select day";for(let i=1;i<=31;i++)grid.innerHTML+=item(i,userData.day===i,"selectValue('day',"+i+",'"+i+"')");}
+else if(type==='month'){title.innerText=currentLang==='ru'?"Выберите месяц":"Select month";(currentLang==='ru'?monthsRu:monthsEn).forEach((n,idx)=>{const v=idx+1;grid.innerHTML+=item(n,userData.month===v,"selectValue('month',"+v+",'"+n+"')");});}
+else if(type==='year'){title.innerText=currentLang==='ru'?"Выберите год":"Select year";grid.classList.add('years-grid');for(let y=CURRENT_YEAR;y>=1940;y--)grid.innerHTML+=item(y,userData.year===y,"selectValue('year',"+y+",'"+y+"')");}
+else if(type==='hour'){title.innerText=currentLang==='ru'?"Выберите час":"Select hour";for(let i=1;i<=12;i++){const l=i+' '+t.hourSuffix;grid.innerHTML+=item(l,userData.hour===i,"selectValue('hour',"+i+",'"+l+"')");}}
+else if(type==='ampm'){title.innerText="AM / PM";['AM','PM'].forEach(a=>grid.innerHTML+=item(a,userData.ampm===a,"selectValue('ampm','"+a+"','"+a+"')"));}
+else if(type==='min'){title.innerText=currentLang==='ru'?"Минуты":"Minutes";['00','15','30','45'].forEach(m=>{const l=m+' '+t.minSuffix;grid.innerHTML+=item(l,userData.min===m,"selectValue('min','"+m+"','"+l+"')");});}
+$id('picker-modal').style.display='flex';
+}
+function selectValue(type,val,label){userData[type]=val;$id('btn-'+type).innerText=label;closePicker();haptic('select');}
+function closePicker(){$id('picker-modal').style.display='none';}
+function calcMatrixNumber(){let s=parseInt(userData.day)+parseInt(userData.month)+parseInt(userData.year);while(s>22)s=s.toString().split('').reduce((a,b)=>parseInt(a)+parseInt(b),0);if(s<1)s=22;return s;}
+function showResultsPart1(withHaptic=true){
+currentMatrix=calcMatrixNumber();const t=translations[currentLang],a=arcana[currentLang][currentMatrix-1];
+$id('matrix-title').innerText=t.matrixTitle+currentMatrix+' — '+a.n;$id('matrix-desc').innerText=a.d;
+$id('screen-form').classList.remove('active');$id('screen-part1').classList.add('active');
+if(withHaptic)haptic('medium');
+}
+function showForm(){$id('screen-part1').classList.remove('active');$id('screen-form').classList.add('active');}
+function goToStep2(){$id('screen-part1').classList.remove('active');$id('screen-part2').classList.add('active');if(unlocked)applyUnlockedUI();switchTab(unlocked?currentTabKey:'week');}
+function showPart1(){$id('screen-part2').classList.remove('active');$id('screen-part1').classList.add('active');}
+function probeBanner(){return new Promise(res=>{const st=Date.now();const check=()=>{const b=$id('oc-banner');const ok=!window.__ocFailed&&b&&b.innerHTML.trim().length>0&&b.offsetHeight>8;if(ok)return res(true);if(Date.now()-st>=BANNER_PROBE_MS)return res(false);setTimeout(check,300);};check();});}
+function renderFallback(){
+fallbackShown=true;const t=translations[currentLang];
+$id('banner-slot').innerHTML='<div style="width:100%"><div class="ad-label">'+t.fallbackLabel+'</div><div style="color:var(--gold-l);font-weight:700;font-size:14px;margin-bottom:4px">'+t.fallbackTitle+'</div><div style="color:var(--mut);font-size:11.5px;margin-bottom:10px">'+t.fallbackDesc+'</div><button class="fallback-btn" onclick="openFallback()">'+t.fallbackBtn+'</button></div>';
+const s=$id('banner-status');if(s)s.innerText=t.fallbackLabel;
+}
+function openFallback(){haptic('medium');if(tg){if(FALLBACK_URL.startsWith('https://t.me/'))tg.openTelegramLink(FALLBACK_URL);else tg.openLink(FALLBACK_URL);}else window.open(FALLBACK_URL,'_blank','noopener');}
+async function startAdFlow(){
+if(adFlowRunning||unlocked)return;adFlowRunning=true;haptic('medium');
+const t=translations[currentLang],btn=$id('t-btn-watch-ad'),status=$id('banner-status'),pw=$id('ad-progress-wrap'),pb=$id('ad-progress');
+btn.disabled=true;btn.innerText=t.adsChecking;
+const loaded=await probeBanner();let total;
+if(loaded){total=AD_WAIT_LOADED_SEC;if(status)status.innerText=t.bannerOk;}else{renderFallback();total=AD_WAIT_FALLBACK_SEC;}
+pw.style.display='block';pb.style.width='0%';let left=total;btn.innerText=t.waitTpl.replace('{s}',left);
+const iv=setInterval(()=>{left--;btn.innerText=translations[currentLang].waitTpl.replace('{s}',Math.max(left,0));pb.style.width=(((total-left)/total)*100)+'%';if(left<=0){clearInterval(iv);adFlowRunning=false;unlockExtendedContent();}},1000);
+}
+function applyUnlockedUI(){
+const t=translations[currentLang];
+$id('ads-banner-box').classList.add('collapsed');
+$id('t-ad-title').innerText=t.unlockedShort;$id('sponsor-chip').innerText=t.sponsorChip;
+$id('t-btn-watch-ad').style.display='none';$id('ad-progress-wrap').style.display='none';
+const s=$id('banner-status');if(s)s.style.display='none';
+const ext=$id('extended-section');ext.classList.remove('locked-content');ext.classList.add('unlocked-content');
+}
+function unlockExtendedContent(){unlocked=true;setUnlocked();applyUnlockedUI();haptic('success');}
+function meterValues(n){return[55+(n*7)%41,55+(n*11+13)%41,55+(n*5+29)%41];}
+function buildTab(key){
+const t=translations[currentLang],c=data[currentLang][key],p=profiles[currentLang][currentMatrix-1],a=arcana[currentLang][currentMatrix-1];
+let html='<div class="section-title">'+c.title+'</div><div class="intro-p">'+c.intro+' '+t.lens+' <b style="color:var(--gold-l)">'+a.n+'</b> — '+p[0]+'.</div>';
+c.blocks.forEach(b=>{html+='<div class="info-block"><div class="info-header">'+b.h+'</div><div class="info-desc">'+b.d+'</div></div>';});
+const mv=meterValues(currentMatrix),cols=['var(--gold)','var(--magenta)','var(--cyan)'];
+html+='<div class="info-block personal-block"><div class="info-header" style="color:var(--magenta)">'+t.personalTitle+' · '+currentMatrix+' — '+a.n+'</div><div class="info-desc"><b>'+t.focus+':</b> '+p[0]+'. <b>'+t.money+':</b> '+p[1]+'. <b>'+t.love+':</b> '+p[2]+'. <b>'+t.caution+':</b> '+p[3]+'.</div><div class="meter">';
+t.meters.forEach((m,i)=>{html+='<div class="meter-row"><b>'+m+'</b><div class="meter-track"><div class="meter-fill" style="width:'+mv[i]+'%;background:'+cols[i]+'"></div></div><span>'+mv[i]+'%</span></div>';});
+html+='</div></div>';return html;
+}
+function switchTab(key,btn){
+currentTabKey=key;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+const el=btn||$id(tabIds[key]);if(el)el.classList.add('active');
+$id('tab-content').innerHTML=buildTab(key);
+}
+/* Звёздное небо: один rAF-цикл, DPR≤1.5, пауза при скрытой вкладке */
+(function(){
+const cv=$id('stars');if(!cv||!cv.getContext)return;const cx=cv.getContext('2d');if(!cx)return;
+let W=0,H=0,stars=[],raf=0,shoot=null;
+const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function size(){const d=Math.min(window.devicePixelRatio||1,1.5);W=window.innerWidth;H=window.innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);stars=Array.from({length:90},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,s:Math.random()*.25+.05,p:Math.random()*6.28}));}
+function draw(t){cx.clearRect(0,0,W,H);for(const s of stars){s.y-=s.s;if(s.y<-2)s.y=H+2;cx.globalAlpha=.35+.35*Math.sin(t/900+s.p);cx.fillStyle=s.r>1.2?'#f3e5ab':'#9db4ff';cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill();}
+if(!shoot&&Math.random()<.004)shoot={x:Math.random()*W*.8,y:Math.random()*H*.3,l:0};
+if(shoot){shoot.l+=14;cx.globalAlpha=.8;cx.strokeStyle='#f3e5ab';cx.lineWidth=1.4;cx.beginPath();cx.moveTo(shoot.x+shoot.l,shoot.y+shoot.l*.5);cx.lineTo(shoot.x+shoot.l-40,shoot.y+shoot.l*.5-20);cx.stroke();if(shoot.l>W)shoot=null;}
+cx.globalAlpha=1;}
+function loop(t){draw(t);raf=requestAnimationFrame(loop);}
+function start(){if(reduced){draw(0);return;}if(!raf)raf=requestAnimationFrame(loop);}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0;}}
+size();start();
+window.addEventListener('resize',()=>{size();if(reduced)draw(0);});
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start();});
+})();
+window.onload=function(){
+unlocked=getUnlocked();$id('footer-year').innerText=CURRENT_YEAR;
+const s=$id('banner-status');if(s)s.innerText=translations[currentLang].bannerLoading;
+switchTab('week');
+if(tg){tg.ready();tg.expand();const l=tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.language_code;if(l&&l.startsWith('en'))changeLang('en');}
+};
 </script>
 </body>
 </html>
